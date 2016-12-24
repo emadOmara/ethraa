@@ -1,10 +1,12 @@
 package net.pd.ethraa.common.model;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "GROUPS")
+@DiscriminatorValue("group")
 public class Group extends BaseEntity {
 
     /**

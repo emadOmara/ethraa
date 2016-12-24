@@ -2,6 +2,8 @@ package net.pd.ethraa.common.model;
 
 import java.io.Serializable;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 public abstract class BaseEntity implements Serializable {
 
     /**

@@ -1,10 +1,12 @@
 package net.pd.ethraa.common.model;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "PERMISSION")
+@DiscriminatorValue("permission")
 public class Permission extends BaseEntity {
 
     /**

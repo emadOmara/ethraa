@@ -3,6 +3,7 @@ package net.pd.ethraa.common.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -16,12 +17,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Account entity
- * 
+ *
  * @author Emad
  *
  */
 @Entity
 @Table(name = "ACCOUNT")
+@DiscriminatorValue("acc")
 public class Account extends BaseEntity {
 
     /**
@@ -31,7 +33,7 @@ public class Account extends BaseEntity {
     private static final long serialVersionUID = 5105914722614237201L;
 
     @NotEmpty
-    private String username;
+    private String userName;
     @NotEmpty
     private String mobile;
     @Email
@@ -50,14 +52,6 @@ public class Account extends BaseEntity {
 
     @Temporal(TemporalType.DATE)
     private Date tokenExpiryDate;
-
-    public String getUsername() {
-	return username;
-    }
-
-    public void setUsername(String username) {
-	this.username = username;
-    }
 
     public String getMobile() {
 	return mobile;
@@ -111,8 +105,24 @@ public class Account extends BaseEntity {
 	return tokenExpiryDate;
     }
 
+    public String getUserName() {
+	return userName;
+    }
+
+    public void setUserName(String userName) {
+	this.userName = userName;
+    }
+
     public void setTokenExpiryDate(Date tokenExpiryDate) {
 	this.tokenExpiryDate = tokenExpiryDate;
+    }
+
+    public List<Permission> getPermissions() {
+	return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+	this.permissions = permissions;
     }
 
 }
