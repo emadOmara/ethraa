@@ -14,6 +14,12 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+/**
+ * Account entity
+ * 
+ * @author Emad
+ *
+ */
 @Entity
 @Table(name = "ACCOUNT")
 public class Account extends BaseEntity {
@@ -21,6 +27,7 @@ public class Account extends BaseEntity {
     /**
      *
      */
+
     private static final long serialVersionUID = 5105914722614237201L;
 
     @NotEmpty
