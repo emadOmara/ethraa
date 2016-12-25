@@ -9,4 +9,6 @@ public interface AccountService {
 
     Account findUserWithPermissions(String userName) throws EthraaException;
 
+    void add(Account account) throws EthraaException;
+
 }

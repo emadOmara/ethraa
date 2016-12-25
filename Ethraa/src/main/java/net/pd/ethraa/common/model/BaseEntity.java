@@ -2,20 +2,13 @@ package net.pd.ethraa.common.model;
 
 import java.io.Serializable;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
+@MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
     /**
@@ -23,7 +16,7 @@ public abstract class BaseEntity implements Serializable {
      */
     private static final long serialVersionUID = 3167680378625461610L;
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue
     protected Long id;
 
     public Long getId() {

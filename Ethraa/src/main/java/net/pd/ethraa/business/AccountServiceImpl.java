@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.dao.AccountDao;
 
@@ -31,6 +32,12 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	return acc;
+    }
+
+    @Override
+    public void add(Account account) throws EthraaException {
+	accountDao.save(account);
+
     }
 
 }

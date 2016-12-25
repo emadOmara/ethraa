@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.pd.ethraa.business.GenericService;
+import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.common.BaseResponse;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
@@ -18,14 +18,14 @@ import net.pd.ethraa.common.model.Account;
 public class AccountController {
 
     @Autowired
-    private GenericService<Account> genericService;
+    private AccountService accountService;
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public BaseResponse register(@RequestBody Account account) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    genericService.add(account);
+	    accountService.add(account);
 	    response.setStatus(EthraaConstants.OK);
 
 	} catch (EthraaException e) {

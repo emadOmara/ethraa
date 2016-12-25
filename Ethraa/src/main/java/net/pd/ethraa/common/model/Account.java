@@ -3,7 +3,6 @@ package net.pd.ethraa.common.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -23,7 +22,6 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Entity
 @Table(name = "ACCOUNT")
-@DiscriminatorValue("acc")
 public class Account extends BaseEntity {
 
     /**
