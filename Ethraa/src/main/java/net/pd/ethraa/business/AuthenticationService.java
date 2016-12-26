@@ -3,12 +3,10 @@ package net.pd.ethraa.business;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 
-public interface AccountService {
+public interface AuthenticationService {
 
     Account findByUserName(String userName) throws EthraaException;
 
-    Account findUserWithPermissions(String mobile) throws EthraaException;
-
-    void add(Account account) throws EthraaException;
+    Account authenticate(String userName);
 
 }

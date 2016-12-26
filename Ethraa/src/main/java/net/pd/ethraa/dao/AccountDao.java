@@ -12,7 +12,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
     Account findByUserName(String userName);
 
-    @Query("SELECT a FROM Account a JOIN FETCH a.permissions WHERE a.userName = (:userName)")
-    public Account findUserWithPermissions(@Param("userName") String findUserWithPermissions);
+    @Query("SELECT a FROM Account a JOIN FETCH a.permissions WHERE a.mobile = (:mobile)")
+    public Account findUserWithPermissions(@Param("mobile") String findUserWithPermissions);
 
 }

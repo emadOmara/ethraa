@@ -1,4 +1,4 @@
-package net.pd.ethraa.main;
+package net.pd.ethraa.security;
 
 import java.util.List;
 
@@ -22,27 +22,29 @@ public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConf
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
-	auth.userDetailsService(userDetailsService());
+	auth.userDetailsService(userDetailsService);
     }
 
     @Bean
     UserDetailsService userDetailsService() {
-	return username -> {
+	return mobile -> {
 	    Account account = null;
 
 	    try {
-		account = accountService.findUserWithPermissions(username);
+		account = accountService.findUserWithPermissions(mobile);
 	    } catch (EthraaException e) {
 		e.printStackTrace();
 	    }
 	    if (account != null) {
-		return new User(account.getUserName(), account.getPassword(), true, true, true, true,
+		return new User(account.getMobile(), account.getPassword(), true, true, true, true,
 			AuthorityUtils.createAuthorityList(getAuthorities(account)));
 	    } else {
-		throw new UsernameNotFoundException("could not find the user '" + username + "'");
+		throw new UsernameNotFoundException("could not find the user '" + mobile + "'");
 	    }
 
 	};
