@@ -6,35 +6,43 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import net.pd.ethraa.common.model.Account;
-
 @Service
 public class TokenManagementService {
 
-    private Map<String, Account> accounts = new ConcurrentHashMap<>();
-    private Map<String, UserDetails> users = new ConcurrentHashMap<>();
+    private Map<String, UserDetailsWrapper> users = new ConcurrentHashMap<>();
 
-    public Account getAccount(String token) {
-	return accounts.get(token);
+    public void addUser(String mobile, String token, UserDetails user) {
+	users.put(token, new UserDetailsWrapper(token, user));
     }
 
-    public void addToken(String token, Account account) {
-	accounts.put(token, account);
+    public UserDetails getUser(String mobile) {
+	UserDetailsWrapper userDetailsWrapper = users.get(mobile);
+	if (userDetailsWrapper != null) {
+	    return userDetailsWrapper.getUser();
+	}
+	return null;
     }
 
-    public void removeToken(String token) {
-	accounts.remove(token);
+    public void deleteUser(String mobile) {
+	users.remove(mobile);
     }
 
-    public void addUser(String token, UserDetails user) {
-	users.put(token, user);
-    }
+    private class UserDetailsWrapper {
+	private UserDetails user;
+	private String token;
 
-    public UserDetails getUser(String token) {
-	return users.get(token);
-    }
+	public UserDetailsWrapper(String token, UserDetails userDetails) {
+	    this.token = token;
+	    user = userDetails;
+	}
 
-    public void deleteUser(String token) {
-	users.remove(token);
+	public UserDetails getUser() {
+	    return user;
+	}
+
+	public void setUser(UserDetails user) {
+	    this.user = user;
+	}
+
     }
 }

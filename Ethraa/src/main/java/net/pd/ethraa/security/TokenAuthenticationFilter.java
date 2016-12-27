@@ -46,16 +46,17 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 	    } else {
 
 		// build an Authentication object with the user's info
+		String credentials = account.getUsername() + "-" + account.getPassword();
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-			account.getUsername(), account.getPassword());
+			credentials, account.getPassword());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		// set the authentication into the SecurityContext
 		try {
 		    SecurityContextHolder.getContext()
 			    .setAuthentication(authenticationManager.authenticate(authentication));
 		} catch (AuthenticationException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
+		    response.setStatus(401);
+		    throw new UsernameNotFoundException("could not find the user");
 		}
 
 	    }

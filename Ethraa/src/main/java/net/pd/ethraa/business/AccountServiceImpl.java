@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
+import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.dao.AccountDao;
 
 @Service
@@ -24,11 +25,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Cacheable(cacheNames = "accounts", key = "#mobile")
-    public Account findUserWithPermissions(String mobile) {
+    public Account findUserWithPermissions(String mobile, String password, AccountStatus status) {
 
 	Account acc = null;
 	try {
-	    acc = accountDao.findUserWithPermissions(mobile);
+	    acc = accountDao.findUserWithPermissions(mobile, password, status);
 	    Thread.sleep(5000);
 	} catch (Exception e) {
 

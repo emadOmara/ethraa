@@ -1,12 +1,15 @@
 package net.pd.ethraa.common.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import net.pd.ethraa.integration.jackson.GroupDeserializer;
+
 @Entity
 @Table(name = "GROUPS")
-@DiscriminatorValue("group")
+@JsonDeserialize(using = GroupDeserializer.class)
 public class Group extends BaseEntity {
 
     /**
@@ -16,6 +19,13 @@ public class Group extends BaseEntity {
 
     private String name;
     private String description;
+
+    public Group() {
+    }
+
+    public Group(Long groupID) {
+	id = groupID;
+    }
 
     public String getName() {
 	return name;

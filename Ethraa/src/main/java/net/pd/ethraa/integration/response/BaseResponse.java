@@ -1,4 +1,4 @@
-package net.pd.ethraa.common;
+package net.pd.ethraa.integration.response;
 
 import java.io.Serializable;
 
@@ -9,6 +9,7 @@ public class BaseResponse implements Serializable {
     private static final long serialVersionUID = 948366373511442642L;
     private String status;
     private String comment;
+    private Object result;
 
     public BaseResponse() {
     }
@@ -32,6 +33,14 @@ public class BaseResponse implements Serializable {
 
     public void setComment(String comment) {
 	this.comment = comment;
+    }
+
+    public Object getResult() {
+	return result;
+    }
+
+    public void setResult(Object result) {
+	this.result = result;
     }
 
 }

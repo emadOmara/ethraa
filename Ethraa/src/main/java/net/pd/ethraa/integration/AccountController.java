@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.pd.ethraa.business.AccountService;
-import net.pd.ethraa.common.BaseResponse;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
+import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
 @RequestMapping(path = "api/account")

@@ -1,12 +1,12 @@
 package net.pd.ethraa.common.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "PERMISSION")
-@DiscriminatorValue("permission")
 public class Permission extends BaseEntity {
 
     /**
@@ -14,6 +14,7 @@ public class Permission extends BaseEntity {
      */
     private static final long serialVersionUID = 4635122625047041490L;
     private String name;
+    @JsonIgnore
     private String description;
 
     public String getName() {
