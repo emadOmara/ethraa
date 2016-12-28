@@ -5,8 +5,11 @@ import java.io.Serializable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -25,6 +28,12 @@ public abstract class BaseEntity implements Serializable {
 
     public void setId(Long id) {
 	this.id = id;
+    }
+
+    @JsonIgnore
+    @Transient
+    public boolean isNew() {
+	return id == null ? true : id == 0;
     }
 
     @Override

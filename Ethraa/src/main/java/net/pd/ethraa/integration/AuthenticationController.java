@@ -14,7 +14,6 @@ import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.business.TokenManagementService;
 import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaConstants;
-import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.integration.response.BaseResponse;
@@ -22,7 +21,7 @@ import net.pd.ethraa.integration.response.LoginResponse;
 
 @RestController()
 @RequestMapping(path = "api/authentication")
-public class AuthenticationController {
+public class AuthenticationController extends BaseController {
 
     @Autowired
     private AccountService accountService;
@@ -36,11 +35,11 @@ public class AuthenticationController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    accountService.add(account);
+	    accountService.save(account);
 	    response.setStatus(EthraaConstants.OK);
 	    response.setComment(EthraaConstants.GENERAL_SUCCESS);
 
-	} catch (EthraaException e) {
+	} catch (Exception e) {
 	    response.setStatus(EthraaConstants.ERROR);
 	    response.setComment(e.getMessage());
 	}

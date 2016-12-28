@@ -10,6 +10,10 @@ public class EthraaException extends Exception {
 	super(msg, cause);
     }
 
+    public EthraaException(Exception e) {
+	super(e);
+    }
+
     /**
      *
      */

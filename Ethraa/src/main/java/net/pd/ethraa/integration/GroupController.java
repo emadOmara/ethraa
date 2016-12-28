@@ -12,23 +12,24 @@ import org.springframework.web.bind.annotation.RestController;
 import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
-import net.pd.ethraa.common.model.Account;
+import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
-@RequestMapping(path = "api/account")
-public class AccountController extends BaseController {
+@RequestMapping(path = "api/groups")
+public class GroupController extends BaseController {
 
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public BaseResponse addAccount(@RequestBody Account account) {
+    @RequestMapping(path = "/list", method = RequestMethod.GET)
+    public BaseResponse listGroups() {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    accountService.save(account);
-	    handleSuccessResponse(response, null);
+	    List<Group> groupList = accountService.getAllGroups();
+	    handleSuccessResponse(response, groupList);
+
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
 	}
@@ -37,16 +38,34 @@ public class AccountController extends BaseController {
 
     }
 
-    @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public BaseResponse editAccount(@RequestBody Account account) {
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public BaseResponse addGroup(@RequestBody Group group) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    if (account.isNew()) {
+	    accountService.saveGroup(group);
+	    handleSuccessResponse(response, null);
+
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public BaseResponse updateGroup(@RequestBody Group group) {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    if (group.isNew()) {
 		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	    }
-	    accountService.save(account);
+
+	    accountService.saveGroup(group);
 	    handleSuccessResponse(response, null);
+
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
 	}
@@ -55,16 +74,19 @@ public class AccountController extends BaseController {
 
     }
 
-    @RequestMapping(path = "/listMembers/{groupID}", method = RequestMethod.GET)
-    public BaseResponse register(@PathVariable("groupID") String groupID) {
+    @RequestMapping(path = "/deleteGroup/{id}", method = RequestMethod.GET)
+    public BaseResponse deleteGroup(@PathVariable("id") Long id) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    List<Account> accounts = accountService.getGroupMembers(new Long(groupID));
-	    handleSuccessResponse(response, accounts);
+
+	    accountService.deleteGroup(id);
+	    response.setStatus(EthraaConstants.OK);
+	    response.setComment(EthraaConstants.GENERAL_SUCCESS);
 
 	} catch (Exception e) {
-	    handleFailureResponse(response, e);
+	    response.setStatus(EthraaConstants.ERROR);
+	    response.setComment(e.getMessage());
 	}
 
 	return response;

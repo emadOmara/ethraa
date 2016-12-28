@@ -3,13 +3,12 @@ package net.pd.ethraa.common.model;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import net.pd.ethraa.integration.jackson.GroupDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "GROUPS")
-@JsonDeserialize(using = GroupDeserializer.class)
+// @JsonDeserialize(using = GroupDeserializer.class)
 public class Group extends BaseEntity {
 
     /**
@@ -35,10 +34,12 @@ public class Group extends BaseEntity {
 	this.name = name;
     }
 
+    @JsonIgnore
     public String getDescription() {
 	return description;
     }
 
+    @JsonProperty
     public void setDescription(String description) {
 	this.description = description;
     }

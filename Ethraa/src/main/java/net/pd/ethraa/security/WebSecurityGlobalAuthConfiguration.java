@@ -15,13 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import net.pd.ethraa.business.AccountService;
-
 @Configuration
 public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
-    @Autowired
-    private AccountService accountService;
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -36,12 +32,10 @@ public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConf
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(1)
 class TokenAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
-    // @Autowired
-    // private TokenAuthenticationProvider authProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-	http.authorizeRequests().antMatchers("/api/authentication/register", "/api/authentication/login").permitAll();
+	http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
 	http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
 	http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
