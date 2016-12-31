@@ -1,28 +1,26 @@
 package net.pd.ethraa.business;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.pd.ethraa.common.EthraaException;
+import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountStatus;
-import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.dao.AccountDao;
-import net.pd.ethraa.dao.GroupDao;
 
 @Service
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    private GroupDao groupDao;
-    @Autowired
     private AccountDao accountDao;
+    @Autowired
+    private NullAwareBeanUtilsBean beanUtilService;
 
     @Override
     public Account findByUserName(String userName) {
@@ -45,10 +43,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @CachePut(cacheNames = "accounts", key = "#account.mobile")
-    public void save(Account account) throws EthraaException {
+    @CachePut(cacheNames = "accounts", key = "#account.mobile", condition = "#account.mobile !=null")
+    public void saveAccount(Account account) throws EthraaException {
 	try {
-	    accountDao.save(account);
+	    if (account.isNew()) {
+		accountDao.save(account);
+	    } else {// update
+		Account fetchedAccount = accountDao.findOne(account.getId());
+		beanUtilService.copyProperties(fetchedAccount, account);
+		accountDao.save(fetchedAccount);
+	    }
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
@@ -56,42 +60,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @CachePut(cacheNames = "groups")
-    public List<Group> getAllGroups() throws EthraaException {
+    @CacheEvict(cacheNames = "accounts")
+    public void deleteAccount(Long id) throws EthraaException {
 	try {
-	    List<Group> allGroups = groupDao.findAll();
-	    return allGroups;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
-	}
-    }
-
-    @Override
-    public void saveGroup(Group group) throws EthraaException {
-	try {
-	    groupDao.save(group);
+	    accountDao.delete(id);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
 
-    }
-
-    @Override
-    public void deleteGroup(long groupID) throws EthraaException {
-	try {
-	    groupDao.delete(groupID);
-	} catch (Exception e) {
-	    throw new EthraaException(e);
-	}
-    }
-
-    @Override
-    public List<Account> getGroupMembers(long groupID) throws EthraaException {
-	try {
-	    return accountDao.findByGroupId(groupID);
-	} catch (Exception e) {
-	    throw new EthraaException(e);
-	}
     }
 
 }

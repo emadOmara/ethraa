@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.pd.ethraa.integration.jackson.Views;
 
 @JsonInclude(Include.NON_NULL)
 public class BaseResponse implements Serializable {
@@ -11,8 +14,11 @@ public class BaseResponse implements Serializable {
      *
      */
     private static final long serialVersionUID = 948366373511442642L;
+    @JsonView(Views.Public.class)
     private String status;
+    @JsonView(Views.Public.class)
     private String comment;
+    @JsonView(Views.Public.class)
     private Object result;
 
     public BaseResponse() {

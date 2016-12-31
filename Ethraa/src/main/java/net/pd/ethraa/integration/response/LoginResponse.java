@@ -1,5 +1,9 @@
 package net.pd.ethraa.integration.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.pd.ethraa.integration.jackson.Views;
+
 public class LoginResponse extends BaseResponse {
 
     /**
@@ -15,6 +19,7 @@ public class LoginResponse extends BaseResponse {
 	super(status, comment);
     }
 
+    @JsonView(Views.LoginSuccess.class)
     private String token;
 
     public String getToken() {

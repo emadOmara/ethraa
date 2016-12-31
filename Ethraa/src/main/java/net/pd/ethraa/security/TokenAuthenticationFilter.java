@@ -41,7 +41,6 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 	    // determine the user based on the (already validated) token
 	    UserDetails account = tokenManagementService.getUser(token);
 	    if (account == null) {
-		response.setStatus(401);
 		throw new UsernameNotFoundException("could not find the user");
 	    } else {
 

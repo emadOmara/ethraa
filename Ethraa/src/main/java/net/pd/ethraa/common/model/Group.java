@@ -5,6 +5,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.pd.ethraa.integration.jackson.Views;
 
 @Entity
 @Table(name = "GROUPS")
@@ -16,6 +19,7 @@ public class Group extends BaseEntity {
      */
     private static final long serialVersionUID = 5852390428319467002L;
 
+    @JsonView(Views.Public.class)
     private String name;
     private String description;
 

@@ -1,7 +1,5 @@
 package net.pd.ethraa.integration;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +11,8 @@ import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
+import net.pd.ethraa.common.model.AccountStatus;
+import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -22,12 +22,20 @@ public class AccountController extends BaseController {
     @Autowired
     private AccountService accountService;
 
+    /**
+     * This action is used by admins to add new admin user
+     *
+     * @param account
+     * @return
+     */
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public BaseResponse addAccount(@RequestBody Account account) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    accountService.save(account);
+	    account.setAccountStatus(AccountStatus.ACTIVE);
+	    account.setAccountType(AccountType.ADMIN);
+	    accountService.saveAccount(account);
 	    handleSuccessResponse(response, null);
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
@@ -45,7 +53,8 @@ public class AccountController extends BaseController {
 	    if (account.isNew()) {
 		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	    }
-	    accountService.save(account);
+
+	    accountService.saveAccount(account);
 	    handleSuccessResponse(response, null);
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
@@ -55,14 +64,13 @@ public class AccountController extends BaseController {
 
     }
 
-    @RequestMapping(path = "/listMembers/{groupID}", method = RequestMethod.GET)
-    public BaseResponse register(@PathVariable("groupID") String groupID) {
+    @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
+    public BaseResponse deleteAccount(@PathVariable("id") Long id) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    List<Account> accounts = accountService.getGroupMembers(new Long(groupID));
-	    handleSuccessResponse(response, accounts);
-
+	    accountService.deleteAccount(id);
+	    handleSuccessResponse(response, null);
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
 	}

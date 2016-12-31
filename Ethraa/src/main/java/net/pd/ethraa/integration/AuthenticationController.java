@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.business.TokenManagementService;
 import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountStatus;
+import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.response.BaseResponse;
 import net.pd.ethraa.integration.response.LoginResponse;
 
@@ -35,24 +39,25 @@ public class AuthenticationController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    accountService.save(account);
-	    response.setStatus(EthraaConstants.OK);
-	    response.setComment(EthraaConstants.GENERAL_SUCCESS);
+	    account.setAccountType(AccountType.NORMAL);
+	    account.setAccountStatus(AccountStatus.INACTIVE);
+	    accountService.saveAccount(account);
+	    handleSuccessResponse(response, null);
 
 	} catch (Exception e) {
-	    response.setStatus(EthraaConstants.ERROR);
-	    response.setComment(e.getMessage());
+	    handleFailureResponse(response, e);
 	}
 
 	return response;
 
     }
 
+    @JsonView(Views.LoginSuccess.class)
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public BaseResponse login(@RequestBody Account account) {
 
 	UserDetails userDetails = null;
-	LoginResponse response = null;
+	LoginResponse response = new LoginResponse();
 	try {
 
 	    if (account == null || StringUtils.isEmpty(account.getMobile())
@@ -70,11 +75,10 @@ public class AuthenticationController extends BaseController {
 
 	    response = new LoginResponse(EthraaConstants.OK, EthraaConstants.GENERAL_SUCCESS);
 	    response.setToken(token);
-	    response.setResult(fetchedAccount.getPermissions());
+	    response.setResult(fetchedAccount);
 
 	} catch (Exception e) {
-	    response.setStatus(EthraaConstants.ERROR);
-	    response.setComment(e.getMessage());
+	    handleFailureResponse(response, e);
 
 	}
 	return response;

@@ -25,4 +25,12 @@ public class EthraaApplication extends SpringBootServletInitializer {
 	return application.sources(EthraaApplication.class);
     }
 
+    // @Bean
+    // public Jackson2ObjectMapperBuilder jacksonBuilder() {
+    // Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
+    // b.indentOutput(true).dateFormat(new
+    // SimpleDateFormat("yyyy-MM-dd")).defaultViewInclusion(true).;
+    // return b;
+    // }
+
 }

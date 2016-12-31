@@ -15,6 +15,10 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.pd.ethraa.integration.jackson.Views;
+
 /**
  * Account entity
  *
@@ -32,6 +36,7 @@ public class Account extends BaseEntity {
     private static final long serialVersionUID = 5105914722614237201L;
 
     @NotEmpty
+    @JsonView(Views.Public.class)
     private String userName;
     @NotEmpty
     @Column(unique = true)
@@ -44,13 +49,16 @@ public class Account extends BaseEntity {
     private int graduationYear;
 
     @Enumerated(EnumType.STRING)
-    private AccountType accountType = AccountType.NORMAL;
+    private AccountType accountType;
+
+    @JsonView(Views.Public.class)
     @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus = AccountStatus.INACTIVE;
+    private AccountStatus accountStatus;
 
     @ManyToOne
     private Group group;
 
+    @JsonView(Views.LoginSuccess.class)
     @ManyToMany
     @JoinTable(name = "ACCOUNT_PERMISSION")
     private List<Permission> permissions;

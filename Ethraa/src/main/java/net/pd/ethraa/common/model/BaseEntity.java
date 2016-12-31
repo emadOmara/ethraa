@@ -10,6 +10,9 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.pd.ethraa.integration.jackson.Views;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -20,6 +23,7 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 3167680378625461610L;
     @Id
     @GeneratedValue
+    @JsonView(Views.Public.class)
     protected Long id;
 
     public Long getId() {
