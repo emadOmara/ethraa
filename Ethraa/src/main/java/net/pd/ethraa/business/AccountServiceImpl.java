@@ -29,6 +29,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result == null")
+    public Account findUserWithPermissions(String mobile) throws EthraaException {
+
+	Account acc = null;
+	try {
+	    acc = accountDao.findUserWithPermissions(mobile);
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+
+	return acc;
+    }
+
+    @Override
+    @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result == null")
     public Account findUserWithPermissions(String mobile, String password, AccountStatus status)
 	    throws EthraaException {
 

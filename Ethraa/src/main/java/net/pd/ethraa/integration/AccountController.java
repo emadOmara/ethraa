@@ -1,5 +1,6 @@
 package net.pd.ethraa.integration;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,24 @@ public class AccountController extends BaseController {
 	    account.setAccountType(AccountType.ADMIN);
 	    accountService.saveAccount(account);
 	    handleSuccessResponse(response, null);
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @RequestMapping(path = "/get/{mobile}", method = RequestMethod.GET)
+    public BaseResponse get(@PathVariable("mobile") String mobile) {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    if (StringUtils.isEmpty(mobile)) {
+		throw new EthraaException(EthraaConstants.ERROR_MSG_MOBILE_CAN_T_BE_NULL);
+	    }
+	    Account account = accountService.findUserWithPermissions(mobile);
+	    handleSuccessResponse(response, account);
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
 	}

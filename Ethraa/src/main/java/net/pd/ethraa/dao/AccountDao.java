@@ -21,4 +21,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
     public Account findUserWithPermissions(@Param("mobile") String findUserWithPermissions,
 	    @Param("password") String password, @Param("status") AccountStatus status);
 
+    @Query("SELECT a FROM Account a left outer JOIN FETCH a.permissions WHERE a.mobile = :mobile ")
+    Account findUserWithPermissions(String mobile);
+
 }

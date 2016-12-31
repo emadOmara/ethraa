@@ -1,5 +1,6 @@
 package net.pd.ethraa.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,17 @@ public class GroupServiceImpl implements GroupService {
     @Cacheable(cacheNames = "groups")
     public List<Group> getAllGroups() throws EthraaException {
 	try {
-	    List<Group> allGroups = groupDao.findAll();
+
+	    Object[] groups = groupDao.geAllGroupsWithPendingRequestCount();
+
+	    List<Group> allGroups = new ArrayList<>();
+	    for (Object wrapper : groups) {
+		Group g = (Group) ((Object[]) wrapper)[0];
+		Long count = (Long) ((Object[]) wrapper)[1];
+		g.setPendingRequests(count);
+		allGroups.add(g);
+	    }
+
 	    return allGroups;
 	} catch (Exception e) {
 	    throw new EthraaException(e);

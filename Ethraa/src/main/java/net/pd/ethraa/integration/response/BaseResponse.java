@@ -14,11 +14,11 @@ public class BaseResponse implements Serializable {
      *
      */
     private static final long serialVersionUID = 948366373511442642L;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Base.class)
     private String status;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Base.class)
     private String comment;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Base.class)
     private Object result;
 
     public BaseResponse() {

@@ -14,4 +14,6 @@ public interface AccountService {
 
     void deleteAccount(Long id) throws EthraaException;
 
+    Account findUserWithPermissions(String mobile) throws EthraaException;
+
 }

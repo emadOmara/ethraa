@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -46,6 +47,7 @@ public class Account extends BaseEntity {
     private String email;
     @NotEmpty
     private String password;
+    @Min(1950)
     private int graduationYear;
 
     @Enumerated(EnumType.STRING)

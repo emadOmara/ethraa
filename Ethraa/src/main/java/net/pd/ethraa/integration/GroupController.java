@@ -1,7 +1,6 @@
 package net.pd.ethraa.integration;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,11 +15,9 @@ import net.pd.ethraa.business.GroupService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.response.BaseResponse;
-import net.pd.ethraa.integration.response.ListMembersResponse;
 
 @RestController()
 @RequestMapping(path = "api/groups")
@@ -29,7 +26,7 @@ public class GroupController extends BaseController {
     @Autowired
     private GroupService groupService;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Group.class)
     @RequestMapping(path = "/list", method = RequestMethod.GET)
     public BaseResponse listGroups() {
 
@@ -62,7 +59,7 @@ public class GroupController extends BaseController {
 
     }
 
-    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    @RequestMapping(path = "/edit", method = RequestMethod.POST)
     public BaseResponse updateGroup(@RequestBody Group group) {
 
 	BaseResponse response = new BaseResponse();
@@ -104,17 +101,15 @@ public class GroupController extends BaseController {
     // TODO test this second for lazy loaded collections
     @JsonView(Views.Public.class)
     @RequestMapping(path = "/listMembers/{groupID}", method = RequestMethod.GET)
-    public BaseResponse listMembers(@PathVariable("groupID") String groupID) {
+    public BaseResponse listMembers(@PathVariable("groupID") Long groupID) {
 
-	ListMembersResponse response = new ListMembersResponse();
+	BaseResponse response = new BaseResponse();
 	try {
+	    if (groupID == null || groupID == 0) {
+		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
+	    }
 	    List<Account> accounts = groupService.getGroupMembers(new Long(groupID));
 	    handleSuccessResponse(response, accounts);
-
-	    List<Account> inActiveList = accounts.stream()
-		    .filter(account -> AccountStatus.INACTIVE.equals(account.getAccountStatus()))
-		    .collect(Collectors.toList());
-	    response.setPendingAccounts(inActiveList.size());
 
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);

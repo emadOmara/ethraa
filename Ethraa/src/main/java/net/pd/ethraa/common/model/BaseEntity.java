@@ -23,7 +23,7 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 3167680378625461610L;
     @Id
     @GeneratedValue
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Base.class)
     protected Long id;
 
     public Long getId() {
