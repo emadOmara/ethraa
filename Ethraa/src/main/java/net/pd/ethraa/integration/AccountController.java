@@ -1,5 +1,7 @@
 package net.pd.ethraa.integration;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +14,6 @@ import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.integration.response.BaseResponse;
 
@@ -34,7 +35,7 @@ public class AccountController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    account.setAccountStatus(AccountStatus.ACTIVE);
+	    account.setAccountStatus(EthraaConstants.ACTIVE);
 	    account.setAccountType(AccountType.ADMIN);
 	    accountService.saveAccount(account);
 	    handleSuccessResponse(response, null);
@@ -90,6 +91,23 @@ public class AccountController extends BaseController {
 	try {
 	    accountService.deleteAccount(id);
 	    handleSuccessResponse(response, null);
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @RequestMapping(path = "/listManagers", method = RequestMethod.GET)
+    public BaseResponse listMembers() {
+
+	BaseResponse response = new BaseResponse();
+	try {
+
+	    List<Account> accounts = accountService.getAllAccounts(AccountType.ADMIN);
+	    handleSuccessResponse(response, accounts);
+
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
 	}

@@ -1,14 +1,18 @@
 package net.pd.ethraa.business;
 
+import java.util.List;
+
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
+import net.pd.ethraa.common.model.AccountType;
 
 public interface AccountService {
 
     Account findByUserName(String userName) throws EthraaException;
 
-    Account findUserWithPermissions(String mobile, String password, AccountStatus status) throws EthraaException;
+    Account findUserWithPermissions(String mobile, String password, int status) throws EthraaException;
+
+    List<Account> getAllAccounts(AccountType type) throws EthraaException;
 
     void saveAccount(Account account) throws EthraaException;
 

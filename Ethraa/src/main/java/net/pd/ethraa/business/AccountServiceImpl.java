@@ -1,5 +1,7 @@
 package net.pd.ethraa.business;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -10,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
+import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.dao.AccountDao;
 
 @Service
@@ -43,8 +45,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result == null")
-    public Account findUserWithPermissions(String mobile, String password, AccountStatus status)
-	    throws EthraaException {
+    public Account findUserWithPermissions(String mobile, String password, int status) throws EthraaException {
 
 	Account acc = null;
 	try {
@@ -82,6 +83,15 @@ public class AccountServiceImpl implements AccountService {
 	    throw new EthraaException(e);
 	}
 
+    }
+
+    @Override
+    public List<Account> getAllAccounts(AccountType type) throws EthraaException {
+	try {
+	    return accountDao.findByAccountType(type);
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
     }
 
 }

@@ -12,9 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import net.pd.ethraa.business.AccountService;
+import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.common.model.Permission;
 
 @Component
@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	Account account = null;
 
 	try {
-	    account = accountService.findUserWithPermissions(mobile, password, AccountStatus.ACTIVE);
+	    account = accountService.findUserWithPermissions(mobile, password, EthraaConstants.ACTIVE);
 	} catch (EthraaException e) {
 	    e.printStackTrace();
 	}

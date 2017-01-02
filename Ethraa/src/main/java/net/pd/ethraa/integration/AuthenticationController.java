@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,6 @@ import net.pd.ethraa.business.TokenManagementService;
 import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.model.Account;
-import net.pd.ethraa.common.model.AccountStatus;
 import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.response.BaseResponse;
@@ -25,6 +25,7 @@ import net.pd.ethraa.integration.response.LoginResponse;
 
 @RestController()
 @RequestMapping(path = "api/authentication")
+@CrossOrigin
 public class AuthenticationController extends BaseController {
 
     @Autowired
@@ -40,7 +41,7 @@ public class AuthenticationController extends BaseController {
 	BaseResponse response = new BaseResponse();
 	try {
 	    account.setAccountType(AccountType.NORMAL);
-	    account.setAccountStatus(AccountStatus.INACTIVE);
+	    account.setAccountStatus(EthraaConstants.INACTIVE);
 	    accountService.saveAccount(account);
 	    handleSuccessResponse(response, null);
 
@@ -69,7 +70,7 @@ public class AuthenticationController extends BaseController {
 	    userDetails = userDetailsService.loadUserByUsername(credentials);
 
 	    Account fetchedAccount = accountService.findUserWithPermissions(account.getMobile(),
-		    userDetails.getPassword(), AccountStatus.ACTIVE);
+		    userDetails.getPassword(), EthraaConstants.ACTIVE);
 	    String token = CommonUtil.generateToken(account);
 	    tokenManagementService.addUser(userDetails.getUsername(), token, userDetails);
 

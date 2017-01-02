@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Group;
@@ -27,10 +28,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Cacheable(cacheNames = "groups")
-    public List<Group> getAllGroups() throws EthraaException {
+    public List<Group> geAllGroupsWithPendingRequestCount() throws EthraaException {
 	try {
 
-	    Object[] groups = groupDao.geAllGroupsWithPendingRequestCount();
+	    Object[] groups = groupDao.geAllGroupsWithPendingRequestCount(EthraaConstants.INACTIVE);
 
 	    List<Group> allGroups = new ArrayList<>();
 	    for (Object wrapper : groups) {
@@ -48,9 +49,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @CachePut(cacheNames = "groups")
-    public void saveGroup(Group group) throws EthraaException {
+    public Group saveGroup(Group group) throws EthraaException {
 	try {
-	    groupDao.save(group);
+	    return groupDao.save(group);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

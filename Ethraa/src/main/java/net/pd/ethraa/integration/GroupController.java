@@ -32,7 +32,7 @@ public class GroupController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    List<Group> groupList = groupService.getAllGroups();
+	    List<Group> groupList = groupService.geAllGroupsWithPendingRequestCount();
 	    handleSuccessResponse(response, groupList);
 
 	} catch (Exception e) {
@@ -48,8 +48,8 @@ public class GroupController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    groupService.saveGroup(group);
-	    handleSuccessResponse(response, null);
+	    group = groupService.saveGroup(group);
+	    handleSuccessResponse(response, group);
 
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);

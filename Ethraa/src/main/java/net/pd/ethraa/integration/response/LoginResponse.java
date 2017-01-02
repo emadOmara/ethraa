@@ -15,7 +15,7 @@ public class LoginResponse extends BaseResponse {
 	super();
     }
 
-    public LoginResponse(String status, String comment) {
+    public LoginResponse(int status, String comment) {
 	super(status, comment);
     }
 

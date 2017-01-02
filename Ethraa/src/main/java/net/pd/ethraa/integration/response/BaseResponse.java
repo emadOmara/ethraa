@@ -15,25 +15,27 @@ public class BaseResponse implements Serializable {
      */
     private static final long serialVersionUID = 948366373511442642L;
     @JsonView(Views.Base.class)
-    private String status;
+    private int status;
+
     @JsonView(Views.Base.class)
     private String comment;
+
     @JsonView(Views.Base.class)
     private Object result;
 
     public BaseResponse() {
     }
 
-    public BaseResponse(String status, String comment) {
+    public BaseResponse(int status, String comment) {
 	this.status = status;
 	this.comment = comment;
     }
 
-    public String getStatus() {
+    public int getStatus() {
 	return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
 	this.status = status;
     }
 

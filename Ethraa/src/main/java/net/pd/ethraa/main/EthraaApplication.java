@@ -5,15 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
 @ComponentScan(value = { "net.pd.ethraa" })
 @EnableJpaRepositories(basePackages = { "net.pd.ethraa.dao" })
 @EntityScan(basePackages = "net.pd.ethraa.common.model")
-@EnableCaching
+// @EnableCaching
 public class EthraaApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
@@ -33,4 +36,14 @@ public class EthraaApplication extends SpringBootServletInitializer {
     // return b;
     // }
 
+}
+
+@Configuration
+@EnableWebMvc
+class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+	registry.addMapping("/**");
+    }
 }

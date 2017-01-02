@@ -54,8 +54,8 @@ public class Account extends BaseEntity {
     private AccountType accountType;
 
     @JsonView(Views.Public.class)
-    @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus;
+
+    private int accountStatus;
 
     @ManyToOne
     private Group group;
@@ -129,11 +129,11 @@ public class Account extends BaseEntity {
 	this.accountType = accountType;
     }
 
-    public AccountStatus getAccountStatus() {
+    public int getAccountStatus() {
 	return accountStatus;
     }
 
-    public void setAccountStatus(AccountStatus accountStatus) {
+    public void setAccountStatus(int accountStatus) {
 	this.accountStatus = accountStatus;
     }
 
