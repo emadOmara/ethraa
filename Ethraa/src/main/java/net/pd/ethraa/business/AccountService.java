@@ -5,6 +5,7 @@ import java.util.List;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.common.model.Permission;
 
 public interface AccountService {
 
@@ -19,5 +20,7 @@ public interface AccountService {
     void deleteAccount(Long id) throws EthraaException;
 
     Account findUserWithPermissions(String mobile) throws EthraaException;
+
+    List<Permission> getAllPermissions() throws EthraaException;
 
 }

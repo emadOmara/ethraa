@@ -13,6 +13,7 @@ import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.common.model.Permission;
 import net.pd.ethraa.dao.AccountDao;
 
 @Service
@@ -89,6 +90,15 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAllAccounts(AccountType type) throws EthraaException {
 	try {
 	    return accountDao.findByAccountType(type);
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
+    @Override
+    public List<Permission> getAllPermissions() throws EthraaException {
+	try {
+	    return accountDao.getAllPermissions();
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

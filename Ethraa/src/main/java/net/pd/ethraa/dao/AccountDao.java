@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.common.model.Permission;
 
 @Repository
 public interface AccountDao extends CrudRepository<Account, Long> {
@@ -25,5 +26,8 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
     @Query("SELECT a FROM Account a left outer JOIN FETCH a.permissions WHERE a.mobile = :mobile ")
     Account findUserWithPermissions(@Param("mobile") String mobile);
+
+    @Query("SELECT p FROM Permission p ")
+    List<Permission> getAllPermissions();
 
 }

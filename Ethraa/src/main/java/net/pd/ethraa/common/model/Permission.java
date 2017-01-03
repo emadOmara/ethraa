@@ -1,6 +1,8 @@
 package net.pd.ethraa.common.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -15,6 +17,21 @@ public class Permission extends BaseEntity {
      *
      */
     private static final long serialVersionUID = 4635122625047041490L;
+
+    @Id
+    @GeneratedValue
+    @JsonView(Views.Base.class)
+    private Long id;
+
+    @Override
+    public Long getId() {
+	return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+	this.id = id;
+    }
 
     @JsonView(Views.LoginSuccess.class)
     private String name;
