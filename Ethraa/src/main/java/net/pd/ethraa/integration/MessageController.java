@@ -93,4 +93,23 @@ public class MessageController extends BaseController {
 
     }
 
+    @JsonView(Views.Messaging.class)
+    @GetMapping(path = "/admin/list")
+    public BaseResponse listAdminMessages(@PathVariable("id") Long id) {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    handleNullID(id);
+
+	    List<Message> messages = messageService.getAdminMessages(id);
+	    handleSuccessResponse(response, messages);
+
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
 }

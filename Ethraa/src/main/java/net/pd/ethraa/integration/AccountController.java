@@ -15,6 +15,7 @@ import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.common.model.Permission;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -107,6 +108,22 @@ public class AccountController extends BaseController {
 
 	    List<Account> accounts = accountService.getAllAccounts(AccountType.ADMIN);
 	    handleSuccessResponse(response, accounts);
+
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @RequestMapping(path = "/permissions/list", method = RequestMethod.GET)
+    public BaseResponse listPermissions() {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    List<Permission> permissions = accountService.getAllPermissions();
+	    handleSuccessResponse(response, permissions);
 
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);

@@ -3,46 +3,57 @@ package net.pd.ethraa.common.model;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-/*****Message Entity******
-
-@author Emad
+/*****
+ * Message Entity******
+ *
+ * @author Emad
  *
  */
- @Entity
- public class MessageRecipients extends BaseEntity {
+@Entity
+public class MessageRecipients extends BaseEntity {
 
- private static final long serialVersionUID = 5105914722614237201L;
+    private static final long serialVersionUID = 5105914722614237201L;
 
- @ManyToOne
- protected Message msg;
+    public MessageRecipients() {
+	// TODO Auto-generated constructor stub
+    }
 
- @ManyToOne
- protected Account recipient;
+    public MessageRecipients(Message msg, Account acc) {
+	// TODO Auto-generated constructor stub
+	this.msg = msg;
+	recipient = acc;
+    }
 
- private boolean newMessage;
+    @ManyToOne
+    protected Message msg;
 
- public Message getMsg() {
- return msg;
- }
+    @ManyToOne
+    protected Account recipient;
 
- public void setMsg(Message msg) {
- this.msg = msg;
- }
+    private boolean newMessage = true;
 
- public Account getRecipient() {
- return recipient;
- }
+    public Message getMsg() {
+	return msg;
+    }
 
- public void setRecipient(Account recipient) {
- this.recipient = recipient;
- }
+    public void setMsg(Message msg) {
+	this.msg = msg;
+    }
 
- public boolean isNewMessage() {
- return newMessage;
- }
+    public Account getRecipient() {
+	return recipient;
+    }
 
- public void setNewMessage(boolean newMessage) {
- this.newMessage = newMessage;
- }
+    public void setRecipient(Account recipient) {
+	this.recipient = recipient;
+    }
 
- }
+    public boolean isNewMessage() {
+	return newMessage;
+    }
+
+    public void setNewMessage(boolean newMessage) {
+	this.newMessage = newMessage;
+    }
+
+}

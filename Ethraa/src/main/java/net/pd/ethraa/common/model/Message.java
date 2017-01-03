@@ -3,6 +3,7 @@ package net.pd.ethraa.common.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -35,7 +36,7 @@ public class Message extends BaseEntity {
     @ManyToOne
     protected Account sender;
 
-    @OneToMany(mappedBy = "msg")
+    @OneToMany(mappedBy = "msg", cascade = CascadeType.ALL)
     private List<MessageRecipients> recipients;
 
     @JsonView(Views.Messaging.class)
@@ -95,4 +96,13 @@ public class Message extends BaseEntity {
 	}
 	return sender.getUserName();
     }
+
+    public Group getGroup() {
+	return group;
+    }
+
+    public void setGroup(Group group) {
+	this.group = group;
+    }
+
 }

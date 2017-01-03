@@ -20,4 +20,6 @@ public interface MessageDao extends CrudRepository<Message, Long> {
 
     @Query("SELECT m FROM Message m ,MessageRecipients r ,Account acc where (m.id=r.recipient and acc.id=r.recipient ) and acc.id=:id or  m.sender=:id")
     List<Message> getUserMessages(@Param("id") Long id);
+
+    List<Message> findByToAdminTrue();
 }
