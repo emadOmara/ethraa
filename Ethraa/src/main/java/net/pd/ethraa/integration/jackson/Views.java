@@ -13,4 +13,7 @@ public class Views {
 
     public static class LoginSuccess extends Public {
     }
+
+    public static class Messaging extends Base {
+    }
 }
