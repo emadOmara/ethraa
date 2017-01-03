@@ -1,19 +1,21 @@
 // package net.pd.ethraa.common.model;
 //
 // import java.util.Date;
+// import java.util.List;
 //
+// import javax.persistence.Entity;
 // import javax.persistence.ManyToOne;
-// import javax.persistence.MappedSuperclass;
+// import javax.persistence.OneToMany;
 // import javax.persistence.Temporal;
 // import javax.persistence.TemporalType;
 //
-/// **
-// * Message Entity
+/// ****
+// * Message Entity****
 // *
 // * @author Emad
 // *
 // */
-// @MappedSuperclass
+// @Entity
 // public class Message extends BaseEntity {
 //
 // /**
@@ -22,34 +24,16 @@
 //
 // private static final long serialVersionUID = 5105914722614237201L;
 //
-// protected String subject;
-//
-// protected String body;
+// protected String msg;
 //
 // @ManyToOne
 // protected Account sender;
 //
-// @ManyToOne
-// protected Account receiver;
+// @OneToMany(mappedBy = "msg")
+// private List<MessageRecipients> recipients;
 //
 // @Temporal(TemporalType.TIMESTAMP)
-// private Date date;
-//
-// public String getSubject() {
-// return subject;
-// }
-//
-// public void setSubject(String subject) {
-// this.subject = subject;
-// }
-//
-// public String getBody() {
-// return body;
-// }
-//
-// public void setBody(String body) {
-// this.body = body;
-// }
+// private Date creationDate;
 //
 // public Account getSender() {
 // return sender;
@@ -59,12 +43,28 @@
 // this.sender = sender;
 // }
 //
-// public Account getReceiver() {
-// return receiver;
+// public Date getCreationDate() {
+// return creationDate;
 // }
 //
-// public void setReceiver(Account receiver) {
-// this.receiver = receiver;
+// public void setCreationDate(Date creationDate) {
+// this.creationDate = creationDate;
+// }
+//
+// public String getMsg() {
+// return msg;
+// }
+//
+// public void setMsg(String msg) {
+// this.msg = msg;
+// }
+//
+// public List<MessageRecipients> getRecipients() {
+// return recipients;
+// }
+//
+// public void setRecipients(List<MessageRecipients> recipients) {
+// this.recipients = recipients;
 // }
 //
 // }

@@ -8,7 +8,9 @@ import net.pd.ethraa.common.model.Group;
 
 public interface GroupService {
 
-    List<Group> geAllGroupsWithPendingRequestCount() throws EthraaException;
+    List<Group> getAllGroupsWithPendingRequestCount() throws EthraaException;
+
+    List<Group> getAllGroups() throws EthraaException;
 
     Group saveGroup(Group group) throws EthraaException;
 

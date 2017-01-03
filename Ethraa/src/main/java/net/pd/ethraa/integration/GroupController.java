@@ -32,7 +32,7 @@ public class GroupController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    List<Group> groupList = groupService.geAllGroupsWithPendingRequestCount();
+	    List<Group> groupList = groupService.getAllGroupsWithPendingRequestCount();
 	    handleSuccessResponse(response, groupList);
 
 	} catch (Exception e) {

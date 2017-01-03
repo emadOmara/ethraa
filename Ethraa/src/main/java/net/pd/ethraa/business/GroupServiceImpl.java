@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +18,16 @@ import net.pd.ethraa.dao.GroupDao;
 @Transactional
 public class GroupServiceImpl implements GroupService {
 
+    // private static final String CACHE_GROUPS_WITH_PENDING_REQUESTS =
+    // "groupsWithPendingRequests";
     @Autowired
     private GroupDao groupDao;
     @Autowired
     private AccountDao accountDao;
 
     @Override
-    @Cacheable(cacheNames = "groups")
-    public List<Group> geAllGroupsWithPendingRequestCount() throws EthraaException {
+    // @Cacheable(cacheNames = CACHE_GROUPS_WITH_PENDING_REQUESTS)
+    public List<Group> getAllGroupsWithPendingRequestCount() throws EthraaException {
 	try {
 
 	    Object[] groups = groupDao.geAllGroupsWithPendingRequestCount(EthraaConstants.INACTIVE);
@@ -48,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @CachePut(cacheNames = "groups")
+    // @CachePut(cacheNames = CACHE_GROUPS_WITH_PENDING_REQUESTS)
     public Group saveGroup(Group group) throws EthraaException {
 	try {
 	    return groupDao.save(group);
@@ -59,7 +58,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "groups")
+    // @CacheEvict(cacheNames = CACHE_GROUPS_WITH_PENDING_REQUESTS)
     public void deleteGroup(long groupID) throws EthraaException {
 	try {
 	    groupDao.delete(groupID);
@@ -73,6 +72,16 @@ public class GroupServiceImpl implements GroupService {
 	try {
 	    List<Account> groupMembers = accountDao.findByGroupId(groupID);
 	    return groupMembers;
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
+    @Override
+    public List<Group> getAllGroups() throws EthraaException {
+	try {
+	    List<Group> groups = groupDao.findAll();
+	    return groups;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
