@@ -31,12 +31,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result == null")
-    public Account findUserWithPermissions(String mobile) throws EthraaException {
+    // @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result ==
+    // null")
+    public Account findUserWithPermissions(Long id) throws EthraaException {
 
 	Account acc = null;
 	try {
-	    acc = accountDao.findUserWithPermissions(mobile);
+	    acc = accountDao.findUserWithPermissions(id);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

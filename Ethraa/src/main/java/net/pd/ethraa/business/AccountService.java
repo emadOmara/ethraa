@@ -19,7 +19,7 @@ public interface AccountService {
 
     void deleteAccount(Long id) throws EthraaException;
 
-    Account findUserWithPermissions(String mobile) throws EthraaException;
+    Account findUserWithPermissions(Long id) throws EthraaException;
 
     List<Permission> getAllPermissions() throws EthraaException;
 
