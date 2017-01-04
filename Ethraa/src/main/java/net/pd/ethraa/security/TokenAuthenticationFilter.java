@@ -15,11 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
 import net.pd.ethraa.business.TokenManagementService;
+import net.pd.ethraa.common.EthraaConstants;
 
 public class TokenAuthenticationFilter extends GenericFilterBean {
 
@@ -36,12 +36,15 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 	    throws IOException, ServletException {
 	HttpServletRequest request = (HttpServletRequest) obj1;
 	HttpServletResponse response = (HttpServletResponse) obj2;
-	String token = request.getHeader("xa-token");
+	String token = request.getHeader(EthraaConstants.XA_TOKEN);
 	if (token != null) {
 	    // determine the user based on the (already validated) token
 	    UserDetails account = tokenManagementService.getUser(token);
 	    if (account == null) {
-		throw new UsernameNotFoundException("could not find the user");
+		handleErrors(response);
+		return;
+		// throw new UsernameNotFoundException("could not find the
+		// user");
 	    } else {
 
 		// build an Authentication object with the user's info
@@ -54,13 +57,24 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 		    SecurityContextHolder.getContext()
 			    .setAuthentication(authenticationManager.authenticate(authentication));
 		} catch (AuthenticationException e) {
-		    response.setStatus(401);
-		    throw new UsernameNotFoundException("could not find the user");
+
+		    handleErrors(response);
+		    return;
+		    // throw new UsernameNotFoundException("could not find the
+		    // user");
 		}
 
 	    }
 	}
 	chain.doFilter(request, response);
 
+    }
+
+    private void handleErrors(HttpServletResponse response) throws IOException {
+	String msg = "{\"status\":401, \"comment\": \"could not find the user\"}";
+
+	response.setStatus(401);
+	response.setContentType("application/json");
+	response.getWriter().write(msg);
     }
 }
