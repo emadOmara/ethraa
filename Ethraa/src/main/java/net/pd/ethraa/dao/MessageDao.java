@@ -15,12 +15,13 @@ public interface MessageDao extends CrudRepository<Message, Long> {
 
     void findBytoAdminTrue();
 
-    // @Query("SELECT m FROM Message m ,Account a where m.sender.id=:userID or
-    // (a member of m.recipients and a.id=:userID)")
-    // List<Message> getUserMessages(@Param("userID") Long userID);
-
-    @Query("SELECT m,r.newMessage FROM Message m ,MessageRecipients r ,Account acc where m.id=r.msg.id and acc.id=r.recipient  and (acc.id=:id or  m.sender=:id) ")
+    @Query("SELECT m,r.newMessage FROM Message m join m.recipients r join r.recipient acc  where acc.id=:id or  m.sender=:id) ")
     Object[] getUserMessages(@Param("id") Long id);
+
+    // @Query("SELECT m,r.newMessage FROM Message m ,MessageRecipients r
+    // ,Account acc where m.id=r.msg.id and acc.id=r.recipient and (acc.id=:id
+    // or m.sender=:id) ")
+    // Object[] getUserMessages(@Param("id") Long id);
 
     List<Message> findByToAdminTrue();
 

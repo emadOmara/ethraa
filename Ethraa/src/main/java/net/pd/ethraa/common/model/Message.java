@@ -46,7 +46,12 @@ public class Message extends BaseEntity {
     @ManyToOne
     private Group group;
 
+    @JsonView(Views.Messaging.class)
+    @Transient
+    private boolean newUserMessage;
+
     private boolean toAdmin = false;
+    private boolean newAdminMessage = false;
 
     public Account getSender() {
 	return sender;
@@ -103,6 +108,22 @@ public class Message extends BaseEntity {
 
     public void setGroup(Group group) {
 	this.group = group;
+    }
+
+    public boolean isNewUserMessage() {
+	return newUserMessage;
+    }
+
+    public void setNewUserMessage(boolean newUserMessage) {
+	this.newUserMessage = newUserMessage;
+    }
+
+    public boolean isNewAdminMessage() {
+	return newAdminMessage;
+    }
+
+    public void setNewAdminMessage(boolean newAdminMessage) {
+	this.newAdminMessage = newAdminMessage;
     }
 
 }

@@ -36,11 +36,21 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getUserMessages(Long id) throws EthraaException {
+    public List<Message> getUserMessages(Long userID) throws EthraaException {
 
 	try {
 
-	    List<Message> userMessages = messageDao.getUserMessages(id);
+	    Object[] result = messageDao.getUserMessages(userID);
+
+	    List<Message> userMessages = new ArrayList<>();
+	    for (Object wrapper : result) {
+		Message msg = (Message) ((Object[]) wrapper)[0];
+		Boolean isNewMessage = (Boolean) ((Object[]) wrapper)[1];
+		msg.setNewUserMessage(isNewMessage);
+
+		userMessages.add(msg);
+	    }
+
 	    return userMessages;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -50,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     // add sent from him
-    public List<Message> getAdminMessages(Long id) throws EthraaException {
+    public List<Message> getAdminMessages() throws EthraaException {
 	try {
 
 	    List<Message> messages = messageDao.findByToAdminTrue();
@@ -101,6 +111,33 @@ public class MessageServiceImpl implements MessageService {
 	    throw new EthraaException(e);
 	}
 
+    }
+
+    @Override
+    public Message readUserMessage(Long userID, Long messageID) throws EthraaException {
+
+	try {
+
+	    Message message = messageDao.findOne(messageID);
+	    messageDao.updateMessageReadFlag(false, messageID);
+	    return message;
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
+    @Override
+    public Message readAdminMessage(Long userID, Long messageID) throws EthraaException {
+	try {
+
+	    Message message = messageDao.findOne(messageID);
+	    message.setNewAdminMessage(false);
+
+	    message = messageDao.save(message);
+	    return message;
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.pd.ethraa.business.MessageService;
+import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Message;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.request.MessageRequest;
@@ -32,12 +33,20 @@ public class MessageController extends BaseController {
      * @return
      */
     @RequestMapping(path = "/user/send", method = RequestMethod.POST)
-    public BaseResponse sendUserMessage(@RequestBody Message msg) {
+    public BaseResponse sendUserMessage(@RequestBody MessageRequest request) {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    msg.setRecipients(null);
+	    Message msg = new Message();
+
 	    msg.setToAdmin(true);
+	    msg.setNewAdminMessage(true);
+	    msg.setMsg(request.getMsg());
+
+	    Account acc = new Account();
+	    acc.setId(request.getSender());
+	    msg.setSender(acc);
+
 	    messageService.sendMessage(msg);
 	    handleSuccessResponse(response, null);
 
@@ -95,14 +104,55 @@ public class MessageController extends BaseController {
 
     @JsonView(Views.Messaging.class)
     @GetMapping(path = "/admin/list")
-    public BaseResponse listAdminMessages(@PathVariable("id") Long id) {
+    public BaseResponse listAdminMessages() {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    handleNullID(id);
 
-	    List<Message> messages = messageService.getAdminMessages(id);
+	    List<Message> messages = messageService.getAdminMessages();
 	    handleSuccessResponse(response, messages);
+
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @JsonView(Views.Messaging.class)
+    @GetMapping(path = "/user/get/{userID}/{messageID}")
+    public BaseResponse readUserMessage(@PathVariable("userID") Long userID,
+	    @PathVariable("messageID") Long messageID) {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    handleNullID(userID);
+	    handleNullID(messageID);
+
+	    Message msg = messageService.readUserMessage(userID, messageID);
+	    handleSuccessResponse(response, msg);
+
+	} catch (Exception e) {
+	    handleFailureResponse(response, e);
+	}
+
+	return response;
+
+    }
+
+    @JsonView(Views.Messaging.class)
+    @GetMapping(path = "/admin/get/{userID}/{messageID}")
+    public BaseResponse readAdminMessage(@PathVariable("userID") Long userID,
+	    @PathVariable("messageID") Long messageID) {
+
+	BaseResponse response = new BaseResponse();
+	try {
+	    handleNullID(userID);
+	    handleNullID(messageID);
+
+	    Message msg = messageService.readAdminMessage(userID, messageID);
+	    handleSuccessResponse(response, msg);
 
 	} catch (Exception e) {
 	    handleFailureResponse(response, e);
