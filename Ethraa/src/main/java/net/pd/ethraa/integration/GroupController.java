@@ -29,7 +29,6 @@ public class GroupController extends BaseController {
     @JsonView(Views.Group.class)
     @RequestMapping(path = "/list", method = RequestMethod.GET)
     public BaseResponse listGroups() {
-
 	BaseResponse response = new BaseResponse();
 	try {
 	    List<Group> groupList = groupService.getAllGroupsWithPendingRequestCount();
@@ -84,9 +83,8 @@ public class GroupController extends BaseController {
 
 	BaseResponse response = new BaseResponse();
 	try {
-	    if (id == null || id < 1) {
-		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
-	    }
+	    handleNullID(id);
+
 	    groupService.deleteGroup(id);
 	    handleSuccessResponse(response, null);
 

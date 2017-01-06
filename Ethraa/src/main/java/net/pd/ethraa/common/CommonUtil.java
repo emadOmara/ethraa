@@ -16,4 +16,8 @@ public class CommonUtil {
 	return token;
 
     }
+
+    public static boolean isEmpty(Long id) {
+	return id == null ? true : id > 0;
+    }
 }

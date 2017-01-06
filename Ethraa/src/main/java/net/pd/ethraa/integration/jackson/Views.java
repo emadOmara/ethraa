@@ -13,4 +13,14 @@ public class Views {
 
     public static class LoginSuccess extends Public {
     }
+
+    public static class Messaging extends Base {
+    }
+
+    public static class UserMessage extends Messaging {
+    }
+
+    public static class AdminMessage extends Messaging {
+    }
+
 }
