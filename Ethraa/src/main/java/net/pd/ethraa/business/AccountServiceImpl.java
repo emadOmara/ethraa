@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +30,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result == null")
-    public Account findUserWithPermissions(String mobile) throws EthraaException {
+    // @Cacheable(cacheNames = "accounts", key = "#mobile", unless = "#result ==
+    // null")
+    public Account findUserWithPermissions(Long id) throws EthraaException {
 
 	Account acc = null;
 	try {
-	    acc = accountDao.findUserWithPermissions(mobile);
+	    acc = accountDao.findUserWithPermissions(id);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
@@ -59,15 +59,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @CachePut(cacheNames = "accounts", key = "#account.mobile", condition = "#account.mobile !=null")
-    public void saveAccount(Account account) throws EthraaException {
+    // @CachePut(cacheNames = "accounts", key = "#account.mobile", condition =
+    // "#account.mobile !=null")
+    public Account saveAccount(Account account) throws EthraaException {
 	try {
 	    if (account.isNew()) {
-		accountDao.save(account);
+		return accountDao.save(account);
 	    } else {// update
 		Account fetchedAccount = accountDao.findOne(account.getId());
 		beanUtilService.copyProperties(fetchedAccount, account);
-		accountDao.save(fetchedAccount);
+		return accountDao.save(fetchedAccount);
 	    }
 	} catch (Exception e) {
 	    throw new EthraaException(e);
