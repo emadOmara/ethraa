@@ -48,9 +48,10 @@ public class Account extends BaseEntity {
     @NotEmpty
     private String password;
     @Min(1950)
-    private int graduationYear;
+    private Integer graduationYear;
 
     @Enumerated(EnumType.STRING)
+    @JsonView(Views.LoginSuccess.class)
     private AccountType accountType;
 
     @JsonView(Views.Public.class)
@@ -58,6 +59,7 @@ public class Account extends BaseEntity {
     private int accountStatus;
 
     @ManyToOne
+    @JsonView(Views.LoginSuccess.class)
     private Group group;
 
     @JsonView(Views.LoginSuccess.class)
@@ -89,11 +91,11 @@ public class Account extends BaseEntity {
 	this.password = password;
     }
 
-    public int getGraduationYear() {
+    public Integer getGraduationYear() {
 	return graduationYear;
     }
 
-    public void setGraduationYear(int graduationYear) {
+    public void setGraduationYear(Integer graduationYear) {
 	this.graduationYear = graduationYear;
     }
 
