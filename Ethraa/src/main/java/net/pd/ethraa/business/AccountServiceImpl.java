@@ -2,6 +2,7 @@ package net.pd.ethraa.business;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,8 +26,13 @@ public class AccountServiceImpl implements AccountService {
     private NullAwareBeanUtilsBean beanUtilService;
 
     @Override
-    public Account findByUserName(String userName) {
-	return accountDao.findByUserName(userName);
+    public List<Account> findByUserName(AccountType type, String userName) {
+
+	if (StringUtils.isEmpty(userName)) {
+	    return accountDao.findByAccountType(type);
+	}
+
+	return accountDao.findByAccountTypeAndUserNameContainingIgnoreCase(type, userName);
     }
 
     @Override
@@ -105,4 +111,9 @@ public class AccountServiceImpl implements AccountService {
 	}
     }
 
+    @Override
+    public Account find(Long id) {
+	return accountDao.findOne(id);
+
+    }
 }

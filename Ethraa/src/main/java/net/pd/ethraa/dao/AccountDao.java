@@ -32,4 +32,6 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
     List<Account> findByGroupIdIn(List<Long> recipientGroups);
 
+    List<Account> findByAccountTypeAndUserNameContainingIgnoreCase(AccountType type, String userName);
+
 }

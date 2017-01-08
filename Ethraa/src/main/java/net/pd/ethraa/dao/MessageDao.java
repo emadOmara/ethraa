@@ -15,15 +15,15 @@ public interface MessageDao extends CrudRepository<Message, Long> {
 
     void findBytoAdminTrue();
 
-    @Query("SELECT m,r.newMessage FROM Message m join m.recipients r join r.recipient acc  where acc.id=:id or  m.sender=:id) ")
+    @Query("SELECT m,r.newMessage FROM Message m left outer join m.recipients r where r.recipient.id=:id or m.sender=:id) order by m.creationDate desc")
     Object[] getUserMessages(@Param("id") Long id);
 
-    // @Query("SELECT m,r.newMessage FROM Message m ,MessageRecipients r
-    // ,Account acc where m.id=r.msg.id and acc.id=r.recipient and (acc.id=:id
-    // or m.sender=:id) ")
+    // @Query("SELECT m,r.newMessage FROM Message m left outer join
+    // MessageRecipients r on m.id=r.msg.id where m.sender.id=:id or
+    // r.recipient.id=:id")
     // Object[] getUserMessages(@Param("id") Long id);
 
-    List<Message> findByToAdminTrue();
+    List<Message> findByToAdminTrueOrderByCreationDateDesc();
 
     @Modifying
     @Query("update MessageRecipients r set r.newMessage=:flag where r.msg.id=:msgID")

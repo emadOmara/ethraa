@@ -28,69 +28,49 @@ public class GroupController extends BaseController {
 
     @JsonView(Views.Group.class)
     @RequestMapping(path = "/list", method = RequestMethod.GET)
-    public BaseResponse listGroups() {
+    public BaseResponse listGroups() throws EthraaException {
 	BaseResponse response = new BaseResponse();
-	try {
-	    List<Group> groupList = groupService.getAllGroupsWithPendingRequestCount();
-	    handleSuccessResponse(response, groupList);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	List<Group> groupList = groupService.getAllGroupsWithPendingRequestCount();
+	handleSuccessResponse(response, groupList);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public BaseResponse addGroup(@RequestBody Group group) {
+    public BaseResponse addGroup(@RequestBody Group group) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    group = groupService.saveGroup(group);
-	    handleSuccessResponse(response, group);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	group = groupService.saveGroup(group);
+	handleSuccessResponse(response, group);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public BaseResponse updateGroup(@RequestBody Group group) {
+    public BaseResponse updateGroup(@RequestBody Group group) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    if (group.isNew()) {
-		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
-	    }
-
-	    groupService.saveGroup(group);
-	    handleSuccessResponse(response, null);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
+	if (group.isNew()) {
+	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	}
+
+	groupService.saveGroup(group);
+	handleSuccessResponse(response, null);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
-    public BaseResponse deleteGroup(@PathVariable("id") Long id) {
+    public BaseResponse deleteGroup(@PathVariable("id") Long id) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    handleNullID(id);
+	handleNullID(id);
 
-	    groupService.deleteGroup(id);
-	    handleSuccessResponse(response, null);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	groupService.deleteGroup(id);
+	handleSuccessResponse(response, null);
 
 	return response;
 
@@ -99,19 +79,14 @@ public class GroupController extends BaseController {
     // TODO test this second for lazy loaded collections
     @JsonView(Views.Public.class)
     @RequestMapping(path = "/listMembers/{groupID}", method = RequestMethod.GET)
-    public BaseResponse listMembers(@PathVariable("groupID") Long groupID) {
+    public BaseResponse listMembers(@PathVariable("groupID") Long groupID) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    if (groupID == null || groupID == 0) {
-		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
-	    }
-	    List<Account> accounts = groupService.getGroupMembers(new Long(groupID));
-	    handleSuccessResponse(response, accounts);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
+	if (groupID == null || groupID == 0) {
+	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	}
+	List<Account> accounts = groupService.getGroupMembers(new Long(groupID));
+	handleSuccessResponse(response, accounts);
 
 	return response;
 

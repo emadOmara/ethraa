@@ -47,7 +47,9 @@ public class MessageServiceImpl implements MessageService {
 	    for (Object wrapper : result) {
 		Message msg = (Message) ((Object[]) wrapper)[0];
 		Boolean isNewMessage = (Boolean) ((Object[]) wrapper)[1];
-		msg.setNewUserMessage(isNewMessage);
+		if (isNewMessage != null) {
+		    msg.setNewUserMessage(isNewMessage);
+		}
 
 		userMessages.add(msg);
 	    }
@@ -64,7 +66,7 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAdminMessages() throws EthraaException {
 	try {
 
-	    List<Message> messages = messageDao.findByToAdminTrue();
+	    List<Message> messages = messageDao.findByToAdminTrueOrderByCreationDateDesc();
 	    return messages;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
