@@ -5,6 +5,7 @@ import java.util.List;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Book;
+import net.pd.ethraa.integration.request.AssignBookRequest;
 
 public interface BookService {
 
@@ -19,5 +20,7 @@ public interface BookService {
     Book getBookDetails(Long id) throws EthraaException;
 
     List<Account> listBookReaders(Long bookId, boolean b) throws EthraaException;
+
+    void assignBook(AssignBookRequest request) throws EthraaException;
 
 }

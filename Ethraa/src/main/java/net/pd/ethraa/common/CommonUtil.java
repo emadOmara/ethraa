@@ -19,10 +19,15 @@ public class CommonUtil {
     }
 
     public static boolean isEmpty(Long id) {
-	return id == null ? true : id > 0;
+	return id == null ? true : id.equals(0l);
     }
 
     public static boolean isEmpty(List<?> items) {
 	return items == null ? true : items.size() == 0;
     }
+
+    public static boolean isEmpty(Object obj) {
+	return obj == null;
+    }
+
 }

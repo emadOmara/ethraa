@@ -6,6 +6,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 
@@ -48,8 +49,12 @@ public class Book extends BaseEntity {
     @JsonView(Views.BookDetails.class)
     private String image;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Group> groups;
+
+    @ManyToMany(/* cascade = CascadeType.ALL */)
+    @JoinTable(name = "BOOK_READERS")
+    private List<Account> accounts;
 
     public String getBookName() {
 	return bookName;

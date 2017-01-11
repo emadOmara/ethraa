@@ -67,7 +67,8 @@ public class Account extends BaseEntity {
     @JoinTable(name = "ACCOUNT_PERMISSION")
     private List<Permission> permissions;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "accounts")
+
     private List<Book> books;
 
     public String getMobile() {

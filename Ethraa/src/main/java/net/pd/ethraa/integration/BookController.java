@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.integration.jackson.Views;
+import net.pd.ethraa.integration.request.AssignBookRequest;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -111,4 +113,42 @@ public class BookController extends BaseController {
 
     }
 
+    @GetMapping(path = "/usersNotRead/{bookId}")
+    public BaseResponse getUsersNotReadBook(@PathVariable("bookId") Long bookId) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+	handleNullID(bookId);
+
+	List<Account> users = bookService.listBookReaders(bookId, false);
+	handleSuccessResponse(response, users);
+
+	return response;
+
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public BaseResponse deleteAccount(@PathVariable("id") Long id) throws EthraaException {
+	handleNullID(id);
+
+	BaseResponse response = new BaseResponse();
+	bookService.deleteBook(id);
+	handleSuccessResponse(response, null);
+
+	return response;
+
+    }
+
+    @PostMapping(path = "/assignBooks")
+    public BaseResponse assignBooks(@RequestBody AssignBookRequest request) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	handleNullID(request.getBookId());
+
+	bookService.assignBook(request);
+	handleSuccessResponse(response, null);
+
+	return response;
+
+    }
 }

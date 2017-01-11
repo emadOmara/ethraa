@@ -1,11 +1,13 @@
 package net.pd.ethraa.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
@@ -13,6 +15,7 @@ import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.dao.AccountDao;
 import net.pd.ethraa.dao.BookDao;
+import net.pd.ethraa.integration.request.AssignBookRequest;
 
 @Service
 @Transactional
@@ -92,6 +95,26 @@ public class BookServiceImpl implements BookService {
 	    }
 	} catch (Exception e) {
 	    throw new EthraaException(e);
+	}
+
+    }
+
+    // TODO if just want to add to pre existing list then fetch entity , get the
+    // collection of books add new items on the collection then save
+    @Override
+    public void assignBook(AssignBookRequest request) throws EthraaException {
+	Long bookId = request.getBookId();
+	Book book = bookDao.findOne(bookId);
+	if (!CommonUtil.isEmpty(book)) {
+	    List<Long> groupIds = request.getGroups();
+	    List<Group> groups = new ArrayList<>();
+	    for (Long id : groupIds) {
+		Group g = new Group();
+		g.setId(id);
+		groups.add(g);
+	    }
+	    book.setGroups(groups);
+
 	}
 
     }
