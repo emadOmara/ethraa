@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConfigurerAdapter {
@@ -35,11 +34,15 @@ class TokenAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-	http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
-	http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
-	http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	// TODO return the implementation after the demo
+	http.authorizeRequests().anyRequest().permitAll();
+	// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
+	// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
+	http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic().and().csrf()
+		.disable();
 
-	http.addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class);
+	// http.addFilterBefore(authenticationFilter(),
+	// BasicAuthenticationFilter.class);
     }
 
     @Bean

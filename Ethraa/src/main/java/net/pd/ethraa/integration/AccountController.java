@@ -2,6 +2,8 @@ package net.pd.ethraa.integration;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,8 @@ import net.pd.ethraa.integration.response.BaseResponse;
 @RequestMapping(path = "api/account")
 public class AccountController extends BaseController {
 
+    Logger logger = LoggerFactory.getLogger(AccountController.class);
+
     @Autowired
     private AccountService accountService;
 
@@ -29,103 +33,103 @@ public class AccountController extends BaseController {
      *
      * @param account
      * @return
+     * @throws EthraaException
      */
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public BaseResponse addAccount(@RequestBody Account account) {
+    public BaseResponse addAccount(@RequestBody Account account) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    account.setAccountStatus(EthraaConstants.ACTIVE);
-	    account.setAccountType(AccountType.ADMIN);
-	    accountService.saveAccount(account);
-	    handleSuccessResponse(response, null);
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+
+	account.setAccountStatus(EthraaConstants.ACTIVE);
+	account.setAccountType(AccountType.ADMIN);
+	account = accountService.saveAccount(account);
+	handleSuccessResponse(response, account);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/get/{id}", method = RequestMethod.GET)
-    public BaseResponse get(@PathVariable("id") Long id) {
+    public BaseResponse get(@PathVariable("id") Long id) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    handleNullID(id);
+	handleNullID(id);
 
-	    Account account = accountService.findUserWithPermissions(id);
-	    handleSuccessResponse(response, account);
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	Account account = accountService.findUserWithPermissions(id);
+	handleSuccessResponse(response, account);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public BaseResponse editAccount(@RequestBody Account account) {
+    public BaseResponse editAccount(@RequestBody Account account) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    if (account.isNew()) {
-		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
-	    }
-
-	    accountService.saveAccount(account);
-	    handleSuccessResponse(response, null);
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
+	if (account.isNew()) {
+	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	}
+
+	accountService.saveAccount(account);
+	handleSuccessResponse(response, null);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
-    public BaseResponse deleteAccount(@PathVariable("id") Long id) {
+    public BaseResponse deleteAccount(@PathVariable("id") Long id) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    accountService.deleteAccount(id);
-	    handleSuccessResponse(response, null);
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	accountService.deleteAccount(id);
+	handleSuccessResponse(response, null);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/listManagers", method = RequestMethod.GET)
-    public BaseResponse listMembers() {
+    public BaseResponse listMembers() throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
 
-	    List<Account> accounts = accountService.getAllAccounts(AccountType.ADMIN);
-	    handleSuccessResponse(response, accounts);
+	List<Account> accounts = accountService.getAllAccounts(AccountType.ADMIN);
+	handleSuccessResponse(response, accounts);
 
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	return response;
+
+    }
+
+    @RequestMapping(path = "/search/{name}", method = RequestMethod.GET)
+    public BaseResponse searchUsers(@PathVariable("name") String name) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	List<Account> accounts = accountService.findByUserName(AccountType.NORMAL, name);
+	handleSuccessResponse(response, accounts);
+
+	return response;
+
+    }
+
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public BaseResponse searchUsers() throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	List<Account> accounts = accountService.findByUserName(AccountType.NORMAL, null);
+	handleSuccessResponse(response, accounts);
 
 	return response;
 
     }
 
     @RequestMapping(path = "/permissions/list", method = RequestMethod.GET)
-    public BaseResponse listPermissions() {
+    public BaseResponse listPermissions() throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    List<Permission> permissions = accountService.getAllPermissions();
-	    handleSuccessResponse(response, permissions);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	List<Permission> permissions = accountService.getAllPermissions();
+	handleSuccessResponse(response, permissions);
 
 	return response;
 

@@ -16,4 +16,14 @@ public class Views {
 
     public static class Messaging extends Base {
     }
+
+    public static class UserMessage extends Messaging {
+    }
+
+    public static class AdminMessage extends Messaging {
+    }
+
+    public static class BookDetails extends Public {
+    }
+
 }

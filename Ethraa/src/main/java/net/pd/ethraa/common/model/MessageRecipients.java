@@ -19,7 +19,6 @@ public class MessageRecipients extends BaseEntity {
     }
 
     public MessageRecipients(Message msg, Account acc) {
-	// TODO Auto-generated constructor stub
 	this.msg = msg;
 	recipient = acc;
     }

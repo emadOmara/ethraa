@@ -34,6 +34,7 @@ public class Message extends BaseEntity {
     protected String msg;
 
     @ManyToOne
+    @JsonView(Views.AdminMessage.class)
     protected Account sender;
 
     @OneToMany(mappedBy = "msg", cascade = CascadeType.ALL)
@@ -46,11 +47,14 @@ public class Message extends BaseEntity {
     @ManyToOne
     private Group group;
 
-    @JsonView(Views.Messaging.class)
+    @JsonView(Views.UserMessage.class)
     @Transient
     private boolean newUserMessage;
 
+    @JsonView(Views.Messaging.class)
     private boolean toAdmin = false;
+
+    @JsonView(Views.AdminMessage.class)
     private boolean newAdminMessage = false;
 
     public Account getSender() {

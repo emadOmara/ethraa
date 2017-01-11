@@ -1,5 +1,7 @@
 package net.pd.ethraa.integration.request;
 
+import java.util.List;
+
 public class MessageRequest extends BaseRequest {
 
     /**
@@ -11,8 +13,8 @@ public class MessageRequest extends BaseRequest {
 
     private Long sender;
 
-    private Long user;
-    private Long group;
+    private List<Long> users;
+    private List<Long> groups;
 
     public String getMsg() {
 	return msg;
@@ -30,20 +32,20 @@ public class MessageRequest extends BaseRequest {
 	this.sender = sender;
     }
 
-    public Long getUser() {
-	return user;
+    public List<Long> getUsers() {
+	return users;
     }
 
-    public void setUser(Long user) {
-	this.user = user;
+    public void setUsers(List<Long> users) {
+	this.users = users;
     }
 
-    public Long getGroup() {
-	return group;
+    public List<Long> getGroups() {
+	return groups;
     }
 
-    public void setGroup(Long group) {
-	this.group = group;
+    public void setGroups(List<Long> groups) {
+	this.groups = groups;
     }
 
 }

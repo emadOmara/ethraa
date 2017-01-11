@@ -3,10 +3,13 @@ package net.pd.ethraa.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Group;
@@ -20,6 +23,7 @@ import net.pd.ethraa.integration.request.MessageRequest;
 @Transactional
 public class MessageServiceImpl implements MessageService {
 
+    Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
     @Autowired
     private MessageDao messageDao;
     @Autowired
@@ -46,7 +50,9 @@ public class MessageServiceImpl implements MessageService {
 	    for (Object wrapper : result) {
 		Message msg = (Message) ((Object[]) wrapper)[0];
 		Boolean isNewMessage = (Boolean) ((Object[]) wrapper)[1];
-		msg.setNewUserMessage(isNewMessage);
+		if (isNewMessage != null) {
+		    msg.setNewUserMessage(isNewMessage);
+		}
 
 		userMessages.add(msg);
 	    }
@@ -63,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAdminMessages() throws EthraaException {
 	try {
 
-	    List<Message> messages = messageDao.findByToAdminTrue();
+	    List<Message> messages = messageDao.findByToAdminTrueOrderByCreationDateDesc();
 	    return messages;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -73,42 +79,81 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void sendMessage(MessageRequest request) throws EthraaException {
 
-	try {
+	Message message = new Message();
+	message.setMsg(request.getMsg());
+
+	List<Long> groupIds = request.getGroups();
+	List<Long> userIds = request.getUsers();
+
+	if (CommonUtil.isEmpty(groupIds) && CommonUtil.isEmpty(userIds)) {
+	    throw new EthraaException("Please specify target");
+	}
+
+	addGroupMessages(request);
+
+	addUserMessages(request);
+
+    }
+
+    private void addUserMessages(MessageRequest request) {
+
+	List<Long> userIds = request.getUsers();
+
+	if (CommonUtil.isEmpty(userIds)) {
+	    return;
+	}
+	Long senderID = request.getSender();
+	Message message = new Message();
+	message.setMsg(request.getMsg());
+
+	List<MessageRecipients> recipients = new ArrayList<>();
+
+	for (Long userId : userIds) {
+	    Account acc = new Account();
+	    acc.setId(userId);
+
+	    MessageRecipients item = new MessageRecipients(message, acc);
+	    recipients.add(item);
+	}
+
+	Account sender = new Account();
+	sender.setId(senderID);
+
+	message.setSender(sender);
+	message.setRecipients(recipients);
+	messageDao.save(message);
+
+    }
+
+    private void addGroupMessages(MessageRequest request) {
+	List<Long> groupIds = request.getGroups();
+	Long senderID = request.getSender();
+
+	for (Long groupId : groupIds) {
 	    Message message = new Message();
 	    message.setMsg(request.getMsg());
 
-	    Long senderID = request.getSender();
-	    Long groupID = request.getGroup();
-	    Long userID = request.getUser();
+	    Group g = new Group();
+	    g.setId(groupId);
+	    message.setGroup(g);
 
-	    Account sender = new Account();
-	    sender.setId(senderID);
-	    message.setSender(sender);
+	    List<Account> users = accountDao.findByGroupId(groupId);
 
-	    List<Account> users = new ArrayList<>();
-	    if (groupID != null && groupID > 0) {
-		Group g = new Group();
-		g.setId(groupID);
-		message.setGroup(g);
-		users = accountDao.findByGroupId(groupID);
-	    } else {
-		Account acc = new Account();
-		acc.setId(userID);
-		users.add(acc);
+	    if (CommonUtil.isEmpty(users)) {
+		continue;
 	    }
-
 	    List<MessageRecipients> recipients = new ArrayList<>();
 
 	    for (Account acc : users) {
 		MessageRecipients item = new MessageRecipients(message, acc);
 		recipients.add(item);
 	    }
-
+	    Account sender = new Account();
+	    sender.setId(senderID);
+	    message.setSender(sender);
 	    message.setRecipients(recipients);
-	    Message save = messageDao.save(message);
+	    messageDao.save(message);
 
-	} catch (Exception e) {
-	    throw new EthraaException(e);
 	}
 
     }
@@ -127,7 +172,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message readAdminMessage(Long userID, Long messageID) throws EthraaException {
+    public Message readAdminMessage(Long messageID) throws EthraaException {
 	try {
 
 	    Message message = messageDao.findOne(messageID);

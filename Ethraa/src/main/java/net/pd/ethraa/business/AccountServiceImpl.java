@@ -2,9 +2,9 @@ package net.pd.ethraa.business;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +26,13 @@ public class AccountServiceImpl implements AccountService {
     private NullAwareBeanUtilsBean beanUtilService;
 
     @Override
-    public Account findByUserName(String userName) {
-	return accountDao.findByUserName(userName);
+    public List<Account> findByUserName(AccountType type, String userName) {
+
+	if (StringUtils.isEmpty(userName)) {
+	    return accountDao.findByAccountType(type);
+	}
+
+	return accountDao.findByAccountTypeAndUserNameContainingIgnoreCase(type, userName);
     }
 
     @Override
@@ -60,15 +65,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @CachePut(cacheNames = "accounts", key = "#account.mobile", condition = "#account.mobile !=null")
-    public void saveAccount(Account account) throws EthraaException {
+    // @CachePut(cacheNames = "accounts", key = "#account.mobile", condition =
+    // "#account.mobile !=null")
+    public Account saveAccount(Account account) throws EthraaException {
 	try {
 	    if (account.isNew()) {
-		accountDao.save(account);
+		return accountDao.save(account);
 	    } else {// update
 		Account fetchedAccount = accountDao.findOne(account.getId());
 		beanUtilService.copyProperties(fetchedAccount, account);
-		accountDao.save(fetchedAccount);
+		return accountDao.save(fetchedAccount);
 	    }
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -105,4 +111,9 @@ public class AccountServiceImpl implements AccountService {
 	}
     }
 
+    @Override
+    public Account find(Long id) {
+	return accountDao.findOne(id);
+
+    }
 }

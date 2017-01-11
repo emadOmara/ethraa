@@ -18,6 +18,6 @@ public interface MessageService {
 
     Message readUserMessage(Long userID, Long messageID) throws EthraaException;
 
-    Message readAdminMessage(Long userID, Long messageID) throws EthraaException;
+    Message readAdminMessage(Long messageID) throws EthraaException;
 
 }

@@ -1,6 +1,7 @@
 package net.pd.ethraa.common;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -15,5 +16,13 @@ public class CommonUtil {
 	String token = DigestUtils.sha256Hex(key);
 	return token;
 
+    }
+
+    public static boolean isEmpty(Long id) {
+	return id == null ? true : id > 0;
+    }
+
+    public static boolean isEmpty(List<?> items) {
+	return items == null ? true : items.size() == 0;
     }
 }

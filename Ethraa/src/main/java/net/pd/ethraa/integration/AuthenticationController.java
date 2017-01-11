@@ -19,6 +19,7 @@ import net.pd.ethraa.business.GroupService;
 import net.pd.ethraa.business.TokenManagementService;
 import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaConstants;
+import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.common.model.Group;
@@ -40,18 +41,13 @@ public class AuthenticationController extends BaseController {
     private TokenManagementService tokenManagementService;
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public BaseResponse register(@RequestBody Account account) {
+    public BaseResponse register(@RequestBody Account account) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    account.setAccountType(AccountType.NORMAL);
-	    account.setAccountStatus(EthraaConstants.INACTIVE);
-	    accountService.saveAccount(account);
-	    handleSuccessResponse(response, null);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	account.setAccountType(AccountType.NORMAL);
+	account.setAccountStatus(EthraaConstants.INACTIVE);
+	accountService.saveAccount(account);
+	handleSuccessResponse(response, null);
 
 	return response;
 
@@ -59,48 +55,37 @@ public class AuthenticationController extends BaseController {
 
     @JsonView(Views.LoginSuccess.class)
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public BaseResponse login(@RequestBody Account account) {
+    public BaseResponse login(@RequestBody Account account) throws EthraaException {
 
 	UserDetails userDetails = null;
 	LoginResponse response = new LoginResponse();
-	try {
 
-	    if (account == null || StringUtils.isEmpty(account.getMobile())
-		    || StringUtils.isEmpty(account.getPassword())) {
-		throw new UsernameNotFoundException("Invalid User Name");
-	    }
-
-	    String credentials = account.getMobile() + "-" + account.getPassword();
-	    userDetails = userDetailsService.loadUserByUsername(credentials);
-
-	    Account fetchedAccount = accountService.findUserWithPermissions(account.getMobile(),
-		    userDetails.getPassword(), EthraaConstants.ACTIVE);
-	    String token = CommonUtil.generateToken(account);
-	    tokenManagementService.addUser(userDetails.getUsername(), token, userDetails);
-
-	    response = new LoginResponse(EthraaConstants.OK, EthraaConstants.GENERAL_SUCCESS);
-	    response.setToken(token);
-	    response.setResult(fetchedAccount);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-
+	if (account == null || StringUtils.isEmpty(account.getMobile()) || StringUtils.isEmpty(account.getPassword())) {
+	    throw new UsernameNotFoundException("Invalid User Name");
 	}
+
+	String credentials = account.getMobile() + "-" + account.getPassword();
+	userDetails = userDetailsService.loadUserByUsername(credentials);
+
+	Account fetchedAccount = accountService.findUserWithPermissions(account.getMobile(), userDetails.getPassword(),
+		EthraaConstants.ACTIVE);
+	String token = CommonUtil.generateToken(account);
+	tokenManagementService.addUser(userDetails.getUsername(), token, userDetails);
+
+	response = new LoginResponse(EthraaConstants.OK, EthraaConstants.GENERAL_SUCCESS);
+	response.setToken(token);
+	response.setResult(fetchedAccount);
+
 	return response;
     }
 
     @JsonView(Views.Public.class)
     @RequestMapping(path = "/group/list", method = RequestMethod.GET)
-    public BaseResponse listGroups() {
+    public BaseResponse listGroups() throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	try {
-	    List<Group> groupList = groupService.getAllGroups();
-	    handleSuccessResponse(response, groupList);
-
-	} catch (Exception e) {
-	    handleFailureResponse(response, e);
-	}
+	List<Group> groupList = groupService.getAllGroups();
+	handleSuccessResponse(response, groupList);
 
 	return response;
 
