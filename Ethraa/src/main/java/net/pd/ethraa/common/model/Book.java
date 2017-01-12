@@ -3,7 +3,6 @@ package net.pd.ethraa.common.model;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
@@ -49,7 +48,7 @@ public class Book extends BaseEntity {
     @JsonView(Views.BookDetails.class)
     private String image;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany
     private List<Group> groups;
 
     @ManyToMany(/* cascade = CascadeType.ALL */)

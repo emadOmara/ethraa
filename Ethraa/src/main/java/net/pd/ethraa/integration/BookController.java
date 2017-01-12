@@ -21,7 +21,6 @@ import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.integration.jackson.Views;
-import net.pd.ethraa.integration.request.AssignBookRequest;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -60,6 +59,7 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(path = "/add")
+    @JsonView(Views.Public.class)
     public BaseResponse addBook(@RequestBody Book book) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
@@ -100,6 +100,7 @@ public class BookController extends BaseController {
 
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path = "/usersRead/{bookId}")
     public BaseResponse getUsersReadBook(@PathVariable("bookId") Long bookId) throws EthraaException {
 
@@ -113,6 +114,7 @@ public class BookController extends BaseController {
 
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path = "/usersNotRead/{bookId}")
     public BaseResponse getUsersNotReadBook(@PathVariable("bookId") Long bookId) throws EthraaException {
 
@@ -138,17 +140,4 @@ public class BookController extends BaseController {
 
     }
 
-    @PostMapping(path = "/assignBooks")
-    public BaseResponse assignBooks(@RequestBody AssignBookRequest request) throws EthraaException {
-
-	BaseResponse response = new BaseResponse();
-
-	handleNullID(request.getBookId());
-
-	bookService.assignBook(request);
-	handleSuccessResponse(response, null);
-
-	return response;
-
-    }
 }
