@@ -34,10 +34,4 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
     List<Account> findByAccountTypeAndUserNameContainingIgnoreCase(AccountType type, String userName);
 
-    @Query("SELECT a FROM Account a join a.books b  where b.id=:bookId")
-    List<Account> listBookReaders(@Param("bookId") Long bookId);
-
-    @Query("select acc from Account acc inner join acc.group g where g.id in (select gr.id from Book b inner join b.groups gr where b.id=:bookId) and acc not member of acc.books ")
-    List<Account> listBookMissingReaders(@Param("bookId") Long bookId);
-
 }

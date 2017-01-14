@@ -1,6 +1,8 @@
 package net.pd.ethraa.common.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -53,7 +56,14 @@ public class Book extends BaseEntity {
 
     @ManyToMany(/* cascade = CascadeType.ALL */)
     @JoinTable(name = "BOOK_READERS")
-    private List<Account> accounts;
+    private Set<Account> accounts = new HashSet<>();
+
+    @JsonView(Views.Public.class)
+    @Transient
+    Long actualReaders;
+    @JsonView(Views.Public.class)
+    @Transient
+    Long missingReaders;
 
     public String getBookName() {
 	return bookName;
@@ -109,6 +119,30 @@ public class Book extends BaseEntity {
 
     public void setGroups(List<Group> groups) {
 	this.groups = groups;
+    }
+
+    public Set<Account> getAccounts() {
+	return accounts;
+    }
+
+    public void setAccounts(Set<Account> accounts) {
+	this.accounts = accounts;
+    }
+
+    public Long getActualReaders() {
+	return actualReaders;
+    }
+
+    public void setActualReaders(Long actualReaders) {
+	this.actualReaders = actualReaders;
+    }
+
+    public Long getMissingReaders() {
+	return missingReaders;
+    }
+
+    public void setMissingReaders(Long missingReaders) {
+	this.missingReaders = missingReaders;
     }
 
 }

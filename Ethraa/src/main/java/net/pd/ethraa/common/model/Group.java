@@ -11,7 +11,6 @@ import net.pd.ethraa.integration.jackson.Views;
 
 @Entity
 @Table(name = "GROUPS")
-// @JsonDeserialize(using = GroupDeserializer.class)
 public class Group extends BaseEntity {
 
     /**

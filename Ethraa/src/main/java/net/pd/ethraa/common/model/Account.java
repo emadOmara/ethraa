@@ -55,9 +55,9 @@ public class Account extends BaseEntity {
     private AccountType accountType;
 
     @JsonView(Views.Public.class)
-
     private int accountStatus;
 
+    private Double totalPoints;
     @ManyToOne
     @JsonView(Views.LoginSuccess.class)
     private Group group;
@@ -66,10 +66,6 @@ public class Account extends BaseEntity {
     @ManyToMany
     @JoinTable(name = "ACCOUNT_PERMISSION")
     private List<Permission> permissions;
-
-    @ManyToMany(mappedBy = "accounts")
-
-    private List<Book> books;
 
     public String getMobile() {
 	return mobile;
@@ -141,6 +137,14 @@ public class Account extends BaseEntity {
 
     public void setAccountStatus(int accountStatus) {
 	this.accountStatus = accountStatus;
+    }
+
+    public Double getTotalPoints() {
+	return totalPoints;
+    }
+
+    public void setTotalPoints(Double totalPoints) {
+	this.totalPoints = totalPoints;
     }
 
 }

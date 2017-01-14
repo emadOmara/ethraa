@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
@@ -13,16 +14,16 @@ import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.dao.AccountDao;
 import net.pd.ethraa.dao.BookDao;
+import net.pd.ethraa.integration.request.EvaluationRequest;
 
 @Service
 @Transactional
 public class BookServiceImpl implements BookService {
 
     @Autowired
-    private BookDao bookDao;
-
-    @Autowired
     private AccountDao accountDao;
+    @Autowired
+    private BookDao bookDao;
 
     @Autowired
     private NullAwareBeanUtilsBean beanUtilService;
@@ -43,6 +44,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public void readBook(Book book) throws EthraaException {
+	try {
+	    if (CommonUtil.isEmpty(book.getAccounts())) {
+		return;
+	    }
+	    Book fetchedBook = bookDao.findOne(book.getId());
+
+	    for (Account acc : book.getAccounts()) {
+		fetchedBook.getAccounts().add(acc);
+	    }
+	    bookDao.save(fetchedBook);
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
+    @Override
     public void deleteBook(Long id) throws EthraaException {
 	try {
 	    bookDao.delete(id);
@@ -55,10 +73,23 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAllBooks() throws EthraaException {
 	try {
-	    return bookDao.findAll();
+	    List<Book> books = bookDao.findAll();
+	    populateBookReadersCount(books);
+	    return books;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
+    }
+
+    private void populateBookReadersCount(List<Book> books) {
+	for (Book book : books) {
+	    Long actualReaders = bookDao.countBookReaders(book.getId());
+	    Long missingReaders = bookDao.countBookMissingReaders(book.getId());
+
+	    book.setActualReaders(actualReaders);
+	    book.setMissingReaders(missingReaders);
+	}
+
     }
 
     @Override
@@ -66,7 +97,9 @@ public class BookServiceImpl implements BookService {
 	try {
 	    Group g = new Group();
 	    g.setId(groupId);
-	    return bookDao.findByGroup(g);
+	    List<Book> books = bookDao.findByGroup(g);
+	    populateBookReadersCount(books);
+	    return books;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
@@ -86,13 +119,31 @@ public class BookServiceImpl implements BookService {
     public List<Account> listBookReaders(Long bookId, boolean read) throws EthraaException {
 	try {
 	    if (read) {
-		return accountDao.listBookReaders(bookId);
+		return bookDao.listBookReaders(bookId);
 	    } else {
-		return accountDao.listBookMissingReaders(bookId);
+		return bookDao.listBookMissingReaders(bookId);
 	    }
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
+
+    }
+
+    @Override
+    public void evaluate(EvaluationRequest evaluation) throws EthraaException {
+
+	Long bookId = evaluation.getBookId();
+	Book book = bookDao.findOne(bookId);
+	Integer maxPoints = book.getPoints();
+	Long grade = evaluation.getGrade();
+	if (grade > maxPoints) {
+	    throw new EthraaException("Grade can't be more than the max allowed per book");
+	}
+
+	Long userId = evaluation.getUserId();
+	Account account = accountDao.findOne(userId);
+	account.setTotalPoints(account.getTotalPoints() + grade);
+	accountDao.save(account);
 
     }
 
