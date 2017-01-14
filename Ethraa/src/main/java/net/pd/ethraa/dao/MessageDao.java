@@ -13,17 +13,15 @@ import net.pd.ethraa.common.model.Message;
 @Repository
 public interface MessageDao extends CrudRepository<Message, Long> {
 
-    void findBytoAdminTrue();
-
     @Query("SELECT m,r.newMessage FROM Message m left outer join m.recipients r where r.recipient.id=:id or m.sender=:id) order by m.creationDate desc")
     Object[] getUserMessages(@Param("id") Long id);
 
-    // @Query("SELECT m,r.newMessage FROM Message m left outer join
-    // MessageRecipients r on m.id=r.msg.id where m.sender.id=:id or
-    // r.recipient.id=:id")
-    // Object[] getUserMessages(@Param("id") Long id);
+    @Query("SELECT m FROM Message m left outer join m.recipients r where r.newMessage=true and ( r.recipient.id=:id or m.sender=:id ) order by m.creationDate desc")
+    List<Message> getNewUserMessages(@Param("id") Long id);
 
-    List<Message> findByToAdminTrueOrderByCreationDateDesc();
+    List<Message> findByToAdminTrueOrSenderIdOrderByCreationDateDesc(Long senderId);
+
+    List<Message> findByToAdminTrueAndNewAdminMessageTrueOrderByCreationDateDesc();
 
     @Modifying
     @Query("update MessageRecipients r set r.newMessage=:flag where r.msg.id=:msgID")

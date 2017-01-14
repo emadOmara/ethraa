@@ -12,12 +12,16 @@ public interface MessageService {
 
     List<Message> getUserMessages(Long id) throws EthraaException;
 
-    List<Message> getAdminMessages() throws EthraaException;
+    List<Message> getAdminMessages(Long adminId) throws EthraaException;
 
     void sendMessage(MessageRequest msg) throws EthraaException;
 
     Message readUserMessage(Long userID, Long messageID) throws EthraaException;
 
     Message readAdminMessage(Long messageID) throws EthraaException;
+
+    List<Message> readNewUserMessages(Long id) throws EthraaException;
+
+    List<Message> getNewAdminMessages() throws EthraaException;
 
 }

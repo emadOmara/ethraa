@@ -2,6 +2,10 @@ package net.pd.ethraa.integration.request;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class MessageRequest extends BaseRequest {
 
     /**
@@ -9,8 +13,10 @@ public class MessageRequest extends BaseRequest {
      */
     private static final long serialVersionUID = -6722613235349888870L;
 
+    @NotNull
+    @NotEmpty
     protected String msg;
-
+    @NotNull
     private Long sender;
 
     private List<Long> users;

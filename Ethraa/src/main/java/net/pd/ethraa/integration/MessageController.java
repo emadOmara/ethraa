@@ -90,13 +90,40 @@ public class MessageController extends BaseController {
 
     }
 
+    @JsonView(Views.UserMessage.class)
+    @GetMapping(path = "/user/readNew/{id}")
+    public BaseResponse listNewUserMessages(@PathVariable("id") Long id) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+	handleNullID(id);
+
+	List<Message> userMessages = messageService.readNewUserMessages(id);
+	handleSuccessResponse(response, userMessages);
+
+	return response;
+
+    }
+
     @JsonView(Views.AdminMessage.class)
-    @GetMapping(path = "/admin/list")
-    public BaseResponse listAdminMessages() throws EthraaException {
+    @GetMapping(path = "/admin/list/{id}")
+    public BaseResponse listAdminMessages(@PathVariable("id") Long adminId) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
 
-	List<Message> messages = messageService.getAdminMessages();
+	List<Message> messages = messageService.getAdminMessages(adminId);
+	handleSuccessResponse(response, messages);
+
+	return response;
+
+    }
+
+    @JsonView(Views.AdminMessage.class)
+    @GetMapping(path = "/admin/listNew")
+    public BaseResponse listNewAdminMessages() throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	List<Message> messages = messageService.getNewAdminMessages();
 	handleSuccessResponse(response, messages);
 
 	return response;
