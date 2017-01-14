@@ -29,6 +29,7 @@ import net.pd.ethraa.integration.response.LoginResponse;
 
 @RestController()
 @RequestMapping(path = "api/authentication")
+// TODO add logout method later
 public class AuthenticationController extends BaseController {
 
     @Autowired

@@ -77,6 +77,21 @@ public class AccountController extends BaseController {
 
     }
 
+    @RequestMapping(path = "/activate", method = RequestMethod.POST)
+    public BaseResponse activateAccount(@RequestBody Account account) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+	if (account.isNew()) {
+	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
+	}
+
+	accountService.activateAccount(account);
+	handleSuccessResponse(response, null);
+
+	return response;
+
+    }
+
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
     public BaseResponse deleteAccount(@PathVariable("id") Long id) throws EthraaException {
 

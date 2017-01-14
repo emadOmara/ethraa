@@ -12,7 +12,7 @@ public interface AccountService {
     /**
      * search for accounts with some type and like some user name , <br/>
      * if the user name is empty it will retrieve all users of that type
-     * 
+     *
      * @param type
      * @param userName
      * @return
@@ -33,5 +33,7 @@ public interface AccountService {
     List<Permission> getAllPermissions() throws EthraaException;
 
     Account find(Long id);
+
+    void activateAccount(Account account) throws EthraaException;
 
 }

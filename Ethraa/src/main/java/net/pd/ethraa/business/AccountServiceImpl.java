@@ -13,6 +13,7 @@ import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
+import net.pd.ethraa.common.model.Email;
 import net.pd.ethraa.common.model.Permission;
 import net.pd.ethraa.dao.AccountDao;
 
@@ -24,6 +25,9 @@ public class AccountServiceImpl implements AccountService {
     private AccountDao accountDao;
     @Autowired
     private NullAwareBeanUtilsBean beanUtilService;
+
+    @Autowired
+    private MailService mailService;
 
     @Override
     public List<Account> findByUserName(AccountType type, String userName) {
@@ -80,6 +84,33 @@ public class AccountServiceImpl implements AccountService {
 	    throw new EthraaException(e);
 	}
 
+    }
+
+    @Override
+
+    public void activateAccount(Account account) throws EthraaException {
+	try {
+	    if (account.isNew()) {
+		accountDao.save(account);
+	    } else {// update
+		Account fetchedAccount = accountDao.findOne(account.getId());
+		beanUtilService.copyProperties(fetchedAccount, account);
+		accountDao.save(fetchedAccount);
+		Email activationEmail = createEmail(fetchedAccount);
+		mailService.send(activationEmail);
+	    }
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+
+    }
+
+    private Email createEmail(Account fetchedAccount) {
+	Email email = new Email();
+	email.setSubject("Account Activated");
+	email.setTo(fetchedAccount.getEmail());
+	email.setBody("Your account has been activated");
+	return email;
     }
 
     @Override
