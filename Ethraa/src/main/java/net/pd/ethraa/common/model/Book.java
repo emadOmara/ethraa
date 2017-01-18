@@ -51,6 +51,10 @@ public class Book extends BaseEntity {
     @JsonView(Views.BookDetails.class)
     private String image;
 
+    @Transient
+    @JsonView(Views.Public.class)
+    private boolean read;
+
     @ManyToMany
     private List<Group> groups;
 
@@ -143,6 +147,14 @@ public class Book extends BaseEntity {
 
     public void setMissingReaders(Long missingReaders) {
 	this.missingReaders = missingReaders;
+    }
+
+    public boolean isRead() {
+	return read;
+    }
+
+    public void setRead(boolean read) {
+	this.read = read;
     }
 
 }

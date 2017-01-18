@@ -147,4 +147,24 @@ public class BookServiceImpl implements BookService {
 
     }
 
+    @Override
+    public List<Book> listUserBooks(Long userId) throws EthraaException {
+	try {
+
+	    Account account = accountDao.findOne(userId);
+	    Group g = account.getGroup();
+
+	    List<Book> books = bookDao.findByGroup(g);
+	    for (Book book : books) {
+		Long count = bookDao.isBookRead(account, book.getId());
+		if (count > 0) {
+		    book.setRead(true);
+		}
+	    }
+	    return books;
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
 }

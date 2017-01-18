@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
@@ -66,6 +67,9 @@ public class Account extends BaseEntity {
     @ManyToMany
     @JoinTable(name = "ACCOUNT_PERMISSION")
     private List<Permission> permissions;
+
+    @OneToMany(mappedBy = "account")
+    private List<Points> points;
 
     public String getMobile() {
 	return mobile;
@@ -145,6 +149,14 @@ public class Account extends BaseEntity {
 
     public void setTotalPoints(Double totalPoints) {
 	this.totalPoints = totalPoints;
+    }
+
+    public List<Points> getPoints() {
+	return points;
+    }
+
+    public void setPoints(List<Points> points) {
+	this.points = points;
     }
 
 }

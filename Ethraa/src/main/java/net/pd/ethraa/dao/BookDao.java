@@ -32,4 +32,7 @@ public interface BookDao extends JpaRepository<Book, Long> {
     @Query("select count(acc) from Account acc , Group g ,Book b  where acc.group.id=g.id and g member of  b.groups and b.id=:bookId  and acc not member of b.accounts")
     Long countBookMissingReaders(@Param("bookId") Long bookId);
 
+    @Query("select count(b) from Book b where :account member of  b.accounts and b.id=:id")
+    Long isBookRead(@Param("account") Account account, @Param("id") Long bookId);
+
 }

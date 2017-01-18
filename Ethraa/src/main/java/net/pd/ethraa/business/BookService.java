@@ -25,4 +25,6 @@ public interface BookService {
 
     void evaluate(EvaluationRequest evaluation) throws EthraaException;
 
+    List<Book> listUserBooks(Long userId) throws EthraaException;
+
 }

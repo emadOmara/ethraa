@@ -61,6 +61,20 @@ public class BookController extends BaseController {
 
     }
 
+    @JsonView(Views.Public.class)
+    @GetMapping(path = "/list/user/{userId}")
+    public BaseResponse listUserBooks(@PathVariable("userId") Long userId) throws EthraaException {
+
+	handleNullID(userId);
+
+	BaseResponse response = new BaseResponse();
+	List<Book> books = bookService.listUserBooks(userId);
+	handleSuccessResponse(response, books);
+
+	return response;
+
+    }
+
     @PostMapping(path = "/add")
     @JsonView(Views.Public.class)
     public BaseResponse addBook(@RequestBody Book book) throws EthraaException {

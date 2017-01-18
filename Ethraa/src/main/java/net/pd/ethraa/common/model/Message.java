@@ -45,6 +45,7 @@ public class Message extends BaseEntity {
     private Date creationDate = new Date();
 
     @ManyToOne
+    @JsonView(Views.Messaging.class)
     private Group group;
 
     @JsonView(Views.UserMessage.class)
