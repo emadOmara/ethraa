@@ -177,7 +177,7 @@ public class MessageServiceImpl implements MessageService {
 	try {
 
 	    Message message = messageDao.findOne(messageID);
-	    messageDao.updateMessageReadFlag(false, messageID);
+	    messageDao.updateMessageRecipientReadFlag(false, messageID);
 	    return message;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -205,7 +205,7 @@ public class MessageServiceImpl implements MessageService {
 	    List<Message> newUserMessages = messageDao.getNewUserMessages(userId);
 	    for (Message message : newUserMessages) {
 		message.setNewUserMessage(false);
-		messageDao.updateMessageReadFlag(false, message.getId());
+		messageDao.updateMessageRecipientReadFlag(false, message.getId());
 	    }
 	    return newUserMessages;
 
@@ -218,7 +218,24 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getNewAdminMessagesForUser(Long userId) throws EthraaException {
 	try {
 
-	    List<Message> messages = messageDao.findByToAdminTrueAndSenderIdOrderByCreationDateAsc(userId);
+	    List<Message> messages = messageDao.getNewAdminMessagesForUser(userId);
+
+	    for (Message message : messages) {
+		message.setNewAdminMessage(false);
+		message = messageDao.save(message);
+
+	    }
+	    return messages;
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
+
+    @Override
+    public List<Message> getAllMessagesBetweenAdminAndUser(Long adminId, Long userId) throws EthraaException {
+	try {
+
+	    List<Message> messages = messageDao.getAllMessagesBetweenAdminAndUser(adminId, userId);
 
 	    for (Message message : messages) {
 		message.setNewAdminMessage(false);

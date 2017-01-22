@@ -4,8 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-public class TrainingDays extends BaseEntity {
+public class TrainingDay extends BaseEntity {
 
     /**
      *
@@ -24,17 +28,24 @@ public class TrainingDays extends BaseEntity {
     private static final long serialVersionUID = 897183910514239025L;
 
     @ManyToOne
+    @NotNull
     private Day day;
 
     @ManyToOne
     @JsonIgnore
+    @NotNull
     private Training training;
 
+    @NotNull
+    @NotEmpty
     private String startHour;
 
+    @NotNull
+    @NotEmpty
     private String endHour;
 
     @ManyToMany
+    @JoinTable(name = "Training_Attendence")
     private Set<Account> accounts = new HashSet<>();
 
     public Day getDay() {

@@ -1,7 +1,10 @@
 package net.pd.ethraa.common.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * account Points entity
@@ -10,25 +13,28 @@ import javax.persistence.ManyToOne;
  *
  */
 @Entity
-public class Points extends BaseEntity {
+public class Point extends BaseEntity {
 
     /**
      *
      */
     private static final long serialVersionUID = -2686273813253724965L;
 
-    private int points;
+    private Long points;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Account account;
 
     private int type;
 
-    public int getPoints() {
+    private Long entityId;
+
+    public Long getPoints() {
 	return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(Long points) {
 	this.points = points;
     }
 
@@ -46,6 +52,14 @@ public class Points extends BaseEntity {
 
     public void setType(int type) {
 	this.type = type;
+    }
+
+    public Long getEntityId() {
+	return entityId;
+    }
+
+    public void setEntityId(Long entityId) {
+	this.entityId = entityId;
     }
 
 }

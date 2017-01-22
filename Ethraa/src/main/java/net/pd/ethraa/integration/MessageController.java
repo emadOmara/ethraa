@@ -111,6 +111,9 @@ public class MessageController extends BaseController {
 	BaseResponse response = new BaseResponse();
 
 	List<Message> messages = messageService.getAdminMessages();
+
+	// TODO this is just atest
+	// messages = messageService.getAllAdminMessagesForUser(3l, 2l);
 	handleSuccessResponse(response, messages);
 
 	return response;
@@ -131,6 +134,26 @@ public class MessageController extends BaseController {
 	BaseResponse response = new BaseResponse();
 
 	List<Message> messages = messageService.getNewAdminMessagesForUser(userId);
+	handleSuccessResponse(response, messages);
+
+	return response;
+    }
+
+    /**
+     * get new messages to admins from some user
+     *
+     * @return
+     * @throws EthraaException
+     */
+    @JsonView(Views.AdminMessage.class)
+    @GetMapping(path = "/admin/listNew/{adminId}/{userId}")
+    public BaseResponse getAllMessagesBetweenAdminAndUser(@PathVariable("adminId") Long adminId,
+	    @PathVariable("userId") Long userId) throws EthraaException {
+
+	handleNullID(userId);
+	BaseResponse response = new BaseResponse();
+
+	List<Message> messages = messageService.getAllMessagesBetweenAdminAndUser(adminId, userId);
 	handleSuccessResponse(response, messages);
 
 	return response;

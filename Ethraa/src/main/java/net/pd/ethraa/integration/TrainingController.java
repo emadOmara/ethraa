@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.pd.ethraa.business.TrainingService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
+import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Training;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.response.BaseResponse;
@@ -57,7 +58,6 @@ public class TrainingController extends BaseController {
 
     }
 
-    @JsonView(Views.Public.class)
     @GetMapping(path = "/list")
     public BaseResponse listAllTrainings() throws EthraaException {
 
@@ -69,7 +69,6 @@ public class TrainingController extends BaseController {
 
     }
 
-    @JsonView(Views.Public.class)
     @GetMapping(path = "/list/{groupId}")
     public BaseResponse listAssignedBooks(@PathVariable("groupId") Long groupId) throws EthraaException {
 
@@ -78,6 +77,20 @@ public class TrainingController extends BaseController {
 	BaseResponse response = new BaseResponse();
 	List<Training> trainings = trainingService.getAssignedTrainings(groupId);
 	handleSuccessResponse(response, trainings);
+
+	return response;
+
+    }
+
+    @GetMapping(path = "/list/members/{trainingId}")
+    @JsonView(Views.Public.class)
+    public BaseResponse listMeetingMembers(@PathVariable("trainingId") Long trainingId) throws EthraaException {
+
+	handleNullID(trainingId);
+
+	BaseResponse response = new BaseResponse();
+	List<Account> accounts = trainingService.getMeetingMembers(trainingId);
+	handleSuccessResponse(response, accounts);
 
 	return response;
 

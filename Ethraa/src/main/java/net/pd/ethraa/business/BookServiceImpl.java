@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.pd.ethraa.common.CommonUtil;
+import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.common.model.Group;
+import net.pd.ethraa.common.model.Point;
 import net.pd.ethraa.dao.AccountDao;
 import net.pd.ethraa.dao.BookDao;
 import net.pd.ethraa.integration.request.EvaluationRequest;
@@ -141,9 +143,24 @@ public class BookServiceImpl implements BookService {
 	}
 
 	Long userId = evaluation.getUserId();
-	Account account = accountDao.findOne(userId);
-	account.setTotalPoints(account.getTotalPoints() + grade);
-	accountDao.save(account);
+	Point p = accountDao.findBookEvaluation(evaluation.getBookId(), EthraaConstants.POINT_TYPE_READ_BOOK,
+		evaluation.getUserId());
+
+	if (p != null) {
+	    p.setPoints(grade);
+	} else {
+	    Account account = accountDao.findOne(userId);
+
+	    Point point = new Point();
+	    point.setAccount(account);
+	    point.setPoints(grade);
+	    point.setType(EthraaConstants.POINT_TYPE_READ_BOOK);
+	    point.setEntityId(bookId);
+
+	    account.getPoints().add(point);
+	    accountDao.save(account);
+
+	}
 
     }
 

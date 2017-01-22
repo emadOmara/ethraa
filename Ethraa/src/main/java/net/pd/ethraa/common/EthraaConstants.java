@@ -12,5 +12,6 @@ public interface EthraaConstants {
     public String ERROR_MSG_ID_CAN_T_BE_NULL = "Id can't be null";
     public String ERROR_MSG_MOBILE_CAN_T_BE_NULL = "Mobile can't be null";
     public String XA_TOKEN = "xa-token";
+    int POINT_TYPE_READ_BOOK = 1;
 
 }

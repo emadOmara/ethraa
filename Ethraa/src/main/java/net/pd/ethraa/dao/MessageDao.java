@@ -23,7 +23,17 @@ public interface MessageDao extends CrudRepository<Message, Long> {
 
     @Modifying
     @Query("update MessageRecipients r set r.newMessage=:flag where r.msg.id=:msgID")
-    void updateMessageReadFlag(@Param("flag") boolean newMessage, @Param("msgID") Long msgID);
+    void updateMessageRecipientReadFlag(@Param("flag") boolean newMessage, @Param("msgID") Long msgID);
 
-    List<Message> findByToAdminTrueAndSenderIdOrderByCreationDateAsc(Long userId);
+    @Query("SELECT m FROM Message m  where m.toAdmin=true and m.newAdminMessage=true and m.sender.id=:userId order by m.creationDate asc")
+    List<Message> getNewAdminMessagesForUser(@Param("userId") Long userId);
+
+    @Query("SELECT m FROM Message m left outer join m.recipients r where (r.recipient.id=:userId and  m.sender.id=:adminId) or (m.sender.id=:userId and m.toAdmin=true) order by m.creationDate asc")
+    List<Message> getAllMessagesBetweenAdminAndUser(@Param("adminId") Long adminId, @Param("userId") Long userId);
+    // @Query("SELECT m FROM Message m left outer join m.recipients r where
+    // (r.recipient.id=:userId and m.sender.id=:adminId) or m.sender.id=:userId
+    // order by m.creationDate asc")
+    // List<Message> getAllMessagesBetweenAdminAndUser(@Param("adminId") Long
+    // adminId, @Param("userId") Long userId);
+
 }

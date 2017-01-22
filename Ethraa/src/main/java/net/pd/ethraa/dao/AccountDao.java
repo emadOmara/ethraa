@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.common.model.Permission;
+import net.pd.ethraa.common.model.Point;
 
 @Repository
 public interface AccountDao extends CrudRepository<Account, Long> {
@@ -33,5 +34,8 @@ public interface AccountDao extends CrudRepository<Account, Long> {
     List<Account> findByGroupIdIn(List<Long> recipientGroups);
 
     List<Account> findByAccountTypeAndUserNameContainingIgnoreCase(AccountType type, String userName);
+
+    @Query("select p from Point p where p.account.id=:userId and p.type=:type and p.entityId=:bookId ")
+    Point findBookEvaluation(@Param("bookId") Long bookId, @Param("type") int type, @Param("userId") Long userId);
 
 }

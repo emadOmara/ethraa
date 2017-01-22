@@ -56,6 +56,7 @@ public class Book extends BaseEntity {
     private boolean read;
 
     @ManyToMany
+    @JsonView(Views.BookDetails.class)
     private List<Group> groups;
 
     @ManyToMany(/* cascade = CascadeType.ALL */)
