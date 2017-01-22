@@ -146,7 +146,7 @@ public class MessageController extends BaseController {
      * @throws EthraaException
      */
     @JsonView(Views.AdminMessage.class)
-    @GetMapping(path = "/admin/listNew/{adminId}/{userId}")
+    @GetMapping(path = "/admin/list/{adminId}/{userId}")
     public BaseResponse getAllMessagesBetweenAdminAndUser(@PathVariable("adminId") Long adminId,
 	    @PathVariable("userId") Long userId) throws EthraaException {
 

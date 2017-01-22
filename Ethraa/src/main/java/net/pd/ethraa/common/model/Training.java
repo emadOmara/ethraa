@@ -1,8 +1,6 @@
 package net.pd.ethraa.common.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,10 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import net.pd.ethraa.common.CommonUtil;
 
@@ -131,43 +125,43 @@ public class Training extends BaseEntity {
 	}
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
-	Training n = new Training();
-	n.setAddress("Cairo");
-	n.setEndDate(new Date());
-	n.setStartDate(new Date());
-	Group g = new Group();
-	g.setId(2l);
-	Set<Group> groups = new HashSet<>();
-	groups.add(g);
-	n.setGroups(groups);
-
-	n.setLatitude(6513513d);
-	n.setLongitude(351535131d);
-
-	n.setPoints(50);
-	n.setTitle("Programming course");
-
-	TrainingDay entry = new TrainingDay();
-
-	Day d = new Day();
-	d.setId(1l);
-	entry.setDay(d);
-
-	entry.setEndHour("5:30");
-	entry.setStartHour("1:30");
-	// entry.setTraining(n);
-
-	List<TrainingDay> days = new ArrayList<>();
-
-	days.add(entry);
-
-	n.setTrainingDays(days);
-
-	ObjectMapper mapper = new ObjectMapper();
-	mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-	System.out.println(mapper.writeValueAsString(n));
-
-    }
+    // public static void main(String[] args) throws JsonProcessingException {
+    // Training n = new Training();
+    // n.setAddress("Cairo");
+    // n.setEndDate(new Date());
+    // n.setStartDate(new Date());
+    // Group g = new Group();
+    // g.setId(2l);
+    // Set<Group> groups = new HashSet<>();
+    // groups.add(g);
+    // n.setGroups(groups);
+    //
+    // n.setLatitude(6513513d);
+    // n.setLongitude(351535131d);
+    //
+    // n.setPoints(50);
+    // n.setTitle("Programming course");
+    //
+    // TrainingDay entry = new TrainingDay();
+    //
+    // Day d = new Day();
+    // d.setId(1l);
+    // entry.setDay(d);
+    //
+    // entry.setEndHour("5:30");
+    // entry.setStartHour("1:30");
+    // // entry.setTraining(n);
+    //
+    // List<TrainingDay> days = new ArrayList<>();
+    //
+    // days.add(entry);
+    //
+    // n.setTrainingDays(days);
+    //
+    // ObjectMapper mapper = new ObjectMapper();
+    // mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    //
+    // System.out.println(mapper.writeValueAsString(n));
+    //
+    // }
 }
