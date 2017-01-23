@@ -23,7 +23,7 @@ public class Views {
     public static class AdminMessage extends Messaging {
     }
 
-    public static class BookDetails extends Public {
+    public static class Details extends Public {
     }
 
 }

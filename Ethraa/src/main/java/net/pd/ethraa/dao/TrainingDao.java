@@ -20,4 +20,7 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
     @Query("select acc from Account acc  where acc.group.id in (select g.id from Training t inner join t.groups g where t.id=:trainingId) ")
     List<Account> getMeetingMembers(@Param("trainingId") Long trainingId);
 
+    @Query("select count (t) from TrainingDay t inner join t.accounts acc  where acc.id=:userId) ")
+    Long countUserTrainingAttendence(@Param("userId") Long userId);
+
 }

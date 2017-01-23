@@ -20,6 +20,7 @@ import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Training;
 import net.pd.ethraa.integration.jackson.Views;
+import net.pd.ethraa.integration.request.AttendenceRequest;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -32,6 +33,7 @@ public class TrainingController extends BaseController {
     private TrainingService trainingService;
 
     @PostMapping(path = "/add")
+    @JsonView(Views.Public.class)
     public BaseResponse addTraining(@RequestBody Training training) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
@@ -51,14 +53,15 @@ public class TrainingController extends BaseController {
 	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	}
 
-	training = trainingService.saveTraining(training);
-	handleSuccessResponse(response, training);
+	trainingService.saveTraining(training);
+	handleSuccessResponse(response, null);
 
 	return response;
 
     }
 
     @GetMapping(path = "/list")
+    @JsonView(Views.Public.class)
     public BaseResponse listAllTrainings() throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
@@ -69,7 +72,22 @@ public class TrainingController extends BaseController {
 
     }
 
+    @GetMapping(path = "/get/{id}")
+    @JsonView(Views.Details.class)
+    public BaseResponse getTrainingDetails(@PathVariable("id") Long trainingId) throws EthraaException {
+
+	handleNullID(trainingId);
+
+	BaseResponse response = new BaseResponse();
+	Training training = trainingService.getTraining(trainingId);
+	handleSuccessResponse(response, training);
+
+	return response;
+
+    }
+
     @GetMapping(path = "/list/{groupId}")
+    @JsonView(Views.Public.class)
     public BaseResponse listAssignedBooks(@PathVariable("groupId") Long groupId) throws EthraaException {
 
 	handleNullID(groupId);
@@ -91,6 +109,18 @@ public class TrainingController extends BaseController {
 	BaseResponse response = new BaseResponse();
 	List<Account> accounts = trainingService.getMeetingMembers(trainingId);
 	handleSuccessResponse(response, accounts);
+
+	return response;
+
+    }
+
+    @PostMapping(path = "/attendence/add")
+    public BaseResponse addAttendence(@RequestBody AttendenceRequest request) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	trainingService.addAttendence(request);
+	handleSuccessResponse(response, null);
 
 	return response;
 

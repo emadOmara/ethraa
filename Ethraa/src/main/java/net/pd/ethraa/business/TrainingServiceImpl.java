@@ -16,6 +16,7 @@ import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.common.model.Training;
 import net.pd.ethraa.common.model.TrainingDay;
 import net.pd.ethraa.dao.TrainingDao;
+import net.pd.ethraa.integration.request.AttendenceRequest;
 
 @Service
 @Transactional
@@ -67,44 +68,71 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public List<Account> getMeetingMembers(Long trainingId) throws EthraaException {
 	try {
-	    countMeetingDays(trainingId);
 	    List<Account> members = trainingDao.getMeetingMembers(trainingId);
+	    Long totalDays = countTotalMeetingDays(trainingId);
+	    for (Account account : members) {
+		Long trainingAttendence = getUserAttendenceCount(account.getId());
+		account.setTotalTrainingDays(totalDays);
+		account.setTrainingAttendence(trainingAttendence);
+	    }
 	    return members;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
     }
 
-    private int countMeetingDays(Long trainingId) throws EthraaException {
+    private Long getUserAttendenceCount(Long userId) {
+	Long attendence = trainingDao.countUserTrainingAttendence(userId);
+	return attendence;
+    }
+
+    private Long countTotalMeetingDays(Long trainingId) throws EthraaException {
+
+	Training training = trainingDao.findOne(trainingId);
+
+	Date startDate = training.getStartDate();
+	Calendar startCalendar = Calendar.getInstance();
+	startCalendar.setTime(startDate);
+
+	Date endDate = training.getEndDate();
+	Calendar endCalendar = Calendar.getInstance();
+	endCalendar.setTime(endDate);
+
+	List<TrainingDay> trainingDays = training.getTrainingDays();
+	List<Integer> days = new ArrayList<>();
+	for (TrainingDay trainingDay : trainingDays) {
+	    days.add(trainingDay.getId().intValue());
+	}
+	Long counter = 0l;
+	while (startCalendar.before(endCalendar)) {
+	    int weekDay = startCalendar.get(Calendar.DAY_OF_WEEK);
+	    if (days.contains(weekDay)) {
+		counter++;
+	    }
+	    startCalendar.add(Calendar.DAY_OF_MONTH, 1);
+	}
+
+	return counter;
+
+    }
+
+    @Override
+    public void addAttendence(AttendenceRequest request) throws EthraaException {
 	try {
 
-	    Training training = trainingDao.findOne(trainingId);
+	    // Training fetchedTraining = trainingDao.findOne(training.getId());
+	    // beanUtilService.copyProperties(fetchedTraining, training);
+	    // return trainingDao.save(fetchedTraining);
 
-	    Date startDate = training.getStartDate();
-	    Calendar startCalendar = Calendar.getInstance();
-	    startCalendar.setTime(startDate);
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+    }
 
-	    Date endDate = training.getEndDate();
-	    Calendar endCalendar = Calendar.getInstance();
-	    endCalendar.setTime(endDate);
-
-	    int endDay = endCalendar.get(Calendar.DAY_OF_WEEK);
-
-	    List<TrainingDay> trainingDays = training.getTrainingDays();
-	    List<Integer> days = new ArrayList<>();
-	    for (TrainingDay trainingDay : trainingDays) {
-		days.add(trainingDay.getId().intValue());
-	    }
-	    int counter = 0;
-	    while (startCalendar.before(endCalendar)) {
-		int weekDay = startCalendar.get(Calendar.DAY_OF_WEEK);
-		if (days.contains(weekDay)) {
-		    counter++;
-		}
-		startCalendar.add(Calendar.DAY_OF_MONTH, 1);
-	    }
-
-	    return counter;
+    @Override
+    public Training getTraining(Long trainingId) throws EthraaException {
+	try {
+	    return trainingDao.findOne(trainingId);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

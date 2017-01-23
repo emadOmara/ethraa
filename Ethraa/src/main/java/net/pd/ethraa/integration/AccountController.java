@@ -92,6 +92,21 @@ public class AccountController extends BaseController {
 
     }
 
+    @RequestMapping(path = "/forgetPassword", method = RequestMethod.POST)
+    public BaseResponse forgetPassword(@RequestBody Account account) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+	if (account.getMobile() == null) {
+	    throw new EthraaException(EthraaConstants.ERROR_MSG_MOBILE_CAN_T_BE_NULL);
+	}
+
+	accountService.forgetPassword(account);
+	handleSuccessResponse(response, null);
+
+	return response;
+
+    }
+
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
     public BaseResponse deleteAccount(@PathVariable("id") Long id) throws EthraaException {
 

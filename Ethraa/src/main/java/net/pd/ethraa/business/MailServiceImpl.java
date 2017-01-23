@@ -25,6 +25,7 @@ public class MailServiceImpl implements MailService {
     private String fromEmail;
 
     @Override
+
     public String send(Email email) {
 	logger.debug("Start sending mail for {}", email.getTo());
 	String response = "OK";
@@ -43,7 +44,7 @@ public class MailServiceImpl implements MailService {
 	    response = "NO_OK";
 	    logger.error(ex.getMessage(), ex);
 	}
-	System.out.println("Finished Send...");
+	logger.debug("End sending mail for {}", email.getTo());
 	return response;
     }
 

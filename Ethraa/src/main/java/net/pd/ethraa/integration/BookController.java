@@ -20,11 +20,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.pd.ethraa.business.BookService;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
-import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Book;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.request.EvaluationRequest;
 import net.pd.ethraa.integration.response.BaseResponse;
+import net.pd.ethraa.integration.response.BookReaderWrapper;
 
 @RestController()
 @RequestMapping(path = "api/books")
@@ -118,7 +118,7 @@ public class BookController extends BaseController {
 
     }
 
-    @JsonView(Views.BookDetails.class)
+    @JsonView(Views.Details.class)
     @GetMapping(path = "/get/{id}")
     public BaseResponse get(@PathVariable("id") Long id) throws EthraaException {
 
@@ -139,7 +139,7 @@ public class BookController extends BaseController {
 	BaseResponse response = new BaseResponse();
 	handleNullID(bookId);
 
-	List<Account> users = bookService.listBookReaders(bookId, true);
+	List<BookReaderWrapper> users = bookService.listBookReaders(bookId, true);
 	handleSuccessResponse(response, users);
 
 	return response;
@@ -153,7 +153,7 @@ public class BookController extends BaseController {
 	BaseResponse response = new BaseResponse();
 	handleNullID(bookId);
 
-	List<Account> users = bookService.listBookReaders(bookId, false);
+	List<BookReaderWrapper> users = bookService.listBookReaders(bookId, false);
 	handleSuccessResponse(response, users);
 
 	return response;

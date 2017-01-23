@@ -36,4 +36,6 @@ public interface AccountService {
 
     void activateAccount(Account account) throws EthraaException;
 
+    void forgetPassword(Account account) throws EthraaException;
+
 }

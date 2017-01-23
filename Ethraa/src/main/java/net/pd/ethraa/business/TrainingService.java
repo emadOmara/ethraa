@@ -5,6 +5,7 @@ import java.util.List;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Training;
+import net.pd.ethraa.integration.request.AttendenceRequest;
 
 public interface TrainingService {
 
@@ -15,5 +16,9 @@ public interface TrainingService {
     List<Training> getAssignedTrainings(Long groupId) throws EthraaException;
 
     List<Account> getMeetingMembers(Long trainingId) throws EthraaException;
+
+    void addAttendence(AttendenceRequest request) throws EthraaException;
+
+    Training getTraining(Long trainingId) throws EthraaException;
 
 }

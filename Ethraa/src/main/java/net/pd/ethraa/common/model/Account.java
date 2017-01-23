@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
@@ -52,6 +53,13 @@ public class Account extends BaseEntity {
     private String password;
     @Min(1950)
     private Integer graduationYear;
+
+    @Transient
+    // @JsonView(Views.Public.class)
+    private Long totalTrainingDays;
+    @Transient
+    // @JsonView(Views.Public.class)
+    private Long trainingAttendence;
 
     @Enumerated(EnumType.STRING)
     @JsonView(Views.LoginSuccess.class)
@@ -159,6 +167,22 @@ public class Account extends BaseEntity {
 
     public void setPoints(List<Point> points) {
 	this.points = points;
+    }
+
+    public Long getTotalTrainingDays() {
+	return totalTrainingDays;
+    }
+
+    public void setTotalTrainingDays(Long totalTrainingDays) {
+	this.totalTrainingDays = totalTrainingDays;
+    }
+
+    public Long getTrainingAttendence() {
+	return trainingAttendence;
+    }
+
+    public void setTrainingAttendence(Long trainingAttendence) {
+	this.trainingAttendence = trainingAttendence;
     }
 
 }

@@ -1,5 +1,6 @@
 package net.pd.ethraa.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import net.pd.ethraa.common.model.Point;
 import net.pd.ethraa.dao.AccountDao;
 import net.pd.ethraa.dao.BookDao;
 import net.pd.ethraa.integration.request.EvaluationRequest;
+import net.pd.ethraa.integration.response.BookReaderWrapper;
 
 @Service
 @Transactional
@@ -118,13 +120,25 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Account> listBookReaders(Long bookId, boolean read) throws EthraaException {
+    public List<BookReaderWrapper> listBookReaders(Long bookId, boolean read) throws EthraaException {
 	try {
+	    List<BookReaderWrapper> result = new ArrayList<>();
 	    if (read) {
-		return bookDao.listBookReaders(bookId);
+		List<Account> bookReaders = bookDao.listBookReaders(bookId);
+		for (Account account : bookReaders) {
+		    Point p = accountDao.findBookEvaluation(bookId, EthraaConstants.POINT_TYPE_READ_BOOK,
+			    account.getId());
+		    BookReaderWrapper item = new BookReaderWrapper(account, p.getPoints());
+		    result.add(item);
+		}
 	    } else {
-		return bookDao.listBookMissingReaders(bookId);
+		List<Account> missingReaders = bookDao.listBookMissingReaders(bookId);
+		for (Account account : missingReaders) {
+		    BookReaderWrapper item = new BookReaderWrapper(account, 0l);
+		    result.add(item);
+		}
 	    }
+	    return result;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

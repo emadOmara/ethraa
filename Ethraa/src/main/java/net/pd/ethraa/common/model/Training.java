@@ -11,7 +11,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import net.pd.ethraa.common.CommonUtil;
+import net.pd.ethraa.integration.jackson.Views;
 
 /**
  * Training entity
@@ -27,25 +30,34 @@ public class Training extends BaseEntity {
      */
     private static final long serialVersionUID = 218670096638085713L;
 
+    @JsonView(Views.Public.class)
     private String title;
 
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
+    @JsonView(Views.Details.class)
     private List<TrainingDay> trainingDays;
 
+    @JsonView(Views.Public.class)
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
+    @JsonView(Views.Public.class)
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
+    @JsonView(Views.Public.class)
     private Double latitude;
+    @JsonView(Views.Public.class)
     private Double longitude;
 
+    @JsonView(Views.Public.class)
     private String address;
 
     @ManyToMany
+    @JsonView(Views.Details.class)
     private Set<Group> groups;
 
+    @JsonView(Views.Public.class)
     private int points;
 
     public String getTitle() {

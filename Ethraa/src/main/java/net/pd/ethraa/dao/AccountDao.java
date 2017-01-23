@@ -38,4 +38,6 @@ public interface AccountDao extends CrudRepository<Account, Long> {
     @Query("select p from Point p where p.account.id=:userId and p.type=:type and p.entityId=:bookId ")
     Point findBookEvaluation(@Param("bookId") Long bookId, @Param("type") int type, @Param("userId") Long userId);
 
+    Account findByMobile(String mobile);
+
 }

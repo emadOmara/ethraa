@@ -48,7 +48,7 @@ public class Book extends BaseEntity {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @JsonView(Views.BookDetails.class)
+    @JsonView(Views.Details.class)
     private String image;
 
     @Transient
@@ -56,7 +56,7 @@ public class Book extends BaseEntity {
     private boolean read;
 
     @ManyToMany
-    @JsonView(Views.BookDetails.class)
+    @JsonView(Views.Details.class)
     private List<Group> groups;
 
     @ManyToMany(/* cascade = CascadeType.ALL */)
