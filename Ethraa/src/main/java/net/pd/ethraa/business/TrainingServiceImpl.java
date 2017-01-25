@@ -90,6 +90,9 @@ public class TrainingServiceImpl implements TrainingService {
 
 	Training training = trainingDao.findOne(trainingId);
 
+	if (training == null) {
+	    throw new EthraaException("No training defined for the specified Id" + trainingId);
+	}
 	Date startDate = training.getStartDate();
 	Calendar startCalendar = Calendar.getInstance();
 	startCalendar.setTime(startDate);
@@ -120,10 +123,10 @@ public class TrainingServiceImpl implements TrainingService {
     public void addAttendence(AttendenceRequest request) throws EthraaException {
 	try {
 
-	    // Training fetchedTraining = trainingDao.findOne(training.getId());
-	    // beanUtilService.copyProperties(fetchedTraining, training);
-	    // return trainingDao.save(fetchedTraining);
-
+	    TrainingDay trainingDay = trainingDao.getTrainingDay(request.getDayId(), request.getTrainingId());
+	    Account account = new Account();
+	    account.setId(request.getUserId());
+	    trainingDay.getAccounts().add(account);
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}

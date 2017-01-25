@@ -12,7 +12,7 @@ public class AttendenceRequest extends BaseRequest {
 
     @NotNull
     @Min(1)
-    protected Long bookId;
+    protected Long trainingId;
 
     @NotNull
     @Min(1)
@@ -22,20 +22,20 @@ public class AttendenceRequest extends BaseRequest {
     @Min(1)
     protected Long dayId;
 
-    public Long getBookId() {
-	return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-	this.bookId = bookId;
-    }
-
     public Long getUserId() {
 	return userId;
     }
 
     public void setUserId(Long userId) {
 	this.userId = userId;
+    }
+
+    public Long getTrainingId() {
+	return trainingId;
+    }
+
+    public void setTrainingId(Long trainingId) {
+	this.trainingId = trainingId;
     }
 
     public Long getDayId() {

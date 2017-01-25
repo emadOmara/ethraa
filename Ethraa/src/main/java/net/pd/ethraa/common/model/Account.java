@@ -55,10 +55,10 @@ public class Account extends BaseEntity {
     private Integer graduationYear;
 
     @Transient
-    // @JsonView(Views.Public.class)
+    @JsonView(Views.Details.class)
     private Long totalTrainingDays;
     @Transient
-    // @JsonView(Views.Public.class)
+    @JsonView(Views.Details.class)
     private Long trainingAttendence;
 
     @Enumerated(EnumType.STRING)
@@ -66,7 +66,7 @@ public class Account extends BaseEntity {
     private AccountType accountType;
 
     @JsonView(Views.Public.class)
-    private int accountStatus;
+    private Integer accountStatus;
 
     private Double totalPoints;
     @ManyToOne
@@ -145,14 +145,6 @@ public class Account extends BaseEntity {
 	this.accountType = accountType;
     }
 
-    public int getAccountStatus() {
-	return accountStatus;
-    }
-
-    public void setAccountStatus(int accountStatus) {
-	this.accountStatus = accountStatus;
-    }
-
     public Double getTotalPoints() {
 	return totalPoints;
     }
@@ -183,6 +175,14 @@ public class Account extends BaseEntity {
 
     public void setTrainingAttendence(Long trainingAttendence) {
 	this.trainingAttendence = trainingAttendence;
+    }
+
+    public Integer getAccountStatus() {
+	return accountStatus;
+    }
+
+    public void setAccountStatus(Integer accountStatus) {
+	this.accountStatus = accountStatus;
     }
 
 }

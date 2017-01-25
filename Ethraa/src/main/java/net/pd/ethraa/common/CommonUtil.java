@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Email;

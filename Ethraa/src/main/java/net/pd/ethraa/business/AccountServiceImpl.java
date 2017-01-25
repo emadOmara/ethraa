@@ -2,7 +2,7 @@ package net.pd.ethraa.business;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,6 +79,9 @@ public class AccountServiceImpl implements AccountService {
 		return accountDao.save(account);
 	    } else {// update
 		Account fetchedAccount = accountDao.findOne(account.getId());
+		if (fetchedAccount == null) {
+		    throw new EthraaException("can't find account with specified id " + account.getId());
+		}
 		beanUtilService.copyProperties(fetchedAccount, account);
 		return accountDao.save(fetchedAccount);
 	    }
