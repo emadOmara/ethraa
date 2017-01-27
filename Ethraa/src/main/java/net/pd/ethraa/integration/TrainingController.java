@@ -2,6 +2,8 @@ package net.pd.ethraa.integration;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Training;
 import net.pd.ethraa.integration.jackson.Views;
 import net.pd.ethraa.integration.request.AttendenceRequest;
+import net.pd.ethraa.integration.request.UserPointsRequest;
 import net.pd.ethraa.integration.response.BaseResponse;
 
 @RestController()
@@ -60,12 +63,25 @@ public class TrainingController extends BaseController {
 
     }
 
+    @GetMapping(path = "/list/{type}")
+    @JsonView(Views.Public.class)
+    public BaseResponse listAllTrainings(@PathVariable("type") Long type) throws EthraaException {
+
+	handleNullID(type);
+	BaseResponse response = new BaseResponse();
+	List<Training> allTrainings = trainingService.getAllTrainings(type);
+	handleSuccessResponse(response, allTrainings);
+
+	return response;
+
+    }
+
     @GetMapping(path = "/list")
     @JsonView(Views.Public.class)
     public BaseResponse listAllTrainings() throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
-	List<Training> allTrainings = trainingService.getAllTrainings();
+	List<Training> allTrainings = trainingService.getAllTrainings(null);
 	handleSuccessResponse(response, allTrainings);
 
 	return response;
@@ -86,14 +102,15 @@ public class TrainingController extends BaseController {
 
     }
 
-    @GetMapping(path = "/list/{groupId}")
+    @GetMapping(path = "/list/{type}/{groupId}")
     @JsonView(Views.Public.class)
-    public BaseResponse listAssignedBooks(@PathVariable("groupId") Long groupId) throws EthraaException {
+    public BaseResponse listAssignedBooks(@PathVariable("type") Long type, @PathVariable("groupId") Long groupId)
+	    throws EthraaException {
 
-	handleNullID(groupId);
+	handleNullID(groupId, type);
 
 	BaseResponse response = new BaseResponse();
-	List<Training> trainings = trainingService.getAssignedTrainings(groupId);
+	List<Training> trainings = trainingService.getAssignedTrainings(groupId, type);
 	handleSuccessResponse(response, trainings);
 
 	return response;
@@ -115,11 +132,23 @@ public class TrainingController extends BaseController {
     }
 
     @PostMapping(path = "/attendence/add")
-    public BaseResponse addAttendence(@RequestBody AttendenceRequest request) throws EthraaException {
+    public BaseResponse addAttendence(@Valid @RequestBody AttendenceRequest request) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
 
 	trainingService.addAttendence(request);
+	handleSuccessResponse(response, null);
+
+	return response;
+
+    }
+
+    @PostMapping(path = "/bonous/add")
+    public BaseResponse addTrainingExraPoints(@Valid @RequestBody UserPointsRequest request) throws EthraaException {
+
+	BaseResponse response = new BaseResponse();
+
+	trainingService.addTrainingBonous(request);
 	handleSuccessResponse(response, null);
 
 	return response;

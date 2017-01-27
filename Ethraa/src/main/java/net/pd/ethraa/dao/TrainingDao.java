@@ -15,8 +15,8 @@ import net.pd.ethraa.common.model.TrainingDay;
 @Repository
 public interface TrainingDao extends JpaRepository<Training, Long> {
 
-    @Query("select t from Training t where :group member of t.groups")
-    List<Training> findByGroup(@Param("group") Group group);
+    @Query("select t from Training t where :group member of t.groups and t.type=:type")
+    List<Training> findByGroup(@Param("group") Group group, @Param("type") Long type);
 
     @Query("select acc from Account acc  where acc.group.id in (select g.id from Training t inner join t.groups g where t.id=:trainingId) ")
     List<Account> getMeetingMembers(@Param("trainingId") Long trainingId);
@@ -26,5 +26,7 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
 
     @Query("select t from TrainingDay t where day.id=:dayId and training.id=:trainingId ")
     TrainingDay getTrainingDay(@Param("dayId") Long dayId, @Param("trainingId") Long trainingId);
+
+    List<Training> findByType(Long type);
 
 }

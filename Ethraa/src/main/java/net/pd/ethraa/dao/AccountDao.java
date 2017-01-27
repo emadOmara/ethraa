@@ -35,8 +35,14 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
     List<Account> findByAccountTypeAndUserNameContainingIgnoreCase(AccountType type, String userName);
 
-    @Query("select p from Point p where p.account.id=:userId and p.type=:type and p.entityId=:bookId ")
-    Point findBookEvaluation(@Param("bookId") Long bookId, @Param("type") int type, @Param("userId") Long userId);
+    // @Query("select p from Point p where p.account.id=:userId and p.type=
+    // (select t.type from Training t where t.id=p.entityId) and
+    // p.entityId=:entityId ")
+    // Point findEvaluationPoint(@Param("entityId") Long entityId,
+    // @Param("userId") Long userId);
+
+    @Query("select p from Point p where p.account.id=:userId and p.type=:type and p.entityId=:entityId ")
+    Point findEvaluationPoint(@Param("entityId") Long bookId, @Param("type") Long type, @Param("userId") Long userId);
 
     Account findByMobile(String mobile);
 

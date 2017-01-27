@@ -1,7 +1,8 @@
 package net.pd.ethraa.common.model;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -79,7 +80,7 @@ public class Account extends BaseEntity {
     private List<Permission> permissions;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Point> points = new ArrayList<>();
+    private Set<Point> points = new HashSet<>();
 
     public String getMobile() {
 	return mobile;
@@ -153,11 +154,11 @@ public class Account extends BaseEntity {
 	this.totalPoints = totalPoints;
     }
 
-    public List<Point> getPoints() {
+    public Set<Point> getPoints() {
 	return points;
     }
 
-    public void setPoints(List<Point> points) {
+    public void setPoints(Set<Point> points) {
 	this.points = points;
     }
 

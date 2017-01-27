@@ -12,9 +12,14 @@ public abstract class BaseController {
 	response.setResult(result);
     }
 
-    protected void handleNullID(Long id) throws EthraaException {
-	if (id == null || id < 1) {
-	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
+    protected void handleNullID(Long... ids) throws EthraaException {
+
+	for (Long id : ids) {
+	    if (id == null || id < 1) {
+		throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
+	    }
+
 	}
+
     }
 }

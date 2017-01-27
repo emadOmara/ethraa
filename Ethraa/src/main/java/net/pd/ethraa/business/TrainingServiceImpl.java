@@ -9,14 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Group;
+import net.pd.ethraa.common.model.Point;
 import net.pd.ethraa.common.model.Training;
 import net.pd.ethraa.common.model.TrainingDay;
+import net.pd.ethraa.dao.AccountDao;
 import net.pd.ethraa.dao.TrainingDao;
 import net.pd.ethraa.integration.request.AttendenceRequest;
+import net.pd.ethraa.integration.request.EvaluationPoint;
+import net.pd.ethraa.integration.request.UserPointsRequest;
 
 @Service
 @Transactional
@@ -24,6 +29,8 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Autowired
     private TrainingDao trainingDao;
+    @Autowired
+    private AccountDao accountDao;
 
     @Autowired
     private NullAwareBeanUtilsBean beanUtilService;
@@ -44,9 +51,14 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<Training> getAllTrainings() throws EthraaException {
+    public List<Training> getAllTrainings(Long type) throws EthraaException {
 	try {
-	    List<Training> trainings = trainingDao.findAll();
+	    List<Training> trainings = null;
+	    if (CommonUtil.isEmpty(type)) {
+		trainings = trainingDao.findAll();
+	    } else {
+		trainings = trainingDao.findByType(type);
+	    }
 	    return trainings;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -54,11 +66,11 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<Training> getAssignedTrainings(Long groupId) throws EthraaException {
+    public List<Training> getAssignedTrainings(Long groupId, Long type) throws EthraaException {
 	try {
 	    Group g = new Group();
 	    g.setId(groupId);
-	    List<Training> books = trainingDao.findByGroup(g);
+	    List<Training> books = trainingDao.findByGroup(g, type);
 	    return books;
 	} catch (Exception e) {
 	    throw new EthraaException(e);
@@ -139,6 +151,46 @@ public class TrainingServiceImpl implements TrainingService {
 	} catch (Exception e) {
 	    throw new EthraaException(e);
 	}
+    }
+
+    @Override
+    public void addTrainingBonous(UserPointsRequest request) throws EthraaException {
+	try {
+	    List<EvaluationPoint> evaluations = request.getEvaluations();
+	    for (EvaluationPoint evaluation : evaluations) {
+		Long userId = evaluation.getUserId();
+
+		Point point = accountDao.findEvaluationPoint(request.getTrainingId(), request.getType(), userId);
+
+		if (point != null) {
+		    point.setPoints(evaluation.getPoint());
+		} else {
+		    Account account = accountDao.findOne(userId);
+		    point = createPoint(userId, evaluation, request);
+
+		    account.getPoints().add(point);
+		    accountDao.save(account);
+
+		}
+
+	    }
+	} catch (Exception e) {
+	    throw new EthraaException(e);
+	}
+
+    }
+
+    private Point createPoint(Long accountId, EvaluationPoint evaluation, UserPointsRequest request) {
+	Point p = new Point();
+
+	Account account = new Account();
+	account.setId(accountId);
+
+	p.setAccount(account);
+	p.setPoints(evaluation.getPoint());
+	p.setEntityId(request.getTrainingId());
+	p.setType(request.getType());
+	return p;
     }
 
 }

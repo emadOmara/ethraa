@@ -2,6 +2,8 @@ package net.pd.ethraa.integration;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +37,7 @@ public class MessageController extends BaseController {
      * @throws EthraaException
      */
     @RequestMapping(path = "/user/send", method = RequestMethod.POST)
-    public BaseResponse sendUserMessage(@RequestBody MessageRequest request) throws EthraaException {
+    public BaseResponse sendUserMessage(@Valid @RequestBody MessageRequest request) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
 	Message msg = new Message();
@@ -56,7 +58,7 @@ public class MessageController extends BaseController {
     }
 
     @RequestMapping(path = "/admin/send", method = RequestMethod.POST)
-    public BaseResponse sendFromAdmin(@RequestBody MessageRequest msg) throws EthraaException {
+    public BaseResponse sendFromAdmin(@Valid @RequestBody MessageRequest msg) throws EthraaException {
 
 	BaseResponse response = new BaseResponse();
 
