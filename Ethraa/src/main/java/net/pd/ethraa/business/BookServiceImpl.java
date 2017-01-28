@@ -126,7 +126,7 @@ public class BookServiceImpl implements BookService {
 	    if (read) {
 		List<Account> bookReaders = bookDao.listBookReaders(bookId);
 		for (Account account : bookReaders) {
-		    Point p = accountDao.findEvaluationPoint(bookId, EthraaConstants.POINT_TYPE_READ_BOOK,
+		    Point p = accountDao.findEvaluationPoint(bookId, EthraaConstants.ACTIVITY_TYPE_READ_BOOK,
 			    account.getId());
 		    BookReaderWrapper item = new BookReaderWrapper(account, p.getPoints());
 		    result.add(item);
@@ -157,7 +157,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	Long userId = evaluation.getUserId();
-	Point p = accountDao.findEvaluationPoint(evaluation.getBookId(), EthraaConstants.POINT_TYPE_READ_BOOK,
+	Point p = accountDao.findEvaluationPoint(evaluation.getBookId(), EthraaConstants.ACTIVITY_TYPE_READ_BOOK,
 		evaluation.getUserId());
 
 	if (p != null) {
@@ -168,7 +168,7 @@ public class BookServiceImpl implements BookService {
 	    Point point = new Point();
 	    point.setAccount(account);
 	    point.setPoints(grade);
-	    point.setType(EthraaConstants.POINT_TYPE_READ_BOOK);
+	    point.setType(EthraaConstants.ACTIVITY_TYPE_READ_BOOK);
 	    point.setEntityId(bookId);
 
 	    account.getPoints().add(point);

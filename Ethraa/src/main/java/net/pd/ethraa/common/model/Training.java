@@ -61,7 +61,7 @@ public class Training extends BaseEntity {
     private Set<Group> groups;
 
     @JsonView(Views.Public.class)
-    private int points;
+    private Long points;
 
     public String getTitle() {
 	return title;
@@ -119,11 +119,11 @@ public class Training extends BaseEntity {
 	this.groups = groups;
     }
 
-    public int getPoints() {
+    public Long getPoints() {
 	return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(Long points) {
 	this.points = points;
     }
 

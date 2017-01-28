@@ -35,4 +35,7 @@ public interface BookDao extends JpaRepository<Book, Long> {
     @Query("select count(b) from Book b where :account member of  b.accounts and b.id=:id")
     Long isBookRead(@Param("account") Account account, @Param("id") Long bookId);
 
+    @Query("select b.bookName ,sum(p.points) from Book b join b.accounts acc join acc.points p where p.entityId=b.id and acc.id=:userId and p.type=:type")
+    Object[] sumUserPoints(@Param("userId") Long userId, @Param("type") Long type);
+
 }

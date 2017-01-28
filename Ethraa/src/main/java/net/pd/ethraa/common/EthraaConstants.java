@@ -12,10 +12,10 @@ public interface EthraaConstants {
     public String ERROR_MSG_ID_CAN_T_BE_NULL = "Id can't be null";
     public String ERROR_MSG_MOBILE_CAN_T_BE_NULL = "Mobile can't be null";
     public String XA_TOKEN = "xa-token";
-    Long POINT_TYPE_READ_BOOK = 1l;
+    Long ACTIVITY_TYPE_READ_BOOK = 1l;
 
-    Long TRAINING_TYPE_COURSE = 2l;
-    Long TRAINING_TYPE_MEETING = 3l;
+    Long ACTIVITY_TYPE_COURSE = 2l;
+    Long ACTIVITY_TYPE_MEETING = 3l;
     /**
      * date format like 2017-01-23 18:14:41
      */
