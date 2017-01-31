@@ -16,6 +16,10 @@ public interface EthraaConstants {
 
     Long ACTIVITY_TYPE_COURSE = 2l;
     Long ACTIVITY_TYPE_MEETING = 3l;
+
+    Integer EXAM_QUESTION_TYPE_MC = 1;
+    Integer EXAM_QUESTION_TYPE_SC = 2;
+    Integer EXAM_QUESTION_TYPE_TEXT = 3;
     /**
      * date format like 2017-01-23 18:14:41
      */
