@@ -26,170 +26,204 @@ import net.pd.ethraa.integration.response.BaseResponse;
 @RequestMapping(path = "api/messages")
 public class MessageController extends BaseController {
 
-    @Autowired
-    private MessageService messageService;
+	@Autowired
+	private MessageService messageService;
 
-    /**
-     * Normal user sends to admin
-     *
-     * @param msg
-     * @return
-     * @throws EthraaException
-     */
-    @RequestMapping(path = "/user/send", method = RequestMethod.POST)
-    public BaseResponse sendUserMessage(@Valid @RequestBody MessageRequest request) throws EthraaException {
+	/**
+	 * Normal user sends to admin
+	 *
+	 * @param msg
+	 * @return
+	 * @throws EthraaException
+	 */
+	@RequestMapping(path = "/user/send", method = RequestMethod.POST)
+	public BaseResponse sendUserMessage(@Valid @RequestBody MessageRequest request) throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
-	Message msg = new Message();
+		BaseResponse response = new BaseResponse();
+		Message msg = new Message();
 
-	msg.setToAdmin(true);
-	msg.setNewAdminMessage(true);
-	msg.setMsg(request.getMsg());
+		msg.setToAdmin(true);
+		msg.setNewAdminMessage(true);
+		msg.setMsg(request.getMsg());
 
-	Account acc = new Account();
-	acc.setId(request.getSender());
-	msg.setSender(acc);
+		Account acc = new Account();
+		acc.setId(request.getSender());
+		msg.setSender(acc);
 
-	messageService.sendMessage(msg);
-	handleSuccessResponse(response, null);
+		messageService.sendMessage(msg);
+		handleSuccessResponse(response, null);
 
-	return response;
+		return response;
 
-    }
+	}
 
-    @RequestMapping(path = "/admin/send", method = RequestMethod.POST)
-    public BaseResponse sendFromAdmin(@Valid @RequestBody MessageRequest msg) throws EthraaException {
+	@RequestMapping(path = "/admin/send", method = RequestMethod.POST)
+	public BaseResponse sendFromAdmin(@Valid @RequestBody MessageRequest msg) throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
+		BaseResponse response = new BaseResponse();
 
-	messageService.sendMessage(msg);
-	handleSuccessResponse(response, null);
+		messageService.sendMessage(msg);
+		handleSuccessResponse(response, null);
 
-	return response;
+		return response;
 
-    }
+	}
 
-    /**
-     * retrieve the list of {@link Message}s of the user that was sent from him
-     * , from the administraion to him , or from administration to a group which
-     * he is a member of .
-     *
-     * @param msg
-     * @return
-     * @throws EthraaException
-     */
-    @JsonView(Views.UserMessage.class)
-    @GetMapping(path = "/user/list/{id}")
-    public BaseResponse listUserMessages(@PathVariable("id") Long id) throws EthraaException {
+	/**
+	 * retrieve the list of {@link Message}s of the user that was sent from him
+	 * , from the administraion to him , or from administration to a group which
+	 * he is a member of .
+	 *
+	 * @param msg
+	 * @return
+	 * @throws EthraaException
+	 */
+	@JsonView(Views.UserMessage.class)
+	@GetMapping(path = "/user/list/{id}")
+	public BaseResponse listUserMessages(@PathVariable("id") Long id) throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
-	handleNullID(id);
+		BaseResponse response = new BaseResponse();
+		handleNullID(id);
 
-	List<Message> userMessages = messageService.getUserMessages(id);
-	handleSuccessResponse(response, userMessages);
+		List<Message> userMessages = messageService.getUserMessages(id);
+		handleSuccessResponse(response, userMessages);
 
-	return response;
+		return response;
 
-    }
+	}
 
-    @JsonView(Views.UserMessage.class)
-    @GetMapping(path = "/user/readNew/{id}")
-    public BaseResponse listNewUserMessages(@PathVariable("id") Long id) throws EthraaException {
+	@JsonView(Views.UserMessage.class)
+	@GetMapping(path = "/user/readNew/{id}")
+	public BaseResponse listNewUserMessages(@PathVariable("id") Long id) throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
-	handleNullID(id);
+		BaseResponse response = new BaseResponse();
+		handleNullID(id);
 
-	List<Message> userMessages = messageService.readNewUserMessages(id);
-	handleSuccessResponse(response, userMessages);
+		List<Message> userMessages = messageService.readNewUserMessages(id);
+		handleSuccessResponse(response, userMessages);
 
-	return response;
+		return response;
 
-    }
+	}
 
-    @JsonView(Views.AdminMessage.class)
-    @GetMapping(path = "/admin/list")
-    public BaseResponse listAdminMessages() throws EthraaException {
+	@JsonView(Views.AdminMessage.class)
+	@GetMapping(path = "/admin/list")
+	public BaseResponse listAdminMessages() throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
+		BaseResponse response = new BaseResponse();
 
-	List<Message> messages = messageService.getAdminMessages();
+		List<Message> messages = messageService.getAdminMessages();
 
-	// TODO this is just atest
-	// messages = messageService.getAllAdminMessagesForUser(3l, 2l);
-	handleSuccessResponse(response, messages);
+		// TODO this is just atest
+		// messages = messageService.getAllAdminMessagesForUser(3l, 2l);
+		handleSuccessResponse(response, messages);
 
-	return response;
+		return response;
 
-    }
+	}
 
-    /**
-     * get new messages to admins from some user
-     *
-     * @return
-     * @throws EthraaException
-     */
-    @JsonView(Views.AdminMessage.class)
-    @GetMapping(path = "/admin/listNew/{userId}")
-    public BaseResponse listAdminMessages(@PathVariable("userId") Long userId) throws EthraaException {
+	/**
+	 * get new messages to admins from some user
+	 *
+	 * @return
+	 * @throws EthraaException
+	 */
+	@JsonView(Views.AdminMessage.class)
+	@GetMapping(path = "/admin/listNew/{userId}")
+	public BaseResponse listAdminMessages(@PathVariable("userId") Long userId) throws EthraaException {
 
-	handleNullID(userId);
-	BaseResponse response = new BaseResponse();
+		handleNullID(userId);
+		BaseResponse response = new BaseResponse();
 
-	List<Message> messages = messageService.getNewAdminMessagesForUser(userId);
-	handleSuccessResponse(response, messages);
+		List<Message> messages = messageService.getNewAdminMessagesForUser(userId);
+		handleSuccessResponse(response, messages);
 
-	return response;
-    }
+		return response;
+	}
 
-    /**
-     * get new messages to admins from some user
-     *
-     * @return
-     * @throws EthraaException
-     */
-    @JsonView(Views.AdminMessage.class)
-    @GetMapping(path = "/admin/list/{adminId}/{userId}")
-    public BaseResponse getAllMessagesBetweenAdminAndUser(@PathVariable("adminId") Long adminId,
-	    @PathVariable("userId") Long userId) throws EthraaException {
+	/**
+	 * count new messages to admin
+	 *
+	 * @return
+	 * @throws EthraaException
+	 */
+	@GetMapping(path = "/admin/countNew")
+	public BaseResponse countAdminNewMessages() throws EthraaException {
 
-	handleNullID(userId);
-	BaseResponse response = new BaseResponse();
+		BaseResponse response = new BaseResponse();
 
-	List<Message> messages = messageService.getAllMessagesBetweenAdminAndUser(adminId, userId);
-	handleSuccessResponse(response, messages);
+		Long count = messageService.countNewAdminMessages();
+		handleSuccessResponse(response, count);
 
-	return response;
+		return response;
+	}
 
-    }
+	/**
+	 * count new messages to admin
+	 *
+	 * @return
+	 * @throws EthraaException
+	 */
+	@GetMapping(path = "/user/countNew/{userId}")
+	public BaseResponse countNewUserMessaes(@PathVariable("userId") Long userId) throws EthraaException {
 
-    @JsonView(Views.Messaging.class)
-    @GetMapping(path = "/user/get/{userID}/{messageID}")
-    public BaseResponse readUserMessage(@PathVariable("userID") Long userID, @PathVariable("messageID") Long messageID)
-	    throws EthraaException {
+		BaseResponse response = new BaseResponse();
+		handleNullID(userId);
+		Long count = messageService.countNewUserMessages(userId);
+		handleSuccessResponse(response, count);
 
-	BaseResponse response = new BaseResponse();
-	handleNullID(userID);
-	handleNullID(messageID);
+		return response;
+	}
 
-	Message msg = messageService.readUserMessage(userID, messageID);
-	handleSuccessResponse(response, msg);
+	/**
+	 * get new messages to admins from some user
+	 *
+	 * @return
+	 * @throws EthraaException
+	 */
+	@JsonView(Views.AdminMessage.class)
+	@GetMapping(path = "/admin/list/{adminId}/{userId}")
+	public BaseResponse getAllMessagesBetweenAdminAndUser(@PathVariable("adminId") Long adminId,
+			@PathVariable("userId") Long userId) throws EthraaException {
 
-	return response;
+		handleNullID(userId);
+		BaseResponse response = new BaseResponse();
 
-    }
+		List<Message> messages = messageService.getAllMessagesBetweenAdminAndUser(adminId, userId);
+		handleSuccessResponse(response, messages);
 
-    @JsonView(Views.Messaging.class)
-    @GetMapping(path = "/admin/get/{messageID}")
-    public BaseResponse readAdminMessage(@PathVariable("messageID") Long messageID) throws EthraaException {
+		return response;
 
-	BaseResponse response = new BaseResponse();
-	handleNullID(messageID);
+	}
 
-	Message msg = messageService.readAdminMessage(messageID);
-	handleSuccessResponse(response, msg);
+	@JsonView(Views.Messaging.class)
+	@GetMapping(path = "/user/get/{userID}/{messageID}")
+	public BaseResponse readUserMessage(@PathVariable("userID") Long userID, @PathVariable("messageID") Long messageID)
+			throws EthraaException {
 
-	return response;
+		BaseResponse response = new BaseResponse();
+		handleNullID(userID);
+		handleNullID(messageID);
 
-    }
+		Message msg = messageService.readUserMessage(userID, messageID);
+		handleSuccessResponse(response, msg);
+
+		return response;
+
+	}
+
+	@JsonView(Views.Messaging.class)
+	@GetMapping(path = "/admin/get/{messageID}")
+	public BaseResponse readAdminMessage(@PathVariable("messageID") Long messageID) throws EthraaException {
+
+		BaseResponse response = new BaseResponse();
+		handleNullID(messageID);
+
+		Message msg = messageService.readAdminMessage(messageID);
+		handleSuccessResponse(response, msg);
+
+		return response;
+
+	}
 
 }

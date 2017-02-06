@@ -30,129 +30,129 @@ import net.pd.ethraa.integration.response.BaseResponse;
 @RequestMapping(path = "api/training")
 public class TrainingController extends BaseController {
 
-    private static Logger logger = LoggerFactory.getLogger(TrainingController.class);
+	private static Logger logger = LoggerFactory.getLogger(TrainingController.class);
 
-    @Autowired
-    private TrainingService trainingService;
+	@Autowired
+	private TrainingService trainingService;
 
-    @PostMapping(path = "/add")
-    @JsonView(Views.Public.class)
-    public BaseResponse addTraining(@RequestBody Training training) throws EthraaException {
+	@PostMapping(path = "/add")
+	@JsonView(Views.Public.class)
+	public BaseResponse addTraining(@RequestBody Training training) throws EthraaException {
 
-	BaseResponse response = new BaseResponse();
+		BaseResponse response = new BaseResponse();
 
-	training = trainingService.saveTraining(training);
-	handleSuccessResponse(response, training);
+		training = trainingService.saveTraining(training);
+		handleSuccessResponse(response, training);
 
-	return response;
+		return response;
 
-    }
-
-    @PostMapping(path = "/edit")
-    public BaseResponse editTraining(@RequestBody Training training) throws EthraaException {
-
-	BaseResponse response = new BaseResponse();
-	if (training.isNew()) {
-	    throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
 	}
 
-	trainingService.saveTraining(training);
-	handleSuccessResponse(response, null);
+	@PostMapping(path = "/edit")
+	public BaseResponse editTraining(@RequestBody Training training) throws EthraaException {
 
-	return response;
+		BaseResponse response = new BaseResponse();
+		if (training.isNew()) {
+			throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
+		}
 
-    }
+		trainingService.saveTraining(training);
+		handleSuccessResponse(response, null);
 
-    @GetMapping(path = "/list/{type}")
-    @JsonView(Views.Public.class)
-    public BaseResponse listAllTrainings(@PathVariable("type") Long type) throws EthraaException {
+		return response;
 
-	handleNullID(type);
-	BaseResponse response = new BaseResponse();
-	List<Training> allTrainings = trainingService.getAllTrainings(type);
-	handleSuccessResponse(response, allTrainings);
+	}
 
-	return response;
+	@GetMapping(path = "/list/{type}")
+	@JsonView(Views.Public.class)
+	public BaseResponse listAllTrainings(@PathVariable("type") Long type) throws EthraaException {
 
-    }
+		handleNullID(type);
+		BaseResponse response = new BaseResponse();
+		List<Training> allTrainings = trainingService.getAllTrainings(type);
+		handleSuccessResponse(response, allTrainings);
 
-    @GetMapping(path = "/list")
-    @JsonView(Views.Public.class)
-    public BaseResponse listAllTrainings() throws EthraaException {
+		return response;
 
-	BaseResponse response = new BaseResponse();
-	List<Training> allTrainings = trainingService.getAllTrainings(null);
-	handleSuccessResponse(response, allTrainings);
+	}
 
-	return response;
+	@GetMapping(path = "/list")
+	@JsonView(Views.Public.class)
+	public BaseResponse listAllTrainings() throws EthraaException {
 
-    }
+		BaseResponse response = new BaseResponse();
+		List<Training> allTrainings = trainingService.getAllTrainings(null);
+		handleSuccessResponse(response, allTrainings);
 
-    @GetMapping(path = "/get/{id}")
-    @JsonView(Views.Details.class)
-    public BaseResponse getTrainingDetails(@PathVariable("id") Long trainingId) throws EthraaException {
+		return response;
 
-	handleNullID(trainingId);
+	}
 
-	BaseResponse response = new BaseResponse();
-	Training training = trainingService.getTraining(trainingId);
-	handleSuccessResponse(response, training);
+	@GetMapping(path = "/get/{id}")
+	@JsonView(Views.Details.class)
+	public BaseResponse getTrainingDetails(@PathVariable("id") Long trainingId) throws EthraaException {
 
-	return response;
+		handleNullID(trainingId);
 
-    }
+		BaseResponse response = new BaseResponse();
+		Training training = trainingService.getTraining(trainingId);
+		handleSuccessResponse(response, training);
 
-    @GetMapping(path = "/list/{type}/{groupId}")
-    @JsonView(Views.Public.class)
-    public BaseResponse listAssignedBooks(@PathVariable("type") Long type, @PathVariable("groupId") Long groupId)
-	    throws EthraaException {
+		return response;
 
-	handleNullID(groupId, type);
+	}
 
-	BaseResponse response = new BaseResponse();
-	List<Training> trainings = trainingService.getAssignedTrainings(groupId, type);
-	handleSuccessResponse(response, trainings);
+	@GetMapping(path = "/list/{type}/{groupId}")
+	@JsonView(Views.Public.class)
+	public BaseResponse listAssignedBooks(@PathVariable("type") Long type, @PathVariable("groupId") Long groupId)
+			throws EthraaException {
 
-	return response;
+		handleNullID(groupId, type);
 
-    }
+		BaseResponse response = new BaseResponse();
+		List<Training> trainings = trainingService.getAssignedTrainings(groupId, type);
+		handleSuccessResponse(response, trainings);
 
-    @GetMapping(path = "/list/members/{trainingId}")
-    @JsonView(Views.Details.class)
-    public BaseResponse listMeetingMembers(@PathVariable("trainingId") Long trainingId) throws EthraaException {
+		return response;
 
-	handleNullID(trainingId);
+	}
 
-	BaseResponse response = new BaseResponse();
-	List<Account> accounts = trainingService.getMeetingMembers(trainingId);
-	handleSuccessResponse(response, accounts);
+	@GetMapping(path = "/list/members/{trainingId}")
+	@JsonView(Views.Details.class)
+	public BaseResponse listMeetingMembers(@PathVariable("trainingId") Long trainingId) throws EthraaException {
 
-	return response;
+		handleNullID(trainingId);
 
-    }
+		BaseResponse response = new BaseResponse();
+		List<Account> accounts = trainingService.getMeetingMembers(trainingId);
+		handleSuccessResponse(response, accounts);
 
-    @PostMapping(path = "/attendence/add")
-    public BaseResponse addAttendence(@Valid @RequestBody AttendenceRequest request) throws EthraaException {
+		return response;
 
-	BaseResponse response = new BaseResponse();
+	}
 
-	trainingService.addAttendence(request);
-	handleSuccessResponse(response, null);
+	@PostMapping(path = "/attendence/add")
+	public BaseResponse addAttendence(@Valid @RequestBody AttendenceRequest request) throws EthraaException {
 
-	return response;
+		BaseResponse response = new BaseResponse();
 
-    }
+		trainingService.addAttendence(request);
+		handleSuccessResponse(response, null);
 
-    @PostMapping(path = "/bonous/add")
-    public BaseResponse addTrainingExraPoints(@Valid @RequestBody UserPointsRequest request) throws EthraaException {
+		return response;
 
-	BaseResponse response = new BaseResponse();
+	}
 
-	trainingService.addTrainingBonous(request);
-	handleSuccessResponse(response, null);
+	@PostMapping(path = "/bonous/add")
+	public BaseResponse addTrainingExraPoints(@Valid @RequestBody UserPointsRequest request) throws EthraaException {
 
-	return response;
+		BaseResponse response = new BaseResponse();
 
-    }
+		trainingService.addTrainingBonous(request);
+		handleSuccessResponse(response, null);
+
+		return response;
+
+	}
 
 }

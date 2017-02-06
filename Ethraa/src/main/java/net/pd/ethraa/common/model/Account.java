@@ -32,158 +32,170 @@ import net.pd.ethraa.integration.jackson.Views;
  *
  */
 @Entity
-@Table(name = "ACCOUNT", uniqueConstraints = @UniqueConstraint(columnNames = { "mobile", "email" }))
+@Table(name = "ACCOUNT", uniqueConstraints = @UniqueConstraint(columnNames = { "mobile", "email" }) )
 public class Account extends BaseEntity {
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 
-    private static final long serialVersionUID = 5105914722614237201L;
+	private static final long serialVersionUID = 5105914722614237201L;
 
-    @NotEmpty
-    @JsonView(Views.Public.class)
-    private String userName;
-    @NotEmpty
-    @Column(unique = true)
-    private String mobile;
-    @Email
-    @Column(unique = true)
-    private String email;
-    @NotEmpty
-    private String password;
-    @Min(1950)
-    private Integer graduationYear;
+	@NotEmpty
+	@JsonView(Views.Public.class)
+	private String userName;
+	@NotEmpty
+	@Column(unique = true)
+	private String mobile;
+	@Email
+	@Column(unique = true)
+	private String email;
+	@NotEmpty
+	private String password;
+	@Min(1950)
+	private Integer graduationYear;
 
-    @Transient
-    @JsonView(Views.Details.class)
-    private Long totalTrainingDays;
-    @Transient
-    @JsonView(Views.Details.class)
-    private Long trainingAttendence;
+	@Transient
+	@JsonView(Views.Details.class)
+	private Long totalTrainingDays;
+	@Transient
+	@JsonView(Views.Details.class)
+	private Long trainingAttendence;
 
-    @Enumerated(EnumType.STRING)
-    @JsonView(Views.LoginSuccess.class)
-    private AccountType accountType;
+	@Transient
+	@JsonView(Views.Details.class)
+	private boolean attendedTrainingToday;
 
-    @JsonView(Views.Public.class)
-    private Integer accountStatus;
+	@Enumerated(EnumType.STRING)
+	@JsonView(Views.LoginSuccess.class)
+	private AccountType accountType;
 
-    private Double totalPoints;
-    @ManyToOne
-    @JsonView(Views.LoginSuccess.class)
-    private Group group;
+	@JsonView(Views.Public.class)
+	private Integer accountStatus;
 
-    @JsonView(Views.LoginSuccess.class)
-    @ManyToMany
-    @JoinTable(name = "ACCOUNT_PERMISSION")
-    private List<Permission> permissions;
+	private Double totalPoints;
+	@ManyToOne
+	@JsonView(Views.LoginSuccess.class)
+	private Group group;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private Set<Point> points = new HashSet<>();
+	@JsonView(Views.LoginSuccess.class)
+	@ManyToMany
+	@JoinTable(name = "ACCOUNT_PERMISSION")
+	private List<Permission> permissions;
 
-    public String getMobile() {
-	return mobile;
-    }
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	private Set<Point> points = new HashSet<>();
 
-    public void setMobile(String mobile) {
-	this.mobile = mobile;
-    }
+	public String getMobile() {
+		return mobile;
+	}
 
-    public String getEmail() {
-	return email;
-    }
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPassword() {
-	return password;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public Integer getGraduationYear() {
-	return graduationYear;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public void setGraduationYear(Integer graduationYear) {
-	this.graduationYear = graduationYear;
-    }
+	public Integer getGraduationYear() {
+		return graduationYear;
+	}
 
-    public Group getGroup() {
-	return group;
-    }
+	public void setGraduationYear(Integer graduationYear) {
+		this.graduationYear = graduationYear;
+	}
 
-    public void setGroup(Group group) {
-	this.group = group;
-    }
+	public Group getGroup() {
+		return group;
+	}
 
-    public String getUserName() {
-	return userName;
-    }
+	public void setGroup(Group group) {
+		this.group = group;
+	}
 
-    public void setUserName(String userName) {
-	this.userName = userName;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public List<Permission> getPermissions() {
-	return permissions;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-    public void setPermissions(List<Permission> permissions) {
-	this.permissions = permissions;
-    }
+	public List<Permission> getPermissions() {
+		return permissions;
+	}
 
-    public AccountType getAccountType() {
-	return accountType;
-    }
+	public void setPermissions(List<Permission> permissions) {
+		this.permissions = permissions;
+	}
 
-    public void setAccountType(AccountType accountType) {
-	this.accountType = accountType;
-    }
+	public AccountType getAccountType() {
+		return accountType;
+	}
 
-    public Double getTotalPoints() {
-	return totalPoints;
-    }
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+	}
 
-    public void setTotalPoints(Double totalPoints) {
-	this.totalPoints = totalPoints;
-    }
+	public Double getTotalPoints() {
+		return totalPoints;
+	}
 
-    public Set<Point> getPoints() {
-	return points;
-    }
+	public void setTotalPoints(Double totalPoints) {
+		this.totalPoints = totalPoints;
+	}
 
-    public void setPoints(Set<Point> points) {
-	this.points = points;
-    }
+	public Set<Point> getPoints() {
+		return points;
+	}
 
-    public Long getTotalTrainingDays() {
-	return totalTrainingDays;
-    }
+	public void setPoints(Set<Point> points) {
+		this.points = points;
+	}
 
-    public void setTotalTrainingDays(Long totalTrainingDays) {
-	this.totalTrainingDays = totalTrainingDays;
-    }
+	public Long getTotalTrainingDays() {
+		return totalTrainingDays;
+	}
 
-    public Long getTrainingAttendence() {
-	return trainingAttendence;
-    }
+	public void setTotalTrainingDays(Long totalTrainingDays) {
+		this.totalTrainingDays = totalTrainingDays;
+	}
 
-    public void setTrainingAttendence(Long trainingAttendence) {
-	this.trainingAttendence = trainingAttendence;
-    }
+	public Long getTrainingAttendence() {
+		return trainingAttendence;
+	}
 
-    public Integer getAccountStatus() {
-	return accountStatus;
-    }
+	public void setTrainingAttendence(Long trainingAttendence) {
+		this.trainingAttendence = trainingAttendence;
+	}
 
-    public void setAccountStatus(Integer accountStatus) {
-	this.accountStatus = accountStatus;
-    }
+	public Integer getAccountStatus() {
+		return accountStatus;
+	}
+
+	public void setAccountStatus(Integer accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+	public boolean isAttendedTrainingToday() {
+		return attendedTrainingToday;
+	}
+
+	public void setAttendedTrainingToday(boolean attendedTrainingToday) {
+		this.attendedTrainingToday = attendedTrainingToday;
+	}
 
 }

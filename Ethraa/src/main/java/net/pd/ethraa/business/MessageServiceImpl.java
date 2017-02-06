@@ -25,227 +25,237 @@ import net.pd.ethraa.integration.request.MessageRequest;
 @Transactional
 public class MessageServiceImpl implements MessageService {
 
-    Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
-    @Autowired
-    private MessageDao messageDao;
-    @Autowired
-    private AccountDao accountDao;
+	Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+	@Autowired
+	private MessageDao messageDao;
+	@Autowired
+	private AccountDao accountDao;
 
-    @Override
-    public void sendMessage(Message msg) throws EthraaException {
-	try {
-	    messageDao.save(msg);
-	} catch (Exception e) {
-	    throw new EthraaException(e);
-	}
-
-    }
-
-    @Override
-    public List<Message> getUserMessages(Long userID) throws EthraaException {
-
-	try {
-
-	    Object[] result = messageDao.getUserMessages(userID);
-
-	    List<Message> userMessages = new ArrayList<>();
-	    for (Object wrapper : result) {
-		Message msg = (Message) ((Object[]) wrapper)[0];
-		Boolean isNewMessage = (Boolean) ((Object[]) wrapper)[1];
-		if (isNewMessage != null) {
-		    msg.setNewUserMessage(isNewMessage);
+	@Override
+	public void sendMessage(Message msg) throws EthraaException {
+		try {
+			messageDao.save(msg);
+		} catch (Exception e) {
+			throw new EthraaException(e);
 		}
 
-		userMessages.add(msg);
-	    }
-
-	    return userMessages;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
 	}
 
-    }
+	@Override
+	public List<Message> getUserMessages(Long userID) throws EthraaException {
 
-    @Override
-    public List<Message> getAdminMessages() throws EthraaException {
-	try {
+		try {
 
-	    List<Message> messages = messageDao.findByToAdminTrueOrderByCreationDateAsc();
-	    Map<Long, Message> messagesMap = new LinkedHashMap<>();
+			Object[] result = messageDao.getUserMessages(userID);
 
-	    for (Message message : messages) {
-		message.setNewAdminMessage(false);
-		message = messageDao.save(message);
+			List<Message> userMessages = new ArrayList<>();
+			for (Object wrapper : result) {
+				Message msg = (Message) ((Object[]) wrapper)[0];
+				Boolean isNewMessage = (Boolean) ((Object[]) wrapper)[1];
+				if (isNewMessage != null) {
+					msg.setNewUserMessage(isNewMessage);
+				}
 
-		messagesMap.put(message.getSender().getId(), message);
-	    }
+				userMessages.add(msg);
+			}
 
-	    return new ArrayList<>(messagesMap.values());
-	} catch (Exception e) {
-	    throw new EthraaException(e);
-	}
-    }
-
-    @Override
-    public void sendMessage(MessageRequest request) throws EthraaException {
-
-	Message message = new Message();
-	message.setMsg(request.getMsg());
-
-	List<Long> groupIds = request.getGroups();
-	List<Long> userIds = request.getUsers();
-
-	if (CommonUtil.isEmpty(groupIds) && CommonUtil.isEmpty(userIds)) {
-	    throw new EthraaException("Please specify target");
-	}
-
-	addGroupMessages(request);
-
-	addUserMessages(request);
-
-    }
-
-    private void addUserMessages(MessageRequest request) {
-
-	List<Long> userIds = request.getUsers();
-
-	if (CommonUtil.isEmpty(userIds)) {
-	    return;
-	}
-	Long senderID = request.getSender();
-	Message message = new Message();
-	message.setMsg(request.getMsg());
-
-	List<MessageRecipients> recipients = new ArrayList<>();
-
-	for (Long userId : userIds) {
-	    Account acc = new Account();
-	    acc.setId(userId);
-
-	    MessageRecipients item = new MessageRecipients(message, acc);
-	    recipients.add(item);
-	}
-
-	Account sender = new Account();
-	sender.setId(senderID);
-
-	message.setSender(sender);
-	message.setRecipients(recipients);
-	messageDao.save(message);
-
-    }
-
-    private void addGroupMessages(MessageRequest request) {
-	List<Long> groupIds = request.getGroups();
-	if (CommonUtil.isEmpty(groupIds)) {
-	    return;
-	}
-	Long senderID = request.getSender();
-
-	for (Long groupId : groupIds) {
-	    Message message = new Message();
-	    message.setMsg(request.getMsg());
-
-	    Group g = new Group();
-	    g.setId(groupId);
-	    message.setGroup(g);
-
-	    List<Account> users = accountDao.findByGroupId(groupId);
-
-	    if (CommonUtil.isEmpty(users)) {
-		continue;
-	    }
-	    List<MessageRecipients> recipients = new ArrayList<>();
-
-	    for (Account acc : users) {
-		MessageRecipients item = new MessageRecipients(message, acc);
-		recipients.add(item);
-	    }
-	    Account sender = new Account();
-	    sender.setId(senderID);
-	    message.setSender(sender);
-	    message.setRecipients(recipients);
-	    messageDao.save(message);
+			return userMessages;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
 
 	}
 
-    }
+	@Override
+	public List<Message> getAdminMessages() throws EthraaException {
+		try {
 
-    @Override
-    public Message readUserMessage(Long userID, Long messageID) throws EthraaException {
+			List<Message> messages = messageDao.findByToAdminTrueOrderByCreationDateAsc();
+			Map<Long, Message> messagesMap = new LinkedHashMap<>();
 
-	try {
+			for (Message message : messages) {
+				message.setNewAdminMessage(false);
+				message = messageDao.save(message);
 
-	    Message message = messageDao.findOne(messageID);
-	    messageDao.updateMessageRecipientReadFlag(false, messageID);
-	    return message;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
+				messagesMap.put(message.getSender().getId(), message);
+			}
+
+			return new ArrayList<>(messagesMap.values());
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
 	}
-    }
 
-    @Override
-    public Message readAdminMessage(Long messageID) throws EthraaException {
-	try {
+	@Override
+	public void sendMessage(MessageRequest request) throws EthraaException {
 
-	    Message message = messageDao.findOne(messageID);
-	    message.setNewAdminMessage(false);
+		Message message = new Message();
+		message.setMsg(request.getMsg());
 
-	    message = messageDao.save(message);
-	    return message;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
+		List<Long> groupIds = request.getGroups();
+		List<Long> userIds = request.getUsers();
+
+		if (CommonUtil.isEmpty(groupIds) && CommonUtil.isEmpty(userIds)) {
+			throw new EthraaException("Please specify target");
+		}
+
+		addGroupMessages(request);
+
+		addUserMessages(request);
+
 	}
-    }
 
-    @Override
-    public List<Message> readNewUserMessages(Long userId) throws EthraaException {
-	try {
+	private void addUserMessages(MessageRequest request) {
 
-	    List<Message> newUserMessages = messageDao.getNewUserMessages(userId);
-	    for (Message message : newUserMessages) {
-		message.setNewUserMessage(false);
-		messageDao.updateMessageRecipientReadFlag(false, message.getId());
-	    }
-	    return newUserMessages;
+		List<Long> userIds = request.getUsers();
 
-	} catch (Exception e) {
-	    throw new EthraaException(e);
+		if (CommonUtil.isEmpty(userIds)) {
+			return;
+		}
+		Long senderID = request.getSender();
+		Message message = new Message();
+		message.setMsg(request.getMsg());
+
+		List<MessageRecipients> recipients = new ArrayList<>();
+
+		for (Long userId : userIds) {
+			Account acc = new Account();
+			acc.setId(userId);
+
+			MessageRecipients item = new MessageRecipients(message, acc);
+			recipients.add(item);
+		}
+
+		Account sender = new Account();
+		sender.setId(senderID);
+
+		message.setSender(sender);
+		message.setRecipients(recipients);
+		messageDao.save(message);
+
 	}
-    }
 
-    @Override
-    public List<Message> getNewAdminMessagesForUser(Long userId) throws EthraaException {
-	try {
+	private void addGroupMessages(MessageRequest request) {
+		List<Long> groupIds = request.getGroups();
+		if (CommonUtil.isEmpty(groupIds)) {
+			return;
+		}
+		Long senderID = request.getSender();
 
-	    List<Message> messages = messageDao.getNewAdminMessagesForUser(userId);
+		for (Long groupId : groupIds) {
+			Message message = new Message();
+			message.setMsg(request.getMsg());
 
-	    for (Message message : messages) {
-		message.setNewAdminMessage(false);
-		message = messageDao.save(message);
+			Group g = new Group();
+			g.setId(groupId);
+			message.setGroup(g);
 
-	    }
-	    return messages;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
+			List<Account> users = accountDao.findByGroupId(groupId);
+
+			if (CommonUtil.isEmpty(users)) {
+				continue;
+			}
+			List<MessageRecipients> recipients = new ArrayList<>();
+
+			for (Account acc : users) {
+				MessageRecipients item = new MessageRecipients(message, acc);
+				recipients.add(item);
+			}
+			Account sender = new Account();
+			sender.setId(senderID);
+			message.setSender(sender);
+			message.setRecipients(recipients);
+			messageDao.save(message);
+
+		}
+
 	}
-    }
 
-    @Override
-    public List<Message> getAllMessagesBetweenAdminAndUser(Long adminId, Long userId) throws EthraaException {
-	try {
+	@Override
+	public Message readUserMessage(Long userID, Long messageID) throws EthraaException {
 
-	    List<Message> messages = messageDao.getAllMessagesBetweenAdminAndUser(adminId, userId);
+		try {
 
-	    for (Message message : messages) {
-		message.setNewAdminMessage(false);
-		message = messageDao.save(message);
-
-	    }
-	    return messages;
-	} catch (Exception e) {
-	    throw new EthraaException(e);
+			Message message = messageDao.findOne(messageID);
+			messageDao.updateMessageRecipientReadFlag(false, messageID);
+			return message;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
 	}
-    }
+
+	@Override
+	public Message readAdminMessage(Long messageID) throws EthraaException {
+		try {
+
+			Message message = messageDao.findOne(messageID);
+			message.setNewAdminMessage(false);
+
+			message = messageDao.save(message);
+			return message;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public List<Message> readNewUserMessages(Long userId) throws EthraaException {
+		try {
+
+			List<Message> newUserMessages = messageDao.getNewUserMessages(userId);
+			for (Message message : newUserMessages) {
+				message.setNewUserMessage(false);
+				messageDao.updateMessageRecipientReadFlag(false, message.getId());
+			}
+			return newUserMessages;
+
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public List<Message> getNewAdminMessagesForUser(Long userId) throws EthraaException {
+		try {
+
+			List<Message> messages = messageDao.getNewAdminMessagesForUser(userId);
+
+			for (Message message : messages) {
+				message.setNewAdminMessage(false);
+				message = messageDao.save(message);
+
+			}
+			return messages;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public List<Message> getAllMessagesBetweenAdminAndUser(Long adminId, Long userId) throws EthraaException {
+		try {
+
+			List<Message> messages = messageDao.getAllMessagesBetweenAdminAndUser(adminId, userId);
+
+			for (Message message : messages) {
+				message.setNewAdminMessage(false);
+				message = messageDao.save(message);
+
+			}
+			return messages;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public Long countNewAdminMessages() throws EthraaException {
+		return messageDao.countNewAdminMessages();
+	}
+
+	@Override
+	public Long countNewUserMessages(Long userId) throws EthraaException {
+		return messageDao.countNewUserMessages(userId);
+	}
 
 }

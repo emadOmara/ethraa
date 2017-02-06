@@ -10,18 +10,18 @@ import net.pd.ethraa.integration.request.UserPointsRequest;
 
 public interface TrainingService {
 
-    Training saveTraining(Training training) throws EthraaException;
+	Training saveTraining(Training training) throws EthraaException;
 
-    List<Training> getAllTrainings(Long type) throws EthraaException;
+	List<Training> getAllTrainings(Long type) throws EthraaException;
 
-    List<Training> getAssignedTrainings(Long groupId, Long type) throws EthraaException;
+	List<Training> getAssignedTrainings(Long groupId, Long type) throws EthraaException;
 
-    List<Account> getMeetingMembers(Long trainingId) throws EthraaException;
+	List<Account> getMeetingMembers(Long trainingId) throws EthraaException;
 
-    void addAttendence(AttendenceRequest request) throws EthraaException;
+	void addAttendence(AttendenceRequest request) throws EthraaException;
 
-    Training getTraining(Long trainingId) throws EthraaException;
+	Training getTraining(Long trainingId) throws EthraaException;
 
-    void addTrainingBonous(UserPointsRequest request) throws EthraaException;
+	void addTrainingBonous(UserPointsRequest request) throws EthraaException;
 
 }
