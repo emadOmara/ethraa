@@ -16,7 +16,7 @@ public interface TrainingService {
 
 	List<Training> getAssignedTrainings(Long groupId, Long type) throws EthraaException;
 
-	List<Account> getMeetingMembers(Long trainingId) throws EthraaException;
+	List<Account> getMeetingMembers(Long trainingId, Long type) throws EthraaException;
 
 	void addAttendence(AttendenceRequest request) throws EthraaException;
 

@@ -58,6 +58,11 @@ public class Account extends BaseEntity {
 	@Transient
 	@JsonView(Views.Details.class)
 	private Long totalTrainingDays;
+
+	@Transient
+	@JsonView(Views.Details.class)
+	private Long trainingPoints = 0l;
+
 	@Transient
 	@JsonView(Views.Details.class)
 	private Long trainingAttendence;
@@ -73,7 +78,6 @@ public class Account extends BaseEntity {
 	@JsonView(Views.Public.class)
 	private Integer accountStatus;
 
-	private Double totalPoints;
 	@ManyToOne
 	@JsonView(Views.LoginSuccess.class)
 	private Group group;
@@ -150,14 +154,6 @@ public class Account extends BaseEntity {
 		this.accountType = accountType;
 	}
 
-	public Double getTotalPoints() {
-		return totalPoints;
-	}
-
-	public void setTotalPoints(Double totalPoints) {
-		this.totalPoints = totalPoints;
-	}
-
 	public Set<Point> getPoints() {
 		return points;
 	}
@@ -196,6 +192,14 @@ public class Account extends BaseEntity {
 
 	public void setAttendedTrainingToday(boolean attendedTrainingToday) {
 		this.attendedTrainingToday = attendedTrainingToday;
+	}
+
+	public Long getTrainingPoints() {
+		return trainingPoints;
+	}
+
+	public void setTrainingPoints(Long trainingPoints) {
+		this.trainingPoints = trainingPoints;
 	}
 
 }

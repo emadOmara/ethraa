@@ -42,6 +42,11 @@ public class TrainingServiceImpl implements TrainingService {
 			if (training.isNew()) {
 				return trainingDao.save(training);
 			} else {// update
+				if (!training.getTrainingDays().isEmpty()) {
+					for (TrainingDay td : training.getTrainingDays()) {
+						trainingDao.removeTrainingDays(td.getDay().getId());
+					}
+				}
 				Training fetchedTraining = trainingDao.findOne(training.getId());
 				beanUtilService.copyProperties(fetchedTraining, training);
 				return trainingDao.save(fetchedTraining);
@@ -79,7 +84,7 @@ public class TrainingServiceImpl implements TrainingService {
 	}
 
 	@Override
-	public List<Account> getMeetingMembers(Long trainingId) throws EthraaException {
+	public List<Account> getMeetingMembers(Long trainingId, Long type) throws EthraaException {
 		try {
 			List<Account> members = trainingDao.getMeetingMembers(trainingId);
 			Long totalDays = countTotalMeetingDays(trainingId);
@@ -89,6 +94,10 @@ public class TrainingServiceImpl implements TrainingService {
 				account.setTotalTrainingDays(totalDays);
 				account.setTrainingAttendence(trainingAttendence);
 				account.setAttendedTrainingToday(isAttendedToday);
+				Point evaluationPoint = accountDao.findEvaluationPoint(trainingId, type, account.getId());
+				if (evaluationPoint != null) {
+					account.setTrainingPoints(evaluationPoint.getPoints());
+				}
 			}
 			return members;
 		} catch (Exception e) {

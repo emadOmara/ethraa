@@ -117,14 +117,15 @@ public class TrainingController extends BaseController {
 
 	}
 
-	@GetMapping(path = "/list/members/{trainingId}")
+	@GetMapping(path = "/list/members/{trainingId}/{type}")
 	@JsonView(Views.Details.class)
-	public BaseResponse listMeetingMembers(@PathVariable("trainingId") Long trainingId) throws EthraaException {
+	public BaseResponse listMeetingMembers(@PathVariable("trainingId") Long trainingId, @PathVariable("type") Long type)
+			throws EthraaException {
 
 		handleNullID(trainingId);
 
 		BaseResponse response = new BaseResponse();
-		List<Account> accounts = trainingService.getMeetingMembers(trainingId);
+		List<Account> accounts = trainingService.getMeetingMembers(trainingId, type);
 		handleSuccessResponse(response, accounts);
 
 		return response;
