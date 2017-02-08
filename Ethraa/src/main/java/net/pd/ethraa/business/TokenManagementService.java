@@ -1,5 +1,6 @@
 package net.pd.ethraa.business;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,40 +10,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenManagementService {
 
-    private Map<String, UserDetailsWrapper> users = new ConcurrentHashMap<>();
+	private Map<String, UserDetails> users = new ConcurrentHashMap<>();
 
-    public void addUser(String mobile, String token, UserDetails user) {
-	users.put(token, new UserDetailsWrapper(token, user));
-    }
-
-    public UserDetails getUser(String mobile) {
-	UserDetailsWrapper userDetailsWrapper = users.get(mobile);
-	if (userDetailsWrapper != null) {
-	    return userDetailsWrapper.getUser();
-	}
-	return null;
-    }
-
-    public void deleteUser(String mobile) {
-	users.remove(mobile);
-    }
-
-    private class UserDetailsWrapper {
-	private UserDetails user;
-	private String token;
-
-	public UserDetailsWrapper(String token, UserDetails userDetails) {
-	    this.token = token;
-	    user = userDetails;
+	public void addUser(String token, UserDetails user) {
+		users.put(token, user);
 	}
 
-	public UserDetails getUser() {
-	    return user;
+	public UserDetails getUser(String token) {
+		UserDetails UserDetails = users.get(token);
+		return UserDetails;
+
 	}
 
-	public void setUser(UserDetails user) {
-	    this.user = user;
+	public void deleteUser(String mobile) {
+		for (Iterator<UserDetails> iterator = users.values().iterator(); iterator.hasNext();) {
+			UserDetails userDetails = iterator.next();
+			if (userDetails != null && userDetails.getUsername().equals(mobile)) {
+				iterator.remove();
+			}
+
+		}
 	}
 
-    }
 }

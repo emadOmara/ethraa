@@ -19,7 +19,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
 	List<Account> findByGroupId(Long groupID);
 
-	List<Account> findByAccountType(AccountType type);
+	List<Account> findByAccountTypeAndAccountStatus(AccountType type, Integer status);
 
 	@Query("SELECT a FROM Account a left outer JOIN FETCH a.permissions WHERE a.mobile = :mobile and a.password=:password and a.accountStatus=:status")
 	public Account findUserWithPermissions(@Param("mobile") String findUserWithPermissions,
@@ -33,7 +33,8 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
 	List<Account> findByGroupIdIn(List<Long> recipientGroups);
 
-	List<Account> findByAccountTypeAndUserNameContainingIgnoreCase(AccountType type, String userName);
+	List<Account> findByAccountTypeAndUserNameContainingIgnoreCaseAndAccountStatus(AccountType type, String userName,
+			Integer status);
 
 	@Query("select p from Point p where p.account.id=:userId and p.type=:type and p.entityId=:entityId ")
 	Point findEvaluationPoint(@Param("entityId") Long entityId, @Param("type") Long type, @Param("userId") Long userId);
@@ -45,5 +46,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
 	@Query("select count (acc) from Account acc where acc.accountStatus != 1")
 	Long countPending();
+
+	List<Account> findByAccountType(AccountType type);
 
 }

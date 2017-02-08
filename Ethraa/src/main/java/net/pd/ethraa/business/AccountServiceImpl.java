@@ -35,10 +35,10 @@ public class AccountServiceImpl implements AccountService {
 	public List<Account> findByUserName(AccountType type, String userName) {
 
 		if (StringUtils.isEmpty(userName)) {
-			return accountDao.findByAccountType(type);
+			return accountDao.findByAccountTypeAndAccountStatus(type, 1);
 		}
 
-		return accountDao.findByAccountTypeAndUserNameContainingIgnoreCase(type, userName);
+		return accountDao.findByAccountTypeAndUserNameContainingIgnoreCaseAndAccountStatus(type, userName, 1);
 	}
 
 	@Override

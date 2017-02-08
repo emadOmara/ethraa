@@ -17,13 +17,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    @Override
-    public void init(AuthenticationManagerBuilder auth) throws Exception {
-	auth.userDetailsService(userDetailsService);
-    }
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService);
+	}
 
 }
 
@@ -32,27 +32,33 @@ public class WebSecurityGlobalAuthConfiguration extends GlobalAuthenticationConf
 @Order(1)
 class TokenAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-	// TODO return the implementation after the demo
-	http.authorizeRequests().anyRequest().permitAll();
-	// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
-	// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
-	http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic().and().csrf()
-		.disable();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// TODO return the implementation after the demo
 
-	// http.addFilterBefore(authenticationFilter(),
-	// BasicAuthenticationFilter.class);
-    }
+		http.authorizeRequests().anyRequest().permitAll();
+		// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
+		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic().and().csrf()
+				.disable();
 
-    @Bean
-    public TokenAuthenticationFilter authenticationFilter() throws Exception {
-	return new TokenAuthenticationFilter();
-    }
+		// ====================================================
+		// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
+		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
+		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-	return super.authenticationManagerBean();
-    }
+		// http.addFilterBefore(authenticationFilter(),
+		// BasicAuthenticationFilter.class);
+	}
+
+	@Bean
+	public TokenAuthenticationFilter authenticationFilter() throws Exception {
+		return new TokenAuthenticationFilter();
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 }
