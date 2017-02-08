@@ -24,4 +24,6 @@ public interface TrainingService {
 
 	void addTrainingBonous(UserPointsRequest request) throws EthraaException;
 
+	Long countLastTrainings(Long userId, int period, Long type) throws EthraaException;
+
 }

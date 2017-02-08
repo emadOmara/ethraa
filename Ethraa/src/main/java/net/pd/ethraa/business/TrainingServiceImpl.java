@@ -203,6 +203,23 @@ public class TrainingServiceImpl implements TrainingService {
 
 	}
 
+	@Override
+	public Long countLastTrainings(Long userId, int period, Long type) throws EthraaException {
+
+		try {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -period);
+			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+
+			Long count = trainingDao.countLastTrainings(userId, type, calendar.getTime());
+			return count;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
 	private Point createPoint(Long accountId, EvaluationPoint evaluation, UserPointsRequest request) {
 		Point p = new Point();
 

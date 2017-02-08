@@ -29,6 +29,9 @@ public interface BookDao extends JpaRepository<Book, Long> {
 	@Query("select acc from Account acc , Group g ,Book b  where acc.group.id=g.id and g member of  b.groups and b.id=:bookId  and acc not member of b.accounts and acc.accountStatus=1")
 	List<Account> listBookMissingReaders(@Param("bookId") Long bookId);
 
+	@Query("select count(b) from Account acc , Group g ,Book b  where acc.group.id=g.id and g member of  b.groups  and acc not member of b.accounts and acc.accountStatus=1 and acc.id=:userId")
+	Long countUserUnreadBooks(@Param("userId") Long userId);
+
 	@Query("select count(acc) from Account acc , Group g ,Book b  where acc.group.id=g.id and g member of  b.groups and b.id=:bookId  and acc not member of b.accounts and acc.accountStatus=1")
 	Long countBookMissingReaders(@Param("bookId") Long bookId);
 

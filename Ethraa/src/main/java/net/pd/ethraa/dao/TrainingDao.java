@@ -48,4 +48,6 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
 	@Query("delete  from TrainingDay t where t.day.id=:id")
 	void removeTrainingDays(@Param("id") Long id);
 
+	@Query("select count(t) from Training t inner join t.groups g ,Account acc where g.id=acc.group.id and acc.id=:userId and t.type=:type and t.startDate > :date")
+	Long countLastTrainings(@Param("userId") Long userId, @Param("type") Long type, @Param("date") Date date);
 }

@@ -37,8 +37,6 @@ class TokenAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO return the implementation after the demo
 
 		http.authorizeRequests().anyRequest().permitAll();
-		// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
-		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic().and().csrf()
 				.disable();
 
@@ -46,7 +44,7 @@ class TokenAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
 		// http.authorizeRequests().antMatchers("/api/authentication/**").permitAll();
 		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+		//
 		// http.addFilterBefore(authenticationFilter(),
 		// BasicAuthenticationFilter.class);
 	}

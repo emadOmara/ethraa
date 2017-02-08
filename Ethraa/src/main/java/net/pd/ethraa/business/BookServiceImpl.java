@@ -203,4 +203,14 @@ public class BookServiceImpl implements BookService {
 		}
 	}
 
+	@Override
+	public Long countUserUnreadBooks(Long userId) throws EthraaException {
+		try {
+
+			return bookDao.countUserUnreadBooks(userId);
+
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
 }

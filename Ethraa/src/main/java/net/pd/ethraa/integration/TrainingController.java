@@ -104,7 +104,7 @@ public class TrainingController extends BaseController {
 
 	@GetMapping(path = "/list/{type}/{groupId}")
 	@JsonView(Views.Public.class)
-	public BaseResponse listAssignedBooks(@PathVariable("type") Long type, @PathVariable("groupId") Long groupId)
+	public BaseResponse listAssignedTrainings(@PathVariable("type") Long type, @PathVariable("groupId") Long groupId)
 			throws EthraaException {
 
 		handleNullID(groupId, type);
