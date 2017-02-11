@@ -39,7 +39,7 @@ public class Message extends BaseEntity {
 	@JsonView(Views.AdminMessage.class)
 	protected Account sender;
 
-	@OneToMany(mappedBy = "msg", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "msg", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MessageRecipients> recipients;
 
 	@JsonView(Views.Messaging.class)

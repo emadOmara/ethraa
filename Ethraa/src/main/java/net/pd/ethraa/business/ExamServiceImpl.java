@@ -34,6 +34,13 @@ public class ExamServiceImpl implements ExamService {
 				return examDao.save(exam);
 			} else {// update
 				Exam fetchedExam = examDao.findOne(exam.getId());
+				// if (!CommonUtil.isEmpty(exam.getQuestions())) {
+				// fetchedExam.getQuestions().clear();
+				// for (Question q : exam.getQuestions()) {
+				// fetchedExam.getQuestions().add(q);
+				// }
+				// }
+				fetchedExam.getQuestions().clear();
 				beanUtilService.copyProperties(fetchedExam, exam);
 				return examDao.save(exam);
 			}

@@ -55,6 +55,9 @@ public class Account extends BaseEntity {
 	@Min(1950)
 	private Integer graduationYear;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "sender")
+	private List<Message> messages;
+
 	@Transient
 	@JsonView(Views.Details.class)
 	private Long totalTrainingDays;

@@ -34,14 +34,14 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
 
 	List<Training> findByType(Long type);
 
-	@Query("select t.training.type ,count(att),t.training.points from TrainingDay t inner join t.attendence att where att.account.id=:userId group by t.training.type")
+	@Query("select t.training.type ,count(att),t.training.points from TrainingDay t inner join t.attendence att where att.account.id=:userId group by t.training.type,t.training.points")
 	Object[] countTrainingPoints(@Param("userId") Long userId);
 	// @Query("select t.training.type ,count(t.id),t.training.points from
 	// TrainingDay t inner join t.accounts acc where acc.id=:userId group by
 	// t.training.type")
 	// Object[] sumTrainingPoints(@Param("userId") Long userId);
 
-	@Query("select t.training.title ,count(att),t.training.points from TrainingDay t inner join t.attendence att where att.account.id=:userId and t.training.type=:type group by t.training.id")
+	@Query("select t.training.title ,count(att),t.training.points from TrainingDay t inner join t.attendence att where att.account.id=:userId and t.training.type=:type group by t.training.title,t.training.points")
 	Object[] getAllTrainingsWithAttendence(@Param("userId") Long userId, @Param("type") Long type);
 
 	@Modifying
