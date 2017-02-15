@@ -11,8 +11,10 @@ import javax.persistence.OneToMany;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import net.pd.ethraa.common.CommonUtil;
+import net.pd.ethraa.integration.jackson.Views;
 
 /**
  * Exam entity
@@ -29,10 +31,12 @@ public class Question extends BaseEntity {
 	private static final long serialVersionUID = 1606984488816853694L;
 
 	@NotEmpty
+	@JsonView(Views.Public.class)
 	private String question;
-
+	@JsonView(Views.Public.class)
 	private Integer score;
 
+	@JsonView(Views.Public.class)
 	private Integer type;
 
 	@ManyToOne
@@ -40,6 +44,7 @@ public class Question extends BaseEntity {
 	private Exam exam;
 
 	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonView(Views.Public.class)
 	private Set<Answer> answers = new HashSet<>();
 
 	public Integer getScore() {

@@ -9,6 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Join Table between {@link TrainingDay} , {@link Account} entity
  *
@@ -25,6 +27,7 @@ public class TrainingAttendence extends BaseEntity {
 
 	@ManyToOne
 	@NotNull
+	@JsonIgnore
 	private TrainingDay trainingDay;
 
 	@ManyToOne

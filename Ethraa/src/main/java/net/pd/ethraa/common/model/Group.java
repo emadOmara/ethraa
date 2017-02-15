@@ -13,48 +13,48 @@ import net.pd.ethraa.integration.jackson.Views;
 @Table(name = "GROUPS")
 public class Group extends BaseEntity {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5852390428319467002L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5852390428319467002L;
 
-    @JsonView({ Views.Public.class, Views.Group.class })
-    @Column(unique = true)
-    private String name;
-    private String description;
-    @Transient
-    @JsonView(Views.Group.class)
-    private Long pendingRequests;
+	@JsonView({ Views.Public.class, Views.Group.class })
+	@Column(unique = true)
+	private String name;
+	private String description;
+	@Transient
+	@JsonView(Views.Group.class)
+	private Long pendingRequests;
 
-    public Group() {
-    }
+	public Group() {
+	}
 
-    public Group(Long groupID) {
-	id = groupID;
-    }
+	public Group(Long groupID) {
+		id = groupID;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDescription() {
-	return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-	this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Long getPendingRequests() {
-	return pendingRequests;
-    }
+	public Long getPendingRequests() {
+		return pendingRequests;
+	}
 
-    public void setPendingRequests(Long pendingRequests) {
-	this.pendingRequests = pendingRequests;
-    }
+	public void setPendingRequests(Long pendingRequests) {
+		this.pendingRequests = pendingRequests;
+	}
 
 }

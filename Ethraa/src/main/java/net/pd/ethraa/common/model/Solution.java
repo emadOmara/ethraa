@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /***
  * Exam entity**
  * 
@@ -19,6 +21,7 @@ public class Solution extends BaseEntity {
 	private static final long serialVersionUID = -1732232204178493231L;
 
 	@ManyToOne
+	@JsonIgnore
 	private UserExam userExam;
 
 	@ManyToOne
@@ -29,6 +32,8 @@ public class Solution extends BaseEntity {
 
 	@Lob
 	private String writtenAnswer;
+
+	private Long score;
 
 	public UserExam getUserExam() {
 		return userExam;
@@ -60,6 +65,14 @@ public class Solution extends BaseEntity {
 
 	public void setWrittenAnswer(String writtenAnswer) {
 		this.writtenAnswer = writtenAnswer;
+	}
+
+	public Long getScore() {
+		return score;
+	}
+
+	public void setScore(Long score) {
+		this.score = score;
 	}
 
 }

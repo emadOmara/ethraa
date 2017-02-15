@@ -63,6 +63,14 @@ public class Account extends BaseEntity {
 	private Long totalTrainingDays;
 
 	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examFullMark;
+
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examScore;
+
+	@Transient
 	@JsonView(Views.Details.class)
 	private Long trainingPoints = 0l;
 
@@ -203,6 +211,30 @@ public class Account extends BaseEntity {
 
 	public void setTrainingPoints(Long trainingPoints) {
 		this.trainingPoints = trainingPoints;
+	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+
+	public Long getExamFullMark() {
+		return examFullMark;
+	}
+
+	public void setExamFullMark(Long examFullMark) {
+		this.examFullMark = examFullMark;
+	}
+
+	public Long getExamScore() {
+		return examScore;
+	}
+
+	public void setExamScore(Long examScore) {
+		this.examScore = examScore;
 	}
 
 }
