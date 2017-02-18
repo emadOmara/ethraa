@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Exam;
 import net.pd.ethraa.common.model.Group;
+import net.pd.ethraa.common.model.Question;
 import net.pd.ethraa.common.model.UserExamKey;
 
 @Repository
@@ -19,13 +20,16 @@ public interface ExamDao extends JpaRepository<Exam, Long> {
 	@Query("select e from Exam e where :group member of  e.groups")
 	List<Exam> findByGroup(@Param("group") Group group);
 
+	@Query("select e from Exam e where :group member of  e.groups and e.type=:type")
+	List<Exam> findByGroupAndType(@Param("group") Group group, @Param("group") Long type);
+
 	@Query("select acc from Account acc  where acc.accountStatus=1 and acc.group.id in (select g.id from Exam e inner join e.groups g where e.id=:examId) ")
 	List<Account> getExamMembers(@Param("examId") Long examId);
 
 	// @Query("select sum(s.) from UserExam ue inner join ue.solutions s where
 	// ue.id=:key")
-	@Query("select sum(s.score) from UserExam ue inner join ue.solutions s where ue.id=:key")
-	Long getUserScore(@Param("key") UserExamKey key);
+	@Query("select sum(s.score),ue.id ,ue.status from UserExam ue inner join ue.solutions s where ue.id=:key and 1=2")
+	Object[] getUserScore(@Param("key") UserExamKey key);
 
 	@Modifying
 	@Query("delete from Solution s where s.userExam.id.exam.id=:examId")
@@ -42,5 +46,16 @@ public interface ExamDao extends JpaRepository<Exam, Long> {
 	@Modifying
 	@Query("delete from Question e where e.exam.id=:examId")
 	void deleteQuestions(@Param("examId") Long examId);
+
+	@Query("select q from Question q where q.id=:id")
+	Question getQuestion(@Param("id") Long id);
+
+	List<Exam> findByType(Long type);
+
+	@Query("select count(acc.id) from Account acc  where acc.accountStatus=1 and acc.group.id in (select g.id from Exam e inner join e.groups g where e.id=:examId) ")
+	Long countExamMembers(@Param("examId") Long examId);
+
+	@Query("select count(ue.id.exam.id) ,ue.status from UserExam ue where ue.id.exam.id=:examId group by ue.status,ue.id.exam.id")
+	Object[] countExamSolutions(@Param("examId") Long examId);
 
 }

@@ -2,7 +2,6 @@ package net.pd.ethraa.business;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.Exam;
 import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.common.model.Question;
+import net.pd.ethraa.common.model.Solution;
 import net.pd.ethraa.common.model.UserExam;
 import net.pd.ethraa.common.model.UserExamKey;
 import net.pd.ethraa.dao.AccountDao;
@@ -36,7 +36,7 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public Exam saveExam(Exam exam) throws EthraaException {
 		try {
-			if (exam.isNew()) {
+			if (!exam.isNew()) {
 				deleteExam(exam.getId());
 			}
 			return examDao.save(exam);
@@ -47,22 +47,48 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public List<Exam> getAllExams() throws EthraaException {
+	public List<Exam> getAllExams(Long type) throws EthraaException {
 		try {
-			List<Exam> exams = examDao.findAll();
+			List<Exam> exams = examDao.findByType(type);
+
+			addExamSolutionsAndEvaluations(exams);
+
 			return exams;
 		} catch (Exception e) {
 			throw new EthraaException(e);
 		}
 	}
 
+	private void addExamSolutionsAndEvaluations(List<Exam> exams) {
+		for (Exam exam : exams) {
+			Long examMembers = examDao.countExamMembers(exam.getId());
+			exam.setTotalExamMembers(examMembers);
+
+			Object[] result = examDao.countExamSolutions(exam.getId());
+			Object[] entry = (Object[]) result[0];
+
+			if (CommonUtil.isEmpty(entry[0]) || CommonUtil.isEmpty(entry[1]))
+				continue;
+			if (EthraaConstants.EXAM_STATUS_ANSWERED.equals(entry[1])) {
+				exam.setExamUserSolutions((Long) entry[0]);
+				exam.setExamAdminEvaluations(0l);
+			} else if (EthraaConstants.EXAM_STATUS_EVALUATED.equals(entry[1])) {
+				exam.setExamAdminEvaluations((Long) entry[0]);
+				exam.setExamUserSolutions(0l);
+			}
+			exam.setExamStatus((Long) entry[1]);
+
+		}
+	}
+
 	@Override
-	public List<Exam> getAssignedExams(Long groupId) throws EthraaException {
+	public List<Exam> getAssignedExams(Long groupId, Long type) throws EthraaException {
 		try {
 			Group g = new Group();
 			g.setId(groupId);
 
-			List<Exam> exams = examDao.findByGroup(g);
+			List<Exam> exams = examDao.findByGroupAndType(g, type);
+			addExamSolutionsAndEvaluations(exams);
 			return exams;
 		} catch (Exception e) {
 			throw new EthraaException(e);
@@ -70,7 +96,7 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public List<Exam> listUserExams(Long userId) throws EthraaException {
+	public List<Exam> listUserExams(Long userId, Long type) throws EthraaException {
 
 		try {
 
@@ -79,7 +105,7 @@ public class ExamServiceImpl implements ExamService {
 				throw new EthraaException("No account defined for the id " + userId);
 			Group g = account.getGroup();
 
-			List<Exam> assignedExams = examDao.findByGroup(g);
+			List<Exam> assignedExams = examDao.findByGroupAndType(g, type);
 			if (CommonUtil.isEmpty(assignedExams)) {
 				return Collections.emptyList();
 			}
@@ -87,8 +113,21 @@ public class ExamServiceImpl implements ExamService {
 				Long examId = exam.getId();
 				Long fullMark = getExamFullMark(examId);
 				exam.setExamFullMark(fullMark);
-				Long userScore = getUserScore(userId, examId);
-				exam.setExamScore(userScore);
+
+				Object[] result = getUserScore(account.getId(), examId);
+				if (!CommonUtil.isEmpty(result)) {
+					Object[] entry = (Object[]) result[0];
+
+					if (entry[1] == null) {
+						exam.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
+					} else {
+						Integer status = (Integer) entry[2];
+						exam.setExamStatus(status.longValue());
+						Long score = (Long) entry[0];
+						exam.setExamScore(score);
+					}
+				}
+
 			}
 
 			return assignedExams;
@@ -131,10 +170,20 @@ public class ExamServiceImpl implements ExamService {
 			}
 			Long examFullMark = getExamFullMark(examId);
 			for (Account account : members) {
-				Long userScore = getUserScore(account.getId(), examId);
-
+				Object[] result = getUserScore(account.getId(), examId);
 				account.setExamFullMark(examFullMark);
-				account.setExamScore(userScore);
+				if (!CommonUtil.isEmpty(result)) {
+					Object[] entry = (Object[]) result[0];
+
+					if (entry[1] == null) {
+						account.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
+					} else {
+						Integer status = (Integer) entry[2];
+						account.setExamStatus(status.longValue());
+						Long score = (Long) entry[0];
+						account.setExamScore(score);
+					}
+				}
 			}
 			return members;
 		} catch (Exception e) {
@@ -142,7 +191,7 @@ public class ExamServiceImpl implements ExamService {
 		}
 	}
 
-	private Long getUserScore(Long accountId, Long examId) {
+	private Object[] getUserScore(Long accountId, Long examId) {
 
 		UserExamKey key = new UserExamKey();
 		Account acc = new Account();
@@ -157,7 +206,7 @@ public class ExamServiceImpl implements ExamService {
 	private Long getExamFullMark(Long examId) {
 		Exam exam = examDao.findOne(examId);
 		long fullMark = 0l;
-		Set<Question> questions = exam.getQuestions();
+		List<Question> questions = exam.getQuestions();
 		for (Question question : questions) {
 			fullMark += question.getScore();
 		}
@@ -168,12 +217,11 @@ public class ExamServiceImpl implements ExamService {
 	public void answerExam(UserExam userExam) throws EthraaException {
 		try {
 			UserExam fetchedUserExam = userExamDao.findOne(userExam.getId());
-			if (CommonUtil.isEmpty(fetchedUserExam))
-				throw new EthraaException("no user exam found for specified id");
 
-			if (fetchedUserExam.getStatus() == EthraaConstants.EXAM_STATUS_ANSWERED)
+			if (!CommonUtil.isEmpty(fetchedUserExam)
+					&& EthraaConstants.EXAM_STATUS_ANSWERED.equals(fetchedUserExam.getStatus()))
 				throw new EthraaException("exam already answered");
-			userExam.setStatus(EthraaConstants.EXAM_STATUS_ANSWERED);
+			userExam.setStatus(EthraaConstants.EXAM_STATUS_ANSWERED.longValue());
 			userExamDao.save(userExam);
 
 		} catch (Exception e) {
@@ -184,8 +232,31 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public void evaluateExam(UserExam userExam) throws EthraaException {
 		try {
-			userExam.setStatus(EthraaConstants.EXAM_STATUS_EVALUATED);
-			userExamDao.save(userExam);
+			UserExam fetchedUserExam = userExamDao.findOne(userExam.getId());
+			if (CommonUtil.isEmpty(fetchedUserExam)) {
+				throw new EthraaException("User Solution not found");
+			}
+			userExam.setStatus(EthraaConstants.EXAM_STATUS_EVALUATED.longValue());
+
+			if (!CommonUtil.isEmpty(userExam) && !CommonUtil.isEmpty(userExam.getSolutions())) {
+
+				for (Solution solution : fetchedUserExam.getSolutions()) {
+					Question question = solution.getQuestion();
+					Integer type = question.getType();
+					if (!EthraaConstants.EXAM_QUESTION_TYPE_TEXT.equals(type)) {
+						if (solution.getAnswer().isCorrect()) {
+							solution.setScore(question.getScore().longValue());
+						} else {
+							solution.setScore(0l);
+						}
+					} else {
+						int index = userExam.getSolutions().indexOf(solution);
+						Solution evalSolution = userExam.getSolutions().get(index);
+						solution.setScore(evalSolution.getScore());
+					}
+				}
+			}
+			userExamDao.save(fetchedUserExam);
 
 		} catch (Exception e) {
 			throw new EthraaException(e);
@@ -205,6 +276,16 @@ public class ExamServiceImpl implements ExamService {
 			key.setExam(exam);
 
 			return userExamDao.findOne(key);
+
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public Exam getExam(Long examId) throws EthraaException {
+		try {
+			return examDao.findOne(examId);
 
 		} catch (Exception e) {
 			throw new EthraaException(e);

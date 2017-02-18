@@ -21,6 +21,7 @@ import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.pd.ethraa.integration.jackson.Views;
@@ -56,6 +57,7 @@ public class Account extends BaseEntity {
 	private Integer graduationYear;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "sender")
+	@JsonIgnore
 	private List<Message> messages;
 
 	@Transient
@@ -69,7 +71,9 @@ public class Account extends BaseEntity {
 	@Transient
 	@JsonView(Views.ExamPublic.class)
 	private Long examScore;
-
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examStatus;
 	@Transient
 	@JsonView(Views.Details.class)
 	private Long trainingPoints = 0l;
@@ -235,6 +239,14 @@ public class Account extends BaseEntity {
 
 	public void setExamScore(Long examScore) {
 		this.examScore = examScore;
+	}
+
+	public Long getExamStatus() {
+		return examStatus;
+	}
+
+	public void setExamStatus(Long examStatus) {
+		this.examStatus = examStatus;
 	}
 
 }

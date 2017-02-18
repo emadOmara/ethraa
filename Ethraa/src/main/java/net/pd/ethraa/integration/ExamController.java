@@ -32,40 +32,57 @@ public class ExamController extends BaseController {
 	@Autowired
 	private ExamService examService;
 
-	@JsonView(Views.Public.class)
-	@GetMapping(path = "/list")
-	public BaseResponse listAllExams() throws EthraaException {
+	@JsonView(Views.ExamPublic.class)
+	@GetMapping(path = "/list/{type}")
+	public BaseResponse listAllExams(@PathVariable("type") Long type) throws EthraaException {
 		BaseResponse response = new BaseResponse();
-		List<Exam> allExams = examService.getAllExams();
+		List<Exam> allExams = examService.getAllExams(type);
 		handleSuccessResponse(response, allExams);
 		return response;
 	}
 
-	@JsonView(Views.Public.class)
-	@GetMapping(path = "/list/{groupId}")
-	public BaseResponse listAssignedExams(@PathVariable("groupId") Long groupId) throws EthraaException {
+	@JsonView(Views.ExamPublic.class)
+	@GetMapping(path = "/list/{groupId}/{type}")
+	public BaseResponse listAssignedExams(@PathVariable("groupId") Long groupId, @PathVariable("type") Long type)
+			throws EthraaException {
 
 		handleNullID(groupId);
+		handleNullID(type);
 
 		BaseResponse response = new BaseResponse();
-		List<Exam> assignedExams = examService.getAssignedExams(groupId);
+		List<Exam> assignedExams = examService.getAssignedExams(groupId, type);
 		handleSuccessResponse(response, assignedExams);
 
 		return response;
 
 	}
 
-	@GetMapping(path = "/list/user/{userId}")
-	public BaseResponse listUserExams(@PathVariable("userId") Long userId) throws EthraaException {
+	@GetMapping(path = "/list/user/{userId}/{type}")
+	@JsonView(Views.ExamPublic.class)
+	public BaseResponse listUserExams(@PathVariable("userId") Long userId, @PathVariable("type") Long type)
+			throws EthraaException {
 
 		handleNullID(userId);
 
 		BaseResponse response = new BaseResponse();
-		List<Exam> exams = examService.listUserExams(userId);
+		List<Exam> exams = examService.listUserExams(userId, type);
 		handleSuccessResponse(response, exams);
 
 		return response;
 
+	}
+
+	@JsonView(Views.ExamPublic.class)
+	@GetMapping(path = "/get/{examId}")
+	public BaseResponse getExam(@PathVariable("examId") Long examId) throws EthraaException {
+
+		handleNullID(examId);
+
+		BaseResponse response = new BaseResponse();
+		Exam exam = examService.getExam(examId);
+		handleSuccessResponse(response, exam);
+
+		return response;
 	}
 
 	@GetMapping(path = "/user/answer/{userId}/{examId}")
@@ -120,22 +137,6 @@ public class ExamController extends BaseController {
 
 	}
 
-	// @PostMapping(path = "/edit")
-	// public BaseResponse editExam(@RequestBody Exam exam) throws
-	// EthraaException {
-	//
-	// BaseResponse response = new BaseResponse();
-	// if (exam.isNew()) {
-	// throw new EthraaException(EthraaConstants.ERROR_MSG_ID_CAN_T_BE_NULL);
-	// }
-	//
-	// examService.saveExam(exam);
-	// handleSuccessResponse(response, null);
-	//
-	// return response;
-	//
-	// }
-
 	@DeleteMapping(path = "/delete/{examId}")
 	public BaseResponse deleteExam(@PathVariable("examId") Long examId) throws EthraaException {
 
@@ -150,7 +151,7 @@ public class ExamController extends BaseController {
 	}
 
 	@GetMapping(path = "/list/members/{examId}")
-	@JsonView(Views.ExamPublic.class)
+	@JsonView(Views.Public.class)
 	public BaseResponse listExamMembers(@PathVariable("examId") Long examId) throws EthraaException {
 
 		handleNullID(examId);

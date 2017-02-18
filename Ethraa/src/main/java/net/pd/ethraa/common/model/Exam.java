@@ -1,5 +1,6 @@
 package net.pd.ethraa.common.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,7 +8,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -41,10 +41,7 @@ public class Exam extends BaseEntity {
 
 	@OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonView(Views.Public.class)
-	private Set<Question> questions = new HashSet<>();
-
-	@ManyToOne
-	private Training training;
+	private List<Question> questions = new ArrayList<Question>();
 
 	@Transient
 	@JsonView(Views.ExamPublic.class)
@@ -53,6 +50,24 @@ public class Exam extends BaseEntity {
 	@Transient
 	@JsonView(Views.ExamPublic.class)
 	private Long examScore;
+
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examUserSolutions;
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long totalExamMembers;
+
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examAdminEvaluations;
+
+	@Transient
+	@JsonView(Views.ExamPublic.class)
+	private Long examStatus;
+
+	@JsonView(Views.Public.class)
+	private Long type;
 
 	public String getTitle() {
 		return title;
@@ -68,14 +83,6 @@ public class Exam extends BaseEntity {
 
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
-	}
-
-	public Training getTraining() {
-		return training;
-	}
-
-	public void setTraining(Training training) {
-		this.training = training;
 	}
 
 	public Set<UserExam> getUserExams() {
@@ -102,11 +109,11 @@ public class Exam extends BaseEntity {
 		this.examScore = examScore;
 	}
 
-	public Set<Question> getQuestions() {
+	public List<Question> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(Set<Question> questions) {
+	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 		if (!CommonUtil.isEmpty(this.questions)) {
 			for (Question question : questions) {
@@ -114,46 +121,45 @@ public class Exam extends BaseEntity {
 			}
 		}
 	}
-	// public static void main(String[] args) throws JsonProcessingException {
-	// Exam e = new Exam();
-	//
-	// e.setId(1l);
-	// e.setTitle("c++");
-	// Training t = new Training();
-	// t.setId(1l);
-	// e.setTraining(t);
-	//
-	// Group g = new Group();
-	// g.setId(3l);
-	//
-	// List<Group> groups = new ArrayList<>();
-	// groups.add(g);
-	// e.setGroups(groups);
-	//
-	// Question q = new Question();
-	// q.setId(4l);
-	// q.setQuestion("how r u ?");
-	// q.setExam(e);
-	// q.setScore(100);
-	// q.setType(EthraaConstants.EXAM_QUESTION_TYPE_MC);
-	//
-	// Answer ans = new Answer();
-	// ans.setAnswer("one");
-	// ans.setCorrect(true);
-	// ans.setId(4l);
-	// ans.setQuestion(q);
-	//
-	// Set<Answer> answers = new HashSet<>();
-	// answers.add(ans);
-	// q.setAnswers(answers);
-	//
-	// Set<Question> questions = new HashSet<>();
-	// questions.add(q);
-	// e.setQuestions(questions);
-	//
-	// ObjectMapper mapper = new ObjectMapper();
-	// String result = mapper.writeValueAsString(e);
-	// System.out.println(result);
-	//
-	// }
+
+	public Long getType() {
+		return type;
+	}
+
+	public void setType(Long type) {
+		this.type = type;
+	}
+
+	public Long getExamStatus() {
+		return examStatus;
+	}
+
+	public void setExamStatus(Long examStatus) {
+		this.examStatus = examStatus;
+	}
+
+	public Long getExamUserSolutions() {
+		return examUserSolutions;
+	}
+
+	public void setExamUserSolutions(Long examUserSolutions) {
+		this.examUserSolutions = examUserSolutions;
+	}
+
+	public Long getExamAdminEvaluations() {
+		return examAdminEvaluations;
+	}
+
+	public void setExamAdminEvaluations(Long examAdminEvaluations) {
+		this.examAdminEvaluations = examAdminEvaluations;
+	}
+
+	public Long getTotalExamMembers() {
+		return totalExamMembers;
+	}
+
+	public void setTotalExamMembers(Long totalExamMembers) {
+		this.totalExamMembers = totalExamMembers;
+	}
+
 }

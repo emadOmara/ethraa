@@ -1,7 +1,6 @@
 package net.pd.ethraa.common.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,10 +8,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import net.pd.ethraa.common.CommonUtil;
+import net.pd.ethraa.integration.jackson.Views;
 
 /***
  * Exam entity**
@@ -31,7 +30,9 @@ public class UserExam implements Serializable {
 	@EmbeddedId
 	private UserExamKey id;
 
-	private Integer status;
+	@JsonView(Views.Public.class)
+	private Long status = 0l;
+
 	@OneToMany(mappedBy = "userExam", cascade = CascadeType.ALL, orphanRemoval = true)
 	// @JoinColumns(value = { @JoinColumn(name = "account"), @JoinColumn(name =
 	// "exam") })
@@ -58,11 +59,11 @@ public class UserExam implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getStatus() {
+	public Long getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(Long status) {
 		this.status = status;
 	}
 
@@ -91,45 +92,45 @@ public class UserExam implements Serializable {
 		return true;
 	}
 
-	public static void main(String[] args) throws JsonProcessingException {
-		UserExam uExam = new UserExam();
-
-		UserExamKey key = new UserExamKey();
-
-		Account account = new Account();
-		account.setId(1l);
-
-		Exam exam = new Exam();
-		exam.setId(4l);
-		key.setAccount(account);
-		key.setExam(exam);
-		uExam.setId(key);
-
-		List<Solution> solutions = new ArrayList<>();
-		Solution s = new Solution();
-
-		Question question = new Question();
-		question.setId(2l);
-		question.setQuestion("what is your opinion");
-
-		Answer ans = new Answer();
-		ans.setId(2l);
-		ans.setAnswer("no thing");
-
-		s.setAnswer(ans);
-		s.setQuestion(question);
-		s.setUserExam(uExam);
-		solutions.add(s);
-		s = new Solution();
-
-		s.setQuestion(question);
-		s.setWrittenAnswer("this is anything desc");
-		s.setUserExam(uExam);
-		solutions.add(s);
-		uExam.setSolutions(solutions);
-
-		ObjectMapper mapper = new ObjectMapper();
-		String val = mapper.writeValueAsString(uExam);
-		System.out.println(val);
-	}
+	// public static void main(String[] args) throws JsonProcessingException {
+	// UserExam uExam = new UserExam();
+	//
+	// UserExamKey key = new UserExamKey();
+	//
+	// Account account = new Account();
+	// account.setId(1l);
+	//
+	// Exam exam = new Exam();
+	// exam.setId(4l);
+	// key.setAccount(account);
+	// key.setExam(exam);
+	// uExam.setId(key);
+	//
+	// List<Solution> solutions = new ArrayList<>();
+	// Solution s = new Solution();
+	//
+	// Question question = new Question();
+	// question.setId(2l);
+	// question.setQuestion("what is your opinion");
+	//
+	// Answer ans = new Answer();
+	// ans.setId(2l);
+	// ans.setAnswer("no thing");
+	//
+	// s.setAnswer(ans);
+	// s.setQuestion(question);
+	// s.setUserExam(uExam);
+	// solutions.add(s);
+	// s = new Solution();
+	//
+	// s.setQuestion(question);
+	// s.setWrittenAnswer("this is anything desc");
+	// s.setUserExam(uExam);
+	// solutions.add(s);
+	// uExam.setSolutions(solutions);
+	//
+	// ObjectMapper mapper = new ObjectMapper();
+	// String val = mapper.writeValueAsString(uExam);
+	// System.out.println(val);
+	// }
 }

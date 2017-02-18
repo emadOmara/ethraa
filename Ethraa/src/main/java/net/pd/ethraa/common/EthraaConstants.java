@@ -17,12 +17,13 @@ public interface EthraaConstants {
 	Long ACTIVITY_TYPE_COURSE = 2l;
 	Long ACTIVITY_TYPE_MEETING = 3l;
 
-	Integer EXAM_STATUS_ANSWERED = 1;
-	Integer EXAM_STATUS_EVALUATED = 2;
+	Long EXAM_STATUS_Not_ANSWERED = 0l;
+	Long EXAM_STATUS_ANSWERED = 1l;
+	Long EXAM_STATUS_EVALUATED = 2l;
 
-	Integer EXAM_QUESTION_TYPE_MC = 1;
-	Integer EXAM_QUESTION_TYPE_SC = 2;
-	Integer EXAM_QUESTION_TYPE_TEXT = 3;
+	Long EXAM_QUESTION_TYPE_MC = 1l;
+	// Integer EXAM_QUESTION_TYPE_SC = 2;
+	Long EXAM_QUESTION_TYPE_TEXT = 2l;
 	/**
 	 * date format like 2017-01-23 18:14:41
 	 */

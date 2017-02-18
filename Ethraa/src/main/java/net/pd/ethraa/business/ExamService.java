@@ -11,11 +11,11 @@ public interface ExamService {
 
 	Exam saveExam(Exam exam) throws EthraaException;
 
-	List<Exam> getAllExams() throws EthraaException;
+	List<Exam> getAllExams(Long type) throws EthraaException;
 
-	List<Exam> getAssignedExams(Long groupId) throws EthraaException;
+	List<Exam> getAssignedExams(Long groupId, Long type) throws EthraaException;
 
-	List<Exam> listUserExams(Long userId) throws EthraaException;
+	List<Exam> listUserExams(Long userId, Long type) throws EthraaException;
 
 	void deleteExam(Long examId) throws EthraaException;
 
@@ -26,5 +26,7 @@ public interface ExamService {
 	void evaluateExam(UserExam userExam) throws EthraaException;
 
 	UserExam getUserExam(Long userId, Long examId) throws EthraaException;
+
+	Exam getExam(Long examId) throws EthraaException;
 
 }
