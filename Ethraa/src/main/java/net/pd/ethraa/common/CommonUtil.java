@@ -41,8 +41,11 @@ public class CommonUtil {
 	return items == null ? true : items.size() == 0;
     }
 
+    public static boolean isEmpty(Object[] obj) {
+	return obj == null?true:obj.length==0;
+    }
     public static boolean isEmpty(Object obj) {
-	return obj == null;
+    	return obj == null;
     }
 
 }

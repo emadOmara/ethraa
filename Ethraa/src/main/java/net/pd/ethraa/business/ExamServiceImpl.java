@@ -60,11 +60,17 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	private void addExamSolutionsAndEvaluations(List<Exam> exams) {
+		if(CommonUtil.isEmpty(exams)){
+			return;
+		}
 		for (Exam exam : exams) {
 			Long examMembers = examDao.countExamMembers(exam.getId());
 			exam.setTotalExamMembers(examMembers);
 
 			Object[] result = examDao.countExamSolutions(exam.getId());
+			if(CommonUtil.isEmpty(result)){
+				return;
+			}
 			Object[] entry = (Object[]) result[0];
 
 			if (CommonUtil.isEmpty(entry[0]) || CommonUtil.isEmpty(entry[1]))
@@ -121,8 +127,8 @@ public class ExamServiceImpl implements ExamService {
 					if (entry[1] == null) {
 						exam.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
 					} else {
-						Integer status = (Integer) entry[2];
-						exam.setExamStatus(status.longValue());
+						Long status = (Long) entry[2];
+						exam.setExamStatus(status);
 						Long score = (Long) entry[0];
 						exam.setExamScore(score);
 					}
@@ -178,8 +184,8 @@ public class ExamServiceImpl implements ExamService {
 					if (entry[1] == null) {
 						account.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
 					} else {
-						Integer status = (Integer) entry[2];
-						account.setExamStatus(status.longValue());
+						Long status = (Long) entry[2];
+						account.setExamStatus(status);
 						Long score = (Long) entry[0];
 						account.setExamScore(score);
 					}

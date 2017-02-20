@@ -34,10 +34,11 @@ public class Exam extends BaseEntity {
 	private String title;
 
 	@ManyToMany
+	@JsonView(Views.Public.class)
 	private List<Group> groups;
 
 	@OneToMany(mappedBy = "id.exam", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<UserExam> userExams = new HashSet<>();
+	private List<UserExam> userExams = new ArrayList<>();
 
 	@OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonView(Views.Public.class)
@@ -85,11 +86,11 @@ public class Exam extends BaseEntity {
 		this.groups = groups;
 	}
 
-	public Set<UserExam> getUserExams() {
+	public List<UserExam> getUserExams() {
 		return userExams;
 	}
 
-	public void setUserExams(Set<UserExam> userExams) {
+	public void setUserExams(List<UserExam> userExams) {
 		this.userExams = userExams;
 	}
 

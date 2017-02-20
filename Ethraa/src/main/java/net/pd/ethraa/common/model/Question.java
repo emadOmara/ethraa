@@ -1,6 +1,8 @@
 package net.pd.ethraa.common.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -45,7 +47,7 @@ public class Question extends BaseEntity {
 
 	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonView(Views.Public.class)
-	private Set<Answer> answers = new HashSet<>();
+	private List<Answer> answers = new ArrayList<>();
 
 	public Integer getScore() {
 		return score;
@@ -63,11 +65,11 @@ public class Question extends BaseEntity {
 		this.exam = exam;
 	}
 
-	public Set<Answer> getAnswers() {
+	public List<Answer> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(Set<Answer> answers) {
+	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 		if (!CommonUtil.isEmpty(this.answers)) {
 			for (Answer answer : answers) {

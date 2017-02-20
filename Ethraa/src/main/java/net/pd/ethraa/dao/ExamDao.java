@@ -21,14 +21,14 @@ public interface ExamDao extends JpaRepository<Exam, Long> {
 	List<Exam> findByGroup(@Param("group") Group group);
 
 	@Query("select e from Exam e where :group member of  e.groups and e.type=:type")
-	List<Exam> findByGroupAndType(@Param("group") Group group, @Param("group") Long type);
+	List<Exam> findByGroupAndType(@Param("group") Group group, @Param("type") Long type);
 
 	@Query("select acc from Account acc  where acc.accountStatus=1 and acc.group.id in (select g.id from Exam e inner join e.groups g where e.id=:examId) ")
 	List<Account> getExamMembers(@Param("examId") Long examId);
 
 	// @Query("select sum(s.) from UserExam ue inner join ue.solutions s where
 	// ue.id=:key")
-	@Query("select sum(s.score),ue.id ,ue.status from UserExam ue inner join ue.solutions s where ue.id=:key and 1=2")
+	@Query("select sum(s.score),ue.id ,ue.status from UserExam ue inner join ue.solutions s where ue.id=:key")
 	Object[] getUserScore(@Param("key") UserExamKey key);
 
 	@Modifying
