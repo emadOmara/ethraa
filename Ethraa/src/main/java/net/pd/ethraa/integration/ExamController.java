@@ -151,7 +151,7 @@ public class ExamController extends BaseController {
 	}
 
 	@GetMapping(path = "/list/members/{examId}")
-	@JsonView(Views.Public.class)
+	@JsonView(Views.ExamPublic.class)
 	public BaseResponse listExamMembers(@PathVariable("examId") Long examId) throws EthraaException {
 
 		handleNullID(examId);

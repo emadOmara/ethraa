@@ -35,4 +35,7 @@ public interface EthraaConstants {
 
 	static final String EMAIL_BODY_ACTIVATE_ACCOUNT = "رجاء العلم بانه قد تم تفعيل حسابك ويمكنك الان تسجيل الدخول";
 	static final String EMAIL_SUBJECT_ACTIVATE_ACCOUNT = "تفعيل الحساب";
+
+	Long EXAM_TYPE = 1l;
+	Long POLL_TYPE = 2l;
 }

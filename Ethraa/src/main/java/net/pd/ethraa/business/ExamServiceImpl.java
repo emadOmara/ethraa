@@ -60,11 +60,17 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	private void addExamSolutionsAndEvaluations(List<Exam> exams) {
+		if (CommonUtil.isEmpty(exams)) {
+			return;
+		}
 		for (Exam exam : exams) {
 			Long examMembers = examDao.countExamMembers(exam.getId());
 			exam.setTotalExamMembers(examMembers);
 
 			Object[] result = examDao.countExamSolutions(exam.getId());
+			if (CommonUtil.isEmpty(result)) {
+				return;
+			}
 			Object[] entry = (Object[]) result[0];
 
 			if (CommonUtil.isEmpty(entry[0]) || CommonUtil.isEmpty(entry[1]))
@@ -121,8 +127,8 @@ public class ExamServiceImpl implements ExamService {
 					if (entry[1] == null) {
 						exam.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
 					} else {
-						Integer status = (Integer) entry[2];
-						exam.setExamStatus(status.longValue());
+						Long status = (Long) entry[2];
+						exam.setExamStatus(status);
 						Long score = (Long) entry[0];
 						exam.setExamScore(score);
 					}
@@ -178,8 +184,8 @@ public class ExamServiceImpl implements ExamService {
 					if (entry[1] == null) {
 						account.setExamStatus(EthraaConstants.EXAM_STATUS_Not_ANSWERED.longValue());
 					} else {
-						Integer status = (Integer) entry[2];
-						account.setExamStatus(status.longValue());
+						Long status = (Long) entry[2];
+						account.setExamStatus(status);
 						Long score = (Long) entry[0];
 						account.setExamScore(score);
 					}
@@ -291,4 +297,30 @@ public class ExamServiceImpl implements ExamService {
 			throw new EthraaException(e);
 		}
 	}
+
+	@Override
+	public Long countExams(Long type, Long status) throws EthraaException {
+		try {
+			return examDao.countExams(type, status);
+
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
+	@Override
+	public Long countPendingExam(Long userId, Long examType) throws EthraaException {
+		try {
+			Account account = accountDao.findOne(userId);
+			if (CommonUtil.isEmpty(account))
+				throw new EthraaException("No account defined for the id " + userId);
+			Group g = account.getGroup();
+
+			return examDao.countUserExams(examType, g);
+
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
 }

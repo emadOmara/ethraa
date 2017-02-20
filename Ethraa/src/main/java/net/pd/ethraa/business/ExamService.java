@@ -29,4 +29,8 @@ public interface ExamService {
 
 	Exam getExam(Long examId) throws EthraaException;
 
+	Long countExams(Long type, Long status) throws EthraaException;
+
+	Long countPendingExam(Long userId, Long examType) throws EthraaException;
+
 }

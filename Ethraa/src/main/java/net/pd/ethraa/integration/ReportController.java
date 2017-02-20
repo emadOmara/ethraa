@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.pd.ethraa.business.AccountService;
 import net.pd.ethraa.business.BookService;
+import net.pd.ethraa.business.ExamService;
 import net.pd.ethraa.business.MessageService;
 import net.pd.ethraa.business.ReportService;
 import net.pd.ethraa.business.TrainingService;
@@ -36,6 +37,9 @@ public class ReportController extends BaseController {
 	private TrainingService trainingService;
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private ExamService examService;
 
 	@Autowired
 	private ReportService reportService;
@@ -92,6 +96,12 @@ public class ReportController extends BaseController {
 		Long pendingUsersCount = accountService.countPendingUsers();
 		result.put("PENDING_USRS_COUNT", pendingUsersCount);
 
+		Long answeredExams = examService.countExams(EthraaConstants.EXAM_TYPE, EthraaConstants.EXAM_STATUS_ANSWERED);
+		result.put("EXAM_COUNT", answeredExams);
+
+		Long answeredPolls = examService.countExams(EthraaConstants.POLL_TYPE, EthraaConstants.EXAM_STATUS_ANSWERED);
+		result.put("POLL_COUNT", answeredPolls);
+
 		handleSuccessResponse(response, result);
 
 		return response;
@@ -117,6 +127,12 @@ public class ReportController extends BaseController {
 
 		Long latesUserMeetings = trainingService.countLastTrainings(userId, 3, EthraaConstants.ACTIVITY_TYPE_MEETING);
 		result.put("MEETING_COUNT", latesUserMeetings);
+
+		Long examCount = examService.countPendingExam(userId, EthraaConstants.EXAM_TYPE);
+		result.put("EXAM_COUNT", examCount);
+
+		Long pollCount = examService.countPendingExam(userId, EthraaConstants.POLL_TYPE);
+		result.put("POLL_COUNT", pollCount);
 
 		handleSuccessResponse(response, result);
 
