@@ -248,7 +248,7 @@ public class ExamServiceImpl implements ExamService {
 
 				for (Solution solution : fetchedUserExam.getSolutions()) {
 					Question question = solution.getQuestion();
-					Integer type = question.getType();
+					Long type = question.getType().longValue();
 					if (!EthraaConstants.EXAM_QUESTION_TYPE_TEXT.equals(type)) {
 						if (solution.getAnswer().isCorrect()) {
 							solution.setScore(question.getScore().longValue());
