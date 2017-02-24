@@ -66,4 +66,6 @@ public interface ExamDao extends JpaRepository<Exam, Long> {
 	@Query("select count(e) from Exam e where :group member of  e.groups and e.type=:examType and e.userExams is empty")
 	Long countUserExams(@Param("examType") Long examType, @Param("group") Group group);
 
+	@Query("select count(s.answer.id), s.answer.id from Solution s where s.userExam.id.exam.id=:examId and s.question.id=:questionId group by s.answer.id")
+	Object[] countExamQuestionSolutions(@Param("examId") Long examId, @Param("questionId") Long questionId);
 }

@@ -11,6 +11,7 @@ import net.pd.ethraa.common.CommonUtil;
 import net.pd.ethraa.common.EthraaConstants;
 import net.pd.ethraa.common.EthraaException;
 import net.pd.ethraa.common.model.Account;
+import net.pd.ethraa.common.model.Answer;
 import net.pd.ethraa.common.model.Exam;
 import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.common.model.Question;
@@ -291,8 +292,37 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public Exam getExam(Long examId) throws EthraaException {
 		try {
-			return examDao.findOne(examId);
 
+			Exam exam = examDao.findOne(examId);
+			if (!CommonUtil.isEmpty(exam)) {
+				if (EthraaConstants.POLL_TYPE.equals(exam.getType())) {
+					List<Question> questions = exam.getQuestions();
+					for (Question question : questions) {
+						Object[] result = examDao.countExamQuestionSolutions(examId, question.getId());
+						if (!CommonUtil.isEmpty(result)) {
+							for (int j = 0; j < result.length; j++) {
+								Object[] entry = (Object[]) result[j];
+								if (!CommonUtil.isEmpty(entry[0]) && !CommonUtil.isEmpty(entry[1])) {
+									Long solutionCount = (Long) entry[0];
+									Long answerId = (Long) entry[1];
+									List<Answer> answers = question.getAnswers();
+
+									for (Answer answer : answers) {
+										if (answer.getId().equals(answerId)) {
+											answer.setPollTotalSelection(solutionCount);
+										}
+									}
+
+								}
+							}
+						}
+
+					}
+
+				}
+			}
+
+			return exam;
 		} catch (Exception e) {
 			throw new EthraaException(e);
 		}

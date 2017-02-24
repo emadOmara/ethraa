@@ -2,6 +2,7 @@ package net.pd.ethraa.common.model;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -35,6 +36,10 @@ public class Answer extends BaseEntity {
 	@JsonView(Views.Public.class)
 	private boolean correct;
 
+	@JsonView(Views.Public.class)
+	@Transient
+	private Long pollTotalSelection = 0l;
+
 	public String getAnswer() {
 		return answer;
 	}
@@ -57,6 +62,14 @@ public class Answer extends BaseEntity {
 
 	public void setCorrect(boolean correct) {
 		this.correct = correct;
+	}
+
+	public Long getPollTotalSelection() {
+		return pollTotalSelection;
+	}
+
+	public void setPollTotalSelection(Long pollTotalSelection) {
+		this.pollTotalSelection = pollTotalSelection;
 	}
 
 }
