@@ -300,19 +300,19 @@ public class ExamServiceImpl implements ExamService {
 					for (Question question : questions) {
 						Object[] result = examDao.countExamQuestionSolutions(examId, question.getId());
 						if (!CommonUtil.isEmpty(result)) {
-							for (int j = 0; j < result.length; j++) {
+							for(int j=0;j<result.length;j++){
 								Object[] entry = (Object[]) result[j];
-								if (!CommonUtil.isEmpty(entry[0]) && !CommonUtil.isEmpty(entry[1])) {
+								if(!CommonUtil.isEmpty(entry[0])&&!CommonUtil.isEmpty(entry[1])){
 									Long solutionCount = (Long) entry[0];
 									Long answerId = (Long) entry[1];
 									List<Answer> answers = question.getAnswers();
-
+									
 									for (Answer answer : answers) {
 										if (answer.getId().equals(answerId)) {
 											answer.setPollTotalSelection(solutionCount);
 										}
 									}
-
+									
 								}
 							}
 						}
