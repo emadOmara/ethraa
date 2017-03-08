@@ -60,6 +60,14 @@ public class Account extends BaseEntity {
 	@JsonIgnore
 	private List<Message> messages;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "recipient")
+	@JsonIgnore
+	private List<MessageRecipients> messageRecipients;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "id.account")
+	@JsonIgnore
+	private List<UserExam> userExams;
+
 	@Transient
 	@JsonView(Views.Details.class)
 	private Long totalTrainingDays;
