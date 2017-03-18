@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
@@ -25,137 +26,141 @@ import net.pd.ethraa.integration.jackson.Views;
 @Entity
 public class Book extends BaseEntity {
 
-    private static final long serialVersionUID = 5105914722614237201L;
+	private static final long serialVersionUID = 5105914722614237201L;
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 
-    @JsonView(Views.Public.class)
-    private String bookName;
+	@JsonView(Views.Public.class)
+	private String bookName;
 
-    @JsonView(Views.Public.class)
-    private String publisher;
+	@JsonView(Views.Public.class)
+	private String publisher;
 
-    @JsonView(Views.Public.class)
-    private String author;
+	@JsonView(Views.Public.class)
+	private String author;
 
-    @JsonView(Views.Public.class)
-    private String url;
+	@JsonView(Views.Public.class)
+	private String url;
 
-    @JsonView(Views.Public.class)
-    private Integer points = 0;
+	@JsonView(Views.Public.class)
+	private Integer points = 0;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @JsonView(Views.Details.class)
-    private String image;
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@JsonView(Views.Details.class)
+	private String image;
 
-    @Transient
-    @JsonView(Views.Public.class)
-    private boolean read;
+	@Transient
+	@JsonView(Views.Public.class)
+	private boolean read;
 
-    @ManyToMany
-    @JsonView(Views.Details.class)
-    private List<Group> groups;
+	@ManyToMany
+	@JsonView(Views.Details.class)
+	private List<Group> groups;
 
-    @ManyToMany(/* cascade = CascadeType.ALL */)
-    @JoinTable(name = "BOOK_READERS")
-    private Set<Account> accounts = new HashSet<>();
+	@ManyToMany(/* cascade = CascadeType.ALL */)
+	// @JoinTable(name = "BOOK_READERS")
 
-    @JsonView(Views.Public.class)
-    @Transient
-    Long actualReaders;
-    @JsonView(Views.Public.class)
-    @Transient
-    Long missingReaders;
+	@JoinTable(name = "BOOK_READERS", joinColumns = {
+			@JoinColumn(name = "book_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "accounts_id", referencedColumnName = "id") })
+	private Set<Account> accounts = new HashSet<>();
 
-    public String getBookName() {
-	return bookName;
-    }
+	@JsonView(Views.Public.class)
+	@Transient
+	Long actualReaders;
+	@JsonView(Views.Public.class)
+	@Transient
+	Long missingReaders;
 
-    public void setBookName(String bookName) {
-	this.bookName = bookName;
-    }
+	public String getBookName() {
+		return bookName;
+	}
 
-    public String getPublisher() {
-	return publisher;
-    }
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
 
-    public void setPublisher(String publisher) {
-	this.publisher = publisher;
-    }
+	public String getPublisher() {
+		return publisher;
+	}
 
-    public String getAuthor() {
-	return author;
-    }
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
 
-    public void setAuthor(String author) {
-	this.author = author;
-    }
+	public String getAuthor() {
+		return author;
+	}
 
-    public String getUrl() {
-	return url;
-    }
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 
-    public void setUrl(String url) {
-	this.url = url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public Integer getPoints() {
-	return points;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public void setPoints(Integer points) {
-	this.points = points;
-    }
+	public Integer getPoints() {
+		return points;
+	}
 
-    public String getImage() {
-	return image;
-    }
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
 
-    public void setImage(String image) {
-	this.image = image;
-    }
+	public String getImage() {
+		return image;
+	}
 
-    public List<Group> getGroups() {
-	return groups;
-    }
+	public void setImage(String image) {
+		this.image = image;
+	}
 
-    public void setGroups(List<Group> groups) {
-	this.groups = groups;
-    }
+	public List<Group> getGroups() {
+		return groups;
+	}
 
-    public Set<Account> getAccounts() {
-	return accounts;
-    }
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
 
-    public void setAccounts(Set<Account> accounts) {
-	this.accounts = accounts;
-    }
+	public Set<Account> getAccounts() {
+		return accounts;
+	}
 
-    public Long getActualReaders() {
-	return actualReaders;
-    }
+	public void setAccounts(Set<Account> accounts) {
+		this.accounts = accounts;
+	}
 
-    public void setActualReaders(Long actualReaders) {
-	this.actualReaders = actualReaders;
-    }
+	public Long getActualReaders() {
+		return actualReaders;
+	}
 
-    public Long getMissingReaders() {
-	return missingReaders;
-    }
+	public void setActualReaders(Long actualReaders) {
+		this.actualReaders = actualReaders;
+	}
 
-    public void setMissingReaders(Long missingReaders) {
-	this.missingReaders = missingReaders;
-    }
+	public Long getMissingReaders() {
+		return missingReaders;
+	}
 
-    public boolean isRead() {
-	return read;
-    }
+	public void setMissingReaders(Long missingReaders) {
+		this.missingReaders = missingReaders;
+	}
 
-    public void setRead(boolean read) {
-	this.read = read;
-    }
+	public boolean isRead() {
+		return read;
+	}
+
+	public void setRead(boolean read) {
+		this.read = read;
+	}
 
 }

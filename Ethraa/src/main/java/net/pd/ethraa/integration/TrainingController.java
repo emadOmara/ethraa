@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +58,20 @@ public class TrainingController extends BaseController {
 		}
 
 		trainingService.saveTraining(training);
+		handleSuccessResponse(response, null);
+
+		return response;
+
+	}
+
+	@DeleteMapping(path = "/delete/{id}")
+	public BaseResponse deleteTraining(@PathVariable("id") Long id) throws EthraaException {
+
+		BaseResponse response = new BaseResponse();
+
+		handleNullID(id);
+
+		trainingService.deleteTraining(id);
 		handleSuccessResponse(response, null);
 
 		return response;

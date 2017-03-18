@@ -26,4 +26,6 @@ public interface TrainingService {
 
 	Long countLastTrainings(Long userId, int period, Long type) throws EthraaException;
 
+	void deleteTraining(Long id) throws EthraaException;
+
 }

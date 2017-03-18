@@ -233,4 +233,13 @@ public class TrainingServiceImpl implements TrainingService {
 		return p;
 	}
 
+	@Override
+	public void deleteTraining(Long id) throws EthraaException {
+		try {
+			trainingDao.delete(id);
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
 }

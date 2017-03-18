@@ -64,6 +64,14 @@ public class Account extends BaseEntity {
 	@JsonIgnore
 	private List<MessageRecipients> messageRecipients;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "account")
+	@JsonIgnore
+	private List<TrainingAttendence> trainingAttendences;
+
+	@ManyToMany(mappedBy = "accounts", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Book> books = new HashSet<>();
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "id.account")
 	@JsonIgnore
 	private List<UserExam> userExams;

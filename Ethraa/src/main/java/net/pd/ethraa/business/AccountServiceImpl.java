@@ -16,8 +16,11 @@ import net.pd.ethraa.common.NullAwareBeanUtilsBean;
 import net.pd.ethraa.common.model.Account;
 import net.pd.ethraa.common.model.AccountType;
 import net.pd.ethraa.common.model.Email;
+import net.pd.ethraa.common.model.Exam;
+import net.pd.ethraa.common.model.Group;
 import net.pd.ethraa.common.model.Permission;
 import net.pd.ethraa.dao.AccountDao;
+import net.pd.ethraa.dao.ExamDao;
 
 @Service
 @Transactional
@@ -27,6 +30,12 @@ public class AccountServiceImpl implements AccountService {
 	private AccountDao accountDao;
 	@Autowired
 	private NullAwareBeanUtilsBean beanUtilService;
+
+	@Autowired
+	private ExamService examService;
+
+	@Autowired
+	private ExamDao examDao;
 
 	@Autowired
 	private MailService mailService;
@@ -114,6 +123,25 @@ public class AccountServiceImpl implements AccountService {
 	@CacheEvict(cacheNames = "accounts")
 	public void deleteAccount(Long id) throws EthraaException {
 		try {
+
+			Account account = accountDao.findOne(id);
+			if (CommonUtil.isEmpty(account))
+				throw new EthraaException("No account defined for the id " + id);
+			Group g = account.getGroup();
+
+			List<Exam> exams = examDao.findByGroupAndType(g, EthraaConstants.EXAM_TYPE);
+
+			if (!CommonUtil.isEmpty(exams)) {
+				for (Exam exam : exams) {
+					examService.deleteExam(exam.getId());
+				}
+			}
+			exams = examDao.findByGroupAndType(g, EthraaConstants.POLL_TYPE);
+			if (!CommonUtil.isEmpty(exams)) {
+				for (Exam exam : exams) {
+					examService.deleteExam(exam.getId());
+				}
+			}
 			accountDao.delete(id);
 		} catch (Exception e) {
 			throw new EthraaException(e);
