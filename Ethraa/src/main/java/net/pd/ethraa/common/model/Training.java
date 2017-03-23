@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -58,6 +60,9 @@ public class Training extends BaseEntity {
 
 	@ManyToMany
 	@JsonView(Views.Details.class)
+	@JoinTable(name = "TRAINING_GROUPS", joinColumns = {
+			@JoinColumn(name = "training_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "GROUPS_id", referencedColumnName = "id") })
 	private Set<Group> groups;
 
 	@JsonView(Views.Public.class)

@@ -58,6 +58,9 @@ public class Book extends BaseEntity {
 
 	@ManyToMany
 	@JsonView(Views.Details.class)
+	@JoinTable(name = "BOOK_GROUPS", joinColumns = {
+			@JoinColumn(name = "book_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "GROUPS_id", referencedColumnName = "id") })
 	private List<Group> groups;
 
 	@ManyToMany(/* cascade = CascadeType.ALL */)

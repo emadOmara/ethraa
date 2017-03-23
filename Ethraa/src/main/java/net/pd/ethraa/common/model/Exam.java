@@ -1,12 +1,12 @@
 package net.pd.ethraa.common.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -35,6 +35,9 @@ public class Exam extends BaseEntity {
 
 	@ManyToMany
 	@JsonView(Views.Public.class)
+	@JoinTable(name = "EXAM_GROUPS", joinColumns = {
+			@JoinColumn(name = "exam_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "GROUPS_id", referencedColumnName = "id") })
 	private List<Group> groups;
 
 	@OneToMany(mappedBy = "id.exam", cascade = CascadeType.ALL, orphanRemoval = true)

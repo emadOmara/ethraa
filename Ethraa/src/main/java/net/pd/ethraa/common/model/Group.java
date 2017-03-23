@@ -1,10 +1,17 @@
 package net.pd.ethraa.common.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.pd.ethraa.integration.jackson.Views;
@@ -25,6 +32,22 @@ public class Group extends BaseEntity {
 	@Transient
 	@JsonView(Views.Group.class)
 	private Long pendingRequests;
+
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Message> messages = new ArrayList<>();
+
+	@ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Book> books = new ArrayList<>();
+
+	@ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Exam> exams = new ArrayList<>();
+
+	@ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Training> trainings = new ArrayList<>();
 
 	public Group() {
 	}
