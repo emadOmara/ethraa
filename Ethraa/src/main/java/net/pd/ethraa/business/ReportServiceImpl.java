@@ -33,6 +33,7 @@ public class ReportServiceImpl implements ReportService {
 	// private static final Long REPORT_RESPONSE_TYPE_MEETING = 3l;
 	private static final Long REPORT_RESPONSE_TYPE_COURSE_BONUS = 4l;
 	private static final Long REPORT_RESPONSE_TYPE_MEETING_BONUS = 5l;
+	private static final Long REPORT_RESPONSE_TYPE_MEETING_LECTURE = 11l;
 
 	@Override
 	public Map<Long, Long> summarizeUserReport(Long userId) {
@@ -65,12 +66,14 @@ public class ReportServiceImpl implements ReportService {
 
 	private void addTrainngBonus(Map<Long, Long> result, Long userId) {
 		List<Long> trainingTypes = new ArrayList<>();
+		trainingTypes.add(EthraaConstants.ACTIVITY_TYPE_LECTURE);
 		trainingTypes.add(EthraaConstants.ACTIVITY_TYPE_COURSE);
 		trainingTypes.add(EthraaConstants.ACTIVITY_TYPE_MEETING);
 		Object[] trainingBonus = accountDao.sumUserPoints(userId, trainingTypes);
 
 		result.put(REPORT_RESPONSE_TYPE_COURSE_BONUS, 0l);
 		result.put(REPORT_RESPONSE_TYPE_MEETING_BONUS, 0l);
+		result.put(REPORT_RESPONSE_TYPE_MEETING_LECTURE, 0l);
 
 		for (Object item : trainingBonus) {
 			Long type = (Long) ((Object[]) item)[0];
@@ -79,6 +82,8 @@ public class ReportServiceImpl implements ReportService {
 				result.put(REPORT_RESPONSE_TYPE_COURSE_BONUS, grade);
 			} else if (EthraaConstants.ACTIVITY_TYPE_MEETING.equals(type)) {
 				result.put(REPORT_RESPONSE_TYPE_MEETING_BONUS, grade);
+			} else if (EthraaConstants.ACTIVITY_TYPE_LECTURE.equals(type)) {
+				result.put(REPORT_RESPONSE_TYPE_MEETING_LECTURE, grade);
 			}
 
 		}
@@ -89,6 +94,7 @@ public class ReportServiceImpl implements ReportService {
 		if (trainingPoints.length == 0) {
 			result.put(EthraaConstants.ACTIVITY_TYPE_MEETING, 0l);
 			result.put(EthraaConstants.ACTIVITY_TYPE_COURSE, 0l);
+			result.put(EthraaConstants.ACTIVITY_TYPE_LECTURE, 0l);
 			return;
 		}
 		for (Object item : trainingPoints) {

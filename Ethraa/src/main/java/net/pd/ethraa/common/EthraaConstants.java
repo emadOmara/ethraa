@@ -14,6 +14,7 @@ public interface EthraaConstants {
 	public String XA_TOKEN = "xa-token";
 	Long ACTIVITY_TYPE_READ_BOOK = 1l;
 
+	Long ACTIVITY_TYPE_LECTURE = 10l;
 	Long ACTIVITY_TYPE_COURSE = 2l;
 	Long ACTIVITY_TYPE_MEETING = 3l;
 
