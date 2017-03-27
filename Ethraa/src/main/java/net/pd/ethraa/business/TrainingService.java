@@ -28,4 +28,6 @@ public interface TrainingService {
 
 	void deleteTraining(Long id) throws EthraaException;
 
+	List<Training> getComingAssignedEvents(Long id) throws EthraaException;
+
 }

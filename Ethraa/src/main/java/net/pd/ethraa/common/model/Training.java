@@ -35,6 +35,9 @@ public class Training extends BaseEntity {
 	@JsonView(Views.Public.class)
 	private String title;
 
+	@JsonView(Views.Public.class)
+	private String trainer;
+
 	@OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
 	@JsonView(Views.Details.class)
 	private List<TrainingDay> trainingDays;
@@ -151,6 +154,14 @@ public class Training extends BaseEntity {
 
 	public void setType(Long type) {
 		this.type = type;
+	}
+
+	public String getTrainer() {
+		return trainer;
+	}
+
+	public void setTrainer(String trainer) {
+		this.trainer = trainer;
 	}
 
 }

@@ -20,6 +20,9 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
 	@Query("select t from Training t where :group member of t.groups and t.type=:type")
 	List<Training> findByGroup(@Param("group") Group group, @Param("type") Long type);
 
+	@Query("select t from Training t where :group member of t.groups and t.startDate > CURRENT_DATE")
+	List<Training> findComingAssignedEvents(@Param("group") Group group);
+
 	@Query("select acc from Account acc  where acc.accountStatus=1 and acc.group.id in (select g.id from Training t inner join t.groups g where t.id=:trainingId) ")
 	List<Account> getMeetingMembers(@Param("trainingId") Long trainingId);
 
@@ -50,4 +53,5 @@ public interface TrainingDao extends JpaRepository<Training, Long> {
 
 	@Query("select count(t) from Training t inner join t.groups g ,Account acc where g.id=acc.group.id and acc.id=:userId and t.type=:type and t.startDate > :date")
 	Long countLastTrainings(@Param("userId") Long userId, @Param("type") Long type, @Param("date") Date date);
+
 }

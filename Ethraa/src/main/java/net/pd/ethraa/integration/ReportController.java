@@ -128,6 +128,9 @@ public class ReportController extends BaseController {
 		Long latesUserMeetings = trainingService.countLastTrainings(userId, 3, EthraaConstants.ACTIVITY_TYPE_MEETING);
 		result.put("MEETING_COUNT", latesUserMeetings);
 
+		Long lessonCount = trainingService.countLastTrainings(userId, 3, EthraaConstants.ACTIVITY_TYPE_LECTURE);
+		result.put("LESSON_COUNT", lessonCount);
+
 		Long examCount = examService.countPendingExam(userId, EthraaConstants.EXAM_TYPE);
 		result.put("EXAM_COUNT", examCount);
 
