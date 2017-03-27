@@ -242,4 +242,17 @@ public class TrainingServiceImpl implements TrainingService {
 		}
 	}
 
+	@Override
+	public List<Training> getComingAssignedEvents(Long id) throws EthraaException {
+		try {
+			Account account = accountDao.findOne(id);
+
+			List<Training> results = trainingDao.findComingAssignedEvents(account.getGroup());
+
+			return results;
+		} catch (Exception e) {
+			throw new EthraaException(e);
+		}
+	}
+
 }

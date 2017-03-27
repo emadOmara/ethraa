@@ -1,6 +1,9 @@
 package net.pd.ethraa.integration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -171,4 +174,37 @@ public class TrainingController extends BaseController {
 
 	}
 
+	@GetMapping(path = "/comingevent/{id}")
+	@JsonView(Views.Public.class)
+	public BaseResponse getComingEvents(@PathVariable("id") Long id) throws EthraaException {
+		handleNullID(id);
+
+		BaseResponse response = new BaseResponse();
+		List<Training> trainings = trainingService.getComingAssignedEvents(id);
+
+		List<Training> meetings = new ArrayList<>();
+		List<Training> courses = new ArrayList<>();
+		List<Training> lessons = new ArrayList<>();
+
+		for (Training training : trainings) {
+
+			if (EthraaConstants.ACTIVITY_TYPE_COURSE.equals(training.getType())) {
+				courses.add(training);
+			}
+			if (EthraaConstants.ACTIVITY_TYPE_LECTURE.equals(training.getType())) {
+				lessons.add(training);
+			}
+			if (EthraaConstants.ACTIVITY_TYPE_MEETING.equals(training.getType())) {
+				meetings.add(training);
+			}
+		}
+		Map<String, List<Training>> result = new HashMap<>();
+		result.put("Meetings", meetings);
+		result.put("Courses", courses);
+		result.put("Lessons", lessons);
+		handleSuccessResponse(response, result);
+
+		return response;
+
+	}
 }
